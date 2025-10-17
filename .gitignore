@@ -3,3 +3,6 @@ TUMuch.cache/
 
 # Ignore TUMuch sim directory
 TUMuch.sim/
+
+# Ignore TUMuch xpr file
+TUMuch.xpr
