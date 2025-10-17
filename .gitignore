@@ -1,3 +1,5 @@
-# Ignore TUMuch cache file or directory
-TUMuch.cache
+# Ignore TUMuch cache directory
 TUMuch.cache/
+
+# Ignore TUMuch sim directory
+TUMuch.sim/
