@@ -5,4 +5,13 @@ TUMuch.cache/
 TUMuch.sim/
 
 # Ignore TUMuch xpr file
+
 TUMuch.xpr
+
+# Ignore TUMuch hw directory
+
+TUMuch.hw
+
+# Ignore TUMuch ip user file directory 
+
+TUMuch.ip_user_file
