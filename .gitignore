@@ -10,8 +10,8 @@ TUMuch.xpr
 
 # Ignore TUMuch hw directory
 
-TUMuch.hw
+TUMuch.hw/
 
 # Ignore TUMuch ip user file directory 
 
-TUMuch.ip_user_file
+TUMuch.ip_user_files/
