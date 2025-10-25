@@ -2,6 +2,7 @@
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.numeric_bit.all;
 
 -- ENTITY DECLARATION
 entity RAM4096x12 is 
@@ -37,3 +38,24 @@ begin
     addr(2),addr(1),addr(0));
     end process;
 end Behavioral_BitVector;
+
+--Erstellt von Max Biricz
+--ARCHITECTURE BODY (for uut2; uut1 and uut2 share same entity)
+architecture Behavioral_Integer of RAM4096x12 is
+begin
+    process(w_en, addr, data_in)
+        type mem_type is array
+             (natural range 0 to 4095) 
+              of bit_vector(11 downto 0);
+        variable addr_nat : natural;
+        variable Mem : mem_type;
+    begin
+    
+        addr_nat := to_integer(unsigned(addr));
+        if w_en = '1' then
+            Mem(addr_nat) := data_in;
+        end if;
+        data_out<=Mem(addr_nat);
+
+    end process;
+end Behavioral_Integer;
