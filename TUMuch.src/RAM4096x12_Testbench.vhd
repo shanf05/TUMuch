@@ -7,8 +7,8 @@ entity RAM4096x12_Testbench is
         w_en         : out bit; 
         addr         : out bit_vector( 11 downto 0 ); 
         dataToMem    : out bit_vector( 11 downto 0 );
-        dataFromMem1 : in bit_vector( 11 downto 0 ); 
-        dataFromMem2 : in bit_vector( 11 downto 0 ) 
+        dataFromMem1 : in  bit_vector( 11 downto 0 ); 
+        dataFromMem2 : in  bit_vector( 11 downto 0 ) 
     );
 end RAM4096x12_Testbench;
 
@@ -33,4 +33,5 @@ begin
             severity error;     
         end loop;  
     end process;
+
 end Behavorial; 
