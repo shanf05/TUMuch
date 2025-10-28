@@ -33,5 +33,5 @@ begin
             severity error;     
         end loop;  
     end process;
-
 end Behavorial; 
+
