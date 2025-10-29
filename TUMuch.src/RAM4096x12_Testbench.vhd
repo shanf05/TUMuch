@@ -31,7 +31,8 @@ begin
             assert (dataFromMem1 = dataFromMem2) and (dataFromMem1 = bit_vector(to_unsigned(i, 12)))
             report "wrong memory values"
             severity error;     
-        end loop;  
+        end loop; 
+        wait;  
     end process;
 end Behavorial; 
 
