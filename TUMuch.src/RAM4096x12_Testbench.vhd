@@ -32,6 +32,7 @@ begin
             report "wrong memory values"
             severity error;     
         end loop; 
+        report "no errors detected";
         wait;  
     end process;
 end Behavorial; 
