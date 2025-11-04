@@ -12,7 +12,10 @@ end RISCV;
 architecture functional of RISCV is
 begin
     process
-        -- include all necessary packages   
+        variable PC : AddrType := X"0000";
+        variable Instr : InstrType := (others=>'0');
+        variable Reg : RegType := (others=>(others=>'0'));
+        variable Mem: MemType := (others=>(others=>'0'));
     begin
         -- fetch, decode and execute instructions
     end process;

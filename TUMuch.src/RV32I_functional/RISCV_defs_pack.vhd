@@ -1,5 +1,7 @@
 -- ERSTELLT VON JEONGJOO LIM
--- Specifications: 32bit wide Memory, 16 bit Address
+-- Specifications:  32 Registers, 32bit wide Memory, 16bit address (14bit for memory, 2bit for byte)
+--                  32bit wide instruction
+--                  32=2^5 registers, 32bit wide each
 
 package defs_pack is
     constant data_width : natural := 32;
