@@ -1,16 +1,14 @@
 -- ERSTELLT VON JEONGJOO LIM
--- Specifications:  32 Registers, 32bit wide Memory, 16bit address (14bit for memory, 2bit for byte)
---                  32bit wide instruction
---                  32=2^5 registers, 32bit wide each
+-- Specifications: 32bit wide Memory, 16 bit Address
 
 package defs_pack is
     constant data_width : natural := 32;
     
     -------- OBJECT SIZES --------    
     -- PC, addr wire of bus, memory depth
-    constant AddrSize : integer := 16;
+    constant AddrSize     : integer := 16;
     constant ByteAddrSize : integer := 2;
-    constant MemoryAddrSize : integer := AddrSize - ByteAddrSize;
+    constant MemAddrSize  : integer := AddrSize - ByteAddrSize;
     
     -- instruction size
     constant InstrSize : integer := 32; -- Achtung: hier weicht von Folie ab! wahrscheinlich Schreibfehler
@@ -21,14 +19,17 @@ package defs_pack is
     -- register sizes
     constant RegDataSize : integer := 32;
     constant RegAddrSize : integer := 5;
-    
+        
     -------- OBJECT TYPES --------    
-    subtype AddrType is bit_vector (AddrSize-1 downto 0);
-    subtype InstrType is bit_vector (InstrSize-1 downto 0);
+    subtype AddrType    is bit_vector (AddrSize-1 downto 0);
+    subtype InstrType   is bit_vector (InstrSize-1 downto 0);
     subtype BusDataType is bit_vector (BusDataSize-1 downto 0);
     subtype RegDataType is bit_vector (RegDataSize-1 downto 0);
-    type RegType is array (integer range 2**RegAddrSize-1 downto 0) of RegDataType;
-    type MemType is array(integer range 2**MemoryAddrSize-1 downto 0) of BusDataType;
+    subtype MemDataType is bit_vector (RegDataSize-1 downto 0);
+    subtype RegAddrType is integer range 2**RegAddrSize-1 downto 0; -- added by Severin Hanf
+    subtype MemAddrType is integer range 2**MemAddrSize-1 downto 0; -- added by Severin Hanf
+    type    RegType     is array (RegAddrType) of RegDataType;
+    type    MemType     is array (MemAddrType) of BusDataType;    
     
     -------- INSTR. COMP. SIZES -------- 
     -- to be implemented during fetch 
