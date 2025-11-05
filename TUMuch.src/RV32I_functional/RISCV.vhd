@@ -20,5 +20,6 @@ begin
         variable Mem: MemType := (others=>(others=>'0'));
     begin
         -- fetch, decode and execute instructions
+        wait; 
     end process;
 end functional;
