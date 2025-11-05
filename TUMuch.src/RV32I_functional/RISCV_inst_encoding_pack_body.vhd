@@ -1,8 +1,11 @@
 --erstellt von Severin Hanf
-library IEEE;
-use IEEE.STD_LOGIC_1164.ALL;
 library work; 
+--use work.inst_encoding_pack.all;
+use work.defs_pack.all;
+use work.inst_layout_pack.all;
 use work.inst_encoding_pack.all;
+library ieee;
+use ieee.numeric_std.all;
 
 -- die definitionen muss ich noch ausfüllen
 
@@ -10,6 +13,7 @@ package body inst_encoding_pack is
     --register-immediate instructions:
     function ADDI_code  (rs1, rd : RegAddrType; imm : RegDataType) return InstrType is
     begin
+    --return imm(11 downto 0) & bit_vector(to_unsigned(rs1,5)) & F3_ADD(2 downto 0) & bit_vector(to_unsigned(rd,5)) & OP_IMM(6 downto 0);
     end function; --imm[11:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
     
     function SLTI_code  (rs1, rd : RegAddrType; imm : RegDataType) return InstrType is
@@ -133,10 +137,6 @@ package body inst_encoding_pack is
     function BGEU_code (r1, rs2 : RegAddrType; imm : RegDataType) return InstrType is
     begin
     end function; --imm[12] imm[10:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:1] imm[11] opcode[6:0]
-    
-        --function BGT_code(r1 : RegAddrType) return InstrType;     --anscheinend nicht wichtig
-        --function BGTU_code(r1 : RegAddrType) return InstrType;    --anscheinend nicht wichtig
-        --load and store instructions:
     
     --load and store instructions:
     function LW_code  (rs1, rd : RegAddrType) return InstrType is
