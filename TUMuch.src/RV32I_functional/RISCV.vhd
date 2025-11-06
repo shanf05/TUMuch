@@ -45,7 +45,7 @@ begin
         case op_code is
             -----------------------------------------------------------------------
             -- R-Type Instructions
-            when OP =>            
+            when OP_OP =>            
                 -- assign needed values 
                 func3 := Instr(14 downto 12);
                 rd := Instr(11 downto 7);

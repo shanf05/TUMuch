@@ -68,52 +68,52 @@ package body inst_encoding_pack is
     --register-register instructions:
     function ADD_code  (rs1, rs2, rd : RegAddrType) return InstrType is
     begin
-    return F7_ADD & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_ADD & bit_vector(to_unsigned(rd,5)) & OP;
+    return F7_ADD & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_ADD & bit_vector(to_unsigned(rd,5)) & OP_OP;
     end function; --funct7[6:0] rs2[4:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]      
     
     function SLT_code  (rs1, rs2, rd : RegAddrType) return InstrType is
     begin
-    return F7_SLT & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_SLT & bit_vector(to_unsigned(rd,5)) & OP;
+    return F7_SLT & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_SLT & bit_vector(to_unsigned(rd,5)) & OP_OP;
     end function; --funct7[6:0] rs2[4:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]   
      
     function SLTU_code (rs1, rs2, rd : RegAddrType) return InstrType is
     begin
-    return F7_SLT & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_SLTU & bit_vector(to_unsigned(rd,5)) & OP;
+    return F7_SLT & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_SLTU & bit_vector(to_unsigned(rd,5)) & OP_OP;
     end function; --funct7[6:0] rs2[4:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
     
     function AND_code  (rs1, rs2, rd : RegAddrType) return InstrType is
     begin
-    return F7_ADD & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_ADD & bit_vector(to_unsigned(rd,5)) & OP;
+    return F7_ADD & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_ADD & bit_vector(to_unsigned(rd,5)) & OP_OP;
     end function; --funct7[6:0] rs2[4:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
     
     function OR_code   (rs1, rs2, rd : RegAddrType) return InstrType is
     begin
-    return F7_OR & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_OR & bit_vector(to_unsigned(rd,5)) & OP;
+    return F7_OR & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_OR & bit_vector(to_unsigned(rd,5)) & OP_OP;
     end function; --funct7[6:0] rs2[4:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
     
     function XOR_code  (rs1, rs2, rd : RegAddrType) return InstrType is
     begin
-    return F7_XOR & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_XOR & bit_vector(to_unsigned(rd,5)) & OP;
+    return F7_XOR & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_XOR & bit_vector(to_unsigned(rd,5)) & OP_OP;
     end function; --funct7[6:0] rs2[4:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
     
     function SLL_code  (rs1, rs2, rd : RegAddrType) return InstrType is
     begin
-    return F7_SLL & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_SLL & bit_vector(to_unsigned(rd,5)) & OP;
+    return F7_SLL & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_SLL & bit_vector(to_unsigned(rd,5)) & OP_OP;
     end function; --funct7[6:0] rs2[4:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
     
     function SRL_code  (rs1, rs2, rd : RegAddrType) return InstrType is
     begin
-    return F7_SRL & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_SRL & bit_vector(to_unsigned(rd,5)) & OP;
+    return F7_SRL & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_SRL & bit_vector(to_unsigned(rd,5)) & OP_OP;
     end function; --funct7[6:0] rs2[4:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
     
     function SUB_code  (rs1, rs2, rd : RegAddrType) return InstrType is
     begin
-    return F7_SUB & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_SUB & bit_vector(to_unsigned(rd,5)) & OP;
+    return F7_SUB & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_SUB & bit_vector(to_unsigned(rd,5)) & OP_OP;
     end function; --funct7[6:0] rs2[4:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
     
     function SRA_code  (rs1, rs2, rd : RegAddrType) return InstrType is
     begin
-    return F7_SRA & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_SRA & bit_vector(to_unsigned(rd,5)) & OP;
+    return F7_SRA & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_SRA & bit_vector(to_unsigned(rd,5)) & OP_OP;
     end function; --funct7[6:0] rs2[4:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
     
     

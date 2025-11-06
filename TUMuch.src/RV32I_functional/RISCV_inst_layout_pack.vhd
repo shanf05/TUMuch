@@ -9,13 +9,13 @@ package inst_layout_pack is
     
     constant OP_IMM    : OpCode := "0010011";   
     constant OP_AUIPC  : OpCOde := "0010111";
-    constant OP        : OpCOde := "0110011";   
+    constant OP_OP     : OpCOde := "0110011";   
     constant OP_LUI    : OpCOde := "0110111";
     constant OP_JAL    : OpCOde := "1101111";
     constant OP_JALR   : OpCOde := "1100111";
     constant OP_BRANCH : OpCOde := "1100011";
     constant OP_LOAD   : OpCOde := "0000011";
-    constant OP_STORE : OpCOde := "0100011";
+    constant OP_STORE  : OpCOde := "0100011";
     
     constant F3_SLLI : Funct3 := "001";
     constant F3_SRLI : Funct3 := "101";
