@@ -5,7 +5,7 @@ use work.defs_pack.all;
 use work.inst_layout_pack.all;
 use work.inst_encoding_pack.all;
 library ieee;
-use ieee.numeric_std.all;
+use ieee.numeric_bit.all;
 
 -- die definitionen muss ich noch ausfüllen
 
@@ -13,7 +13,7 @@ package body inst_encoding_pack is
     --register-immediate instructions:
     function ADDI_code  (rs1, rd : RegAddrType; imm : RegDataType) return InstrType is
     begin
-    --return imm(11 downto 0) & bit_vector(to_unsigned(rs1,5)) & F3_ADD(2 downto 0) & bit_vector(to_unsigned(rd,5)) & OP_IMM(6 downto 0);
+    return imm(11 downto 0) & bit_vector(to_unsigned(rs1,5)) & F3_ADD(2 downto 0) & bit_vector(to_unsigned(rd,5)) & OP_IMM(6 downto 0);
     end function; --imm[11:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
     
     function SLTI_code  (rs1, rd : RegAddrType; imm : RegDataType) return InstrType is

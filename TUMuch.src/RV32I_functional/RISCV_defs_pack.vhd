@@ -26,13 +26,12 @@ package defs_pack is
     subtype BusDataType     is bit_vector (BusDataSize-1 downto 0);
     subtype RegDataType     is bit_vector (RegDataSize-1 downto 0);
     subtype MemDataType     is bit_vector (RegDataSize-1 downto 0);
-    subtype RegAddrRange    is integer range 2**RegAddrSize-1 downto 0; -- added by Severin Hanf
-    subtype MemAddrRange    is integer range 2**MemAddrSize-1 downto 0; -- added by Severin Hanf
-    type    RegType         is array (RegAddrRange) of RegDataType;
-    type    MemType         is array (MemAddrRange) of BusDataType;    
+    subtype RegAddrType    is integer range 2**RegAddrSize-1 downto 0; -- added by Severin Hanf
+    subtype MemAddrType    is integer range 2**MemAddrSize-1 downto 0; -- added by Severin Hanf
+    type    RegType         is array (RegAddrType) of RegDataType;
+    type    MemType         is array (MemAddrType) of BusDataType;    
     
     -------- INSTR. COMP. SIZES -------- 
     -- to be implemented during fetch 
     subtype ImmType         is bit_vector (RegDataSize-1 downto 0);
-    subtype RegAddrType     is bit_vector (RegAddrSize-1 downto 0);
 end;
