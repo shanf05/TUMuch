@@ -15,7 +15,7 @@ package inst_layout_pack is
     constant OP_JALR   : OpCOde := "1100111";
     constant OP_BRANCH : OpCOde := "1100011";
     constant OP_LOAD   : OpCOde := "0000011";
-    constant OP_STRORE : OpCOde := "0100011";
+    constant OP_STORE : OpCOde := "0100011";
     
     constant F3_SLLI : Funct3 := "001";
     constant F3_SRLI : Funct3 := "101";
@@ -49,7 +49,7 @@ package inst_layout_pack is
     
     constant F7_ADD : Funct7 := "0000000";
     constant F7_SUB : Funct7 := "0100000";
-    constant F7_SL  : Funct7 := "0000000";    
-    constant F7_SR  : Funct7 := "0100000";
+    constant F7_SRL  : Funct7 := "0000000";    
+    constant F7_SRA  : Funct7 := "0100000";
 
 end package inst_layout_pack; 
