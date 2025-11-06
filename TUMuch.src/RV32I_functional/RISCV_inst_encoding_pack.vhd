@@ -33,34 +33,34 @@ package inst_encoding_pack is
     function SRA_code  (rs1, rs2, rd : RegAddrType) return InstrType; --funct7[6:0] rs2[4:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
     
     --nop instruction:
-    function NOP_code(rs1, rd : RegAddrType) return InstrType; --imm[11:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
+    function NOP_code return InstrType; --imm[11:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
     
     --uncondidional jumps:
-    function JAL_code  (rd : RegAddrType; imm : RegDataType) return InstrType; --imm[20] imm[10:1] imm[11] imm[19:12] rs1[4:0] opcode[6:0]
-    function JALR_code (r1 : RegAddrType) return InstrType; --imm[11:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
+    function JAL_code  (rd : RegAddrType; imm : RegDataType)     return InstrType; --imm[20] imm[10:1] imm[11] imm[19:12] rs1[4:0] opcode[6:0]
+    function JALR_code (rs1, rd : RegAddrType; imm : RegDataType) return InstrType; --imm[11:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
     
     --conditional branches:
-    function BEQ_code  (r1, rs2 : RegAddrType; imm : RegDataType) return InstrType; --imm[12] imm[10:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:1] imm[11] opcode[6:0]
-    function BNE_code  (r1, rs2 : RegAddrType; imm : RegDataType) return InstrType; --imm[12] imm[10:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:1] imm[11] opcode[6:0]
-    function BLT_code  (r1, rs2 : RegAddrType; imm : RegDataType) return InstrType; --imm[12] imm[10:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:1] imm[11] opcode[6:0]
-    function BLTU_code (r1, rs2 : RegAddrType; imm : RegDataType) return InstrType; --imm[12] imm[10:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:1] imm[11] opcode[6:0]
-    function BGE_code  (r1, rs2 : RegAddrType; imm : RegDataType) return InstrType; --imm[12] imm[10:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:1] imm[11] opcode[6:0]   
-    function BGEU_code (r1, rs2 : RegAddrType; imm : RegDataType) return InstrType; --imm[12] imm[10:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:1] imm[11] opcode[6:0]
+    function BEQ_code  (rs1, rs2 : RegAddrType; imm : RegDataType) return InstrType; --imm[12] imm[10:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:1] imm[11] opcode[6:0]
+    function BNE_code  (rs1, rs2 : RegAddrType; imm : RegDataType) return InstrType; --imm[12] imm[10:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:1] imm[11] opcode[6:0]
+    function BLT_code  (rs1, rs2 : RegAddrType; imm : RegDataType) return InstrType; --imm[12] imm[10:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:1] imm[11] opcode[6:0]
+    function BLTU_code (rs1, rs2 : RegAddrType; imm : RegDataType) return InstrType; --imm[12] imm[10:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:1] imm[11] opcode[6:0]
+    function BGE_code  (rs1, rs2 : RegAddrType; imm : RegDataType) return InstrType; --imm[12] imm[10:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:1] imm[11] opcode[6:0]   
+    function BGEU_code (rs1, rs2 : RegAddrType; imm : RegDataType) return InstrType; --imm[12] imm[10:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:1] imm[11] opcode[6:0]
     
     --function BGT_code(r1 : RegAddrType) return InstrType;     --anscheinend nicht wichtig
     --function BGTU_code(r1 : RegAddrType) return InstrType;    --anscheinend nicht wichtig
     
     --load instructions: 
-    function LW_code  (rs1, rd : RegAddrType) return InstrType; --imm[11:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
-    function LH_code  (rs1, rd : RegAddrType) return InstrType; --imm[11:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
-    function LHU_code (rs1, rd : RegAddrType) return InstrType; --imm[11:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
-    function LB_code  (rs1, rd : RegAddrType) return InstrType; --imm[11:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
-    function LBU_code (rs1, rd : RegAddrType) return InstrType; --imm[11:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
+    function LW_code  (rs1, rd : RegAddrType; imm : RegDataType) return InstrType; --imm[11:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
+    function LH_code  (rs1, rd : RegAddrType; imm : RegDataType) return InstrType; --imm[11:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
+    function LHU_code (rs1, rd : RegAddrType; imm : RegDataType) return InstrType; --imm[11:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
+    function LB_code  (rs1, rd : RegAddrType; imm : RegDataType) return InstrType; --imm[11:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
+    function LBU_code (rs1, rd : RegAddrType; imm : RegDataType) return InstrType; --imm[11:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
     
     --store instructions:
-    function SW_code  (rs1, rd : RegAddrType) return InstrType; --imm[11:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:0] opcode[6:0]
-    function SH_code  (rs1, rd : RegAddrType) return InstrType; --imm[11:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:0] opcode[6:0]
-    function SB_code  (rs1, rd : RegAddrType) return InstrType; --imm[11:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:0] opcode[6:0]   
+    function SW_code (rs1, rs2, rd : RegAddrType; imm : RegDataType) return InstrType; --imm[11:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:0] opcode[6:0]
+    function SH_code (rs1, rs2, rd : RegAddrType; imm : RegDataType) return InstrType; --imm[11:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:0] opcode[6:0]
+    function SB_code (rs1, rs2, rd : RegAddrType; imm : RegDataType) return InstrType; --imm[11:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:0] opcode[6:0]   
    
 end package inst_encoding_pack;
 
