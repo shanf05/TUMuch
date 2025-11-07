@@ -14,17 +14,19 @@ end RISCV;
 architecture functional of RISCV is
 begin
     process
-        variable PC : AddrType := X"0000";
+        variable PC    : MemAddrType := X"0000";
         variable Instr : InstrType := (others=>'0');
-        variable Reg : RegType := (others=>(others=>'0'));
-        variable Mem: MemType := (others=>(others=>'0'));
+        variable Reg   : RegType := (others=>(others=>'0'));
+        variable Mem   : MemType := (others=>(others=>'0'));
         
         variable op_code : OpCode:= "0000000";
-        variable func3: Funct3;
-        variable rd, rs1, rs2: AddrType;
-        variable funct7: Funct7;
-        variable shamt : bit_vector(4 downto 0);                   -- only used for modified I-Type Instruction
-        variable imm: ImmType := (others => '0');
+        variable func3   : Funct3;
+        variable rd      : RegAddrType;
+        variable rs1     : RegAddrType;
+        variable rs2     : RegAddrType;
+        variable funct7  : Funct7;
+        variable shamt   : bit_vector(4 downto 0);                   -- only used for modified I-Type Instruction
+        variable imm     : ImmType := (others => '0');
         
         
     begin
