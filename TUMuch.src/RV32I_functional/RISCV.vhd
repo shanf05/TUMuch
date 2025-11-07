@@ -14,7 +14,7 @@ end RISCV;
 architecture functional of RISCV is
 begin
     process
-        variable PC    : MemAddrType := X"0000";
+        variable PC    : MemAddrType;
         variable Instr : InstrType := (others=>'0');
         variable Reg   : RegType := (others=>(others=>'0'));
         variable Mem   : MemType := (others=>(others=>'0'));
@@ -34,11 +34,11 @@ begin
         
         
         -- fetch instruction
-        Instr := Mem(to_integer(unsigned(PC(AddrSize-1 downto ByteAddrSize))));
+        Instr := Mem(PC);
         op_code := Instr(6 downto 0);
         
-        if PC = X"FFFF" then PC := X"0000";
-        else PC := bit_vector(unsigned(PC) + 4);
+        if (PC = 2**MemAddrSize-1) then PC := 0;
+        else PC := PC + 4;
         end if;
         
         
@@ -50,9 +50,9 @@ begin
             when OP_OP =>            
                 -- assign needed values 
                 func3 := Instr(14 downto 12);
-                rd := Instr(11 downto 7);
-                rs1 := Instr(19 downto 15);
-                rs2 := Instr(24 downto 20);
+                rd := to_integer(unsigned(Instr(11 downto 7)));
+                rs1 := to_integer(unsigned(Instr(19 downto 15)));
+                rs2 := to_integer(unsigned(Instr(24 downto 20)));
                 funct7 := Instr(31 downto 25);
                 
                 case func3 is
@@ -91,8 +91,8 @@ begin
             -- I-Type  Instructions
             when Op_IMM =>
                 func3 := Instr(14 downto 12);
-                rd := Instr(11 downto 7);
-                rs1 := Instr(19 downto 15);
+                rd := to_integer(unsigned(Instr(11 downto 7)));
+                rs1 := to_integer(unsigned(Instr(19 downto 15)));
                 imm(10 downto 0) := Instr(30 downto 20);
                 imm(31 downto 11) := (others => Instr(20));
                 
@@ -125,8 +125,8 @@ begin
                  
             when OP_LOAD =>
                 func3 := Instr(14 downto 12);
-                rd := Instr(11 downto 7);
-                rs1 := Instr(19 downto 15);
+                rd := to_integer(unsigned(Instr(11 downto 7)));
+                rs1 := to_integer(unsigned(Instr(19 downto 15)));
                 imm(10 downto 0) := Instr(30 downto 20);
                 imm(31 downto 11) := (others => Instr(20));
                 
@@ -146,9 +146,9 @@ begin
             -- S-Type Instructions
             when OP_STORE =>
                 func3 := Instr(14 downto 12);
-                rd := Instr(11 downto 7);
-                rs1 := Instr(19 downto 15);
-                rs2 := Instr(24 downto 20);
+                rd := to_integer(unsigned(Instr(11 downto 7)));
+                rs1 := to_integer(unsigned(Instr(19 downto 15)));
+                rs2 := to_integer(unsigned(Instr(24 downto 20)));
                 imm(0) := Instr(7);
                 imm(4 downto 1) := Instr(11 downto 8);
                 imm(10 downto 5) := Instr(30 downto 25);
@@ -167,12 +167,12 @@ begin
             -----------------------------------------------------------------------
             -- U-Type Instructions
             when OP_LUI => 
-                rd := Instr(11 downto 7);
+                rd := to_integer(unsigned(Instr(11 downto 7)));
                 imm(31 downto 12) := Instr(31 downto 12);
                 imm(11 downto 0) := (others => '0');
                 null;                                       -- LUI to be implemented
             when OP_AUIPC   => 
-                rd := Instr(11 downto 7);
+                rd := to_integer(unsigned(Instr(11 downto 7)));
                 imm(31 downto 12) := Instr(31 downto 12);
                 imm(11 downto 0) := (others => '0');
                 null;                                       -- AUIPC to be implemented
@@ -180,7 +180,7 @@ begin
             -----------------------------------------------------------------------
             -- J-Type Instructions
             when OP_JAL => 
-                rd := Instr(11 downto 7);
+                rd := to_integer(unsigned(Instr(11 downto 7)));
                 imm(0) := '0';
                 imm(4 downto 1) := Instr(24 downto 21);
                 imm(10 downto 5) := Instr(30 downto 25);
@@ -193,8 +193,8 @@ begin
             -- B-Type Instructions
             when OP_Branch =>
                 func3 := Instr(14 downto 12);
-                rs1 := Instr(19 downto 15);
-                rs2 := Instr(24 downto 20);
+                rs1 := to_integer(unsigned(Instr(19 downto 15)));
+                rs2 := to_integer(unsigned(Instr(24 downto 20)));
                 imm(0) := '0';
                 imm(4 downto 1) := Instr(11 downto 8);
                 imm(10 downto 5) := Instr(30 downto 25);
