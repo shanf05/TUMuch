@@ -9,9 +9,9 @@ package exec_procedures_pack is
     procedure LH_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType);
     procedure LHU_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType);
     procedure LW_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType);
-    procedure SB_exec (rd, rs1, rs2 : RegAddrType; Reg : inout RegType; Mem : inout MemType);
-    procedure SH_exec (rd, rs1, rs2 : RegAddrType; Reg : inout RegType; Mem : inout MemType);
-    procedure SW_exec (rd, rs1, rs2 : RegAddrType; Reg : inout RegType; Mem : inout MemType);
+    procedure SB_exec (rs1, rs2 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType);
+    procedure SH_exec (rs1, rs2 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType);
+    procedure SW_exec (rs1, rs2 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType);
     procedure ADD_exec (rd, rs1, rs2 : RegAddrType; Reg : inout RegType; Mem : inout MemType);
     procedure SUB_exec (rd, rs1, rs2 : RegAddrType; Reg : inout RegType; Mem : inout MemType);
     procedure ADDI_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType);
