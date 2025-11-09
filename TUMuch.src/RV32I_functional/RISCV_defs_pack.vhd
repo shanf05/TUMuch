@@ -5,10 +5,8 @@ package defs_pack is
     constant data_width : natural := 32;
     
     -------- OBJECT SIZES --------    
-    -- PC, addr wire of bus, memory depth
-    constant AddrSize     : integer := 16;
-    constant ByteAddrSize : integer := 2;
-    constant MemAddrSize  : integer := AddrSize - ByteAddrSize;
+    -- memory sizes    
+    constant MemAddrSize : integer := 16; -- untersten 2 bit für Byte adressierung
     
     -- instruction size
     constant InstrSize : integer := 32; -- Achtung: hier weicht von Folie ab! wahrscheinlich Schreibfehler
@@ -21,7 +19,6 @@ package defs_pack is
     constant RegAddrSize : integer := 5;
         
     -------- OBJECT TYPES --------    
-    subtype AddrType        is bit_vector (AddrSize-1 downto 0);
     subtype InstrType       is bit_vector (InstrSize-1 downto 0);
     subtype BusDataType     is bit_vector (BusDataSize-1 downto 0);
     subtype RegDataType     is bit_vector (RegDataSize-1 downto 0);
