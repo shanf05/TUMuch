@@ -9,34 +9,22 @@ package body exec_procedures_pack is
 -- ERSTELLT VON JEONGJOO LIM; Teil Orange; LB LBU LH LHU LW SB SH SW ADD SUB ADDI
     procedure LB_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType) is
         variable temp : signed(RegDataSize-1 downto 0);
-    begin
-        if rs1 mod 4 /= 0 then
-            report "Address misalignment -- LB_exec"
-            severity warning;
-        end if;
-        
-        temp := signed(Mem(rs1 + to_integer(signed(imm))));
-        
+    begin        
+        temp := signed(Mem(rs1 + to_integer(signed(imm))));        
         Reg(rd) := bit_vector(temp);
     end procedure;
     
     procedure LBU_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType) is
         variable temp : unsigned(RegDataSize-1 downto 0);
-    begin
-        if rs1 mod 4 /= 0 then
-            report "Address misalignment -- LBU_exec"
-            severity warning;
-        end if;
-        
+    begin    
         temp := unsigned(Mem(rs1 + to_integer(signed(imm))));
-        
         Reg(rd) := bit_vector(temp);
     end procedure;
     
     procedure LH_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType) is
         variable temp : signed(RegDataSize-1 downto 0);
     begin
-        if rs1 mod 4 /= 0 then
+        if rs1 + to_integer(signed(imm)) mod 2 /= 0 then
             report "Address misalignment -- LH_exec"
             severity warning;
         end if;
@@ -50,7 +38,7 @@ package body exec_procedures_pack is
     procedure LHU_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType) is
         variable temp : unsigned(RegDataSize-1 downto 0);
     begin
-        if rs1 mod 4 /= 0 then
+        if rs1 + to_integer(signed(imm)) mod 2 /= 0 then
             report "Address misalignment -- LHU_exec"
             severity warning;
         end if;
@@ -64,7 +52,7 @@ package body exec_procedures_pack is
     procedure LW_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType) is
         variable temp : signed(RegDataSize-1 downto 0);
     begin
-        if rs1 mod 4 /= 0 then
+        if rs1 + to_integer(signed(imm)) mod 4 /= 0 then
             report "Address misalignment -- LB_exec"
             severity warning;
         end if;
@@ -79,17 +67,12 @@ package body exec_procedures_pack is
     
     procedure SB_exec (rs1, rs2 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType) is
     begin
-        if rs1 mod 4 /= 0 then
-            report "Address misalignment -- SB_exec"
-            severity warning;
-        end if;
-        
         Mem(rs1 + to_integer(signed(imm))) := Reg(rs2)(7 downto 0);
     end procedure;
     
     procedure SH_exec (rs1, rs2 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType) is
     begin
-        if rs1 mod 4 /= 0 then
+        if rs1 + to_integer(signed(imm)) mod 2 /= 0 then
             report "Address misalignment -- SH_exec"
             severity warning;
         end if;
@@ -100,7 +83,7 @@ package body exec_procedures_pack is
     
     procedure SW_exec (rs1, rs2 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType) is
     begin
-        if rs1 mod 4 /= 0 then
+        if rs1 + to_integer(signed(imm)) mod 4 /= 0 then
             report "Address misalignment -- SW_exec"
             severity warning;
         end if;
