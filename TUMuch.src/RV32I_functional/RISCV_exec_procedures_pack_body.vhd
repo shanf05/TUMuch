@@ -15,12 +15,7 @@ package body exec_procedures_pack is
             severity warning;
         end if;
         
-        case (rs1 + to_integer(signed(imm))) mod 4 is
-            when 0 => temp := signed(Mem((rs1 + to_integer(signed(imm))) / 4) (7 downto 0));
-            when 1 => temp := signed(Mem((rs1 + to_integer(signed(imm))) / 4) (15 downto 8));
-            when 2 => temp := signed(Mem((rs1 + to_integer(signed(imm))) / 4) (23 downto 16));
-            when 3 => temp := signed(Mem((rs1 + to_integer(signed(imm))) / 4) (31 downto 24));
-        end case;
+        temp := signed(Mem(rs1 + to_integer(signed(imm))));
         
         Reg(rd) := bit_vector(temp);
     end procedure;
@@ -33,12 +28,7 @@ package body exec_procedures_pack is
             severity warning;
         end if;
         
-        case (rs1 + to_integer(signed(imm))) mod 4 is
-            when 0 => temp := unsigned(Mem((rs1 + to_integer(signed(imm))) / 4) (7 downto 0));
-            when 1 => temp := unsigned(Mem((rs1 + to_integer(signed(imm))) / 4) (15 downto 8));
-            when 2 => temp := unsigned(Mem((rs1 + to_integer(signed(imm))) / 4) (23 downto 16));
-            when 3 => temp := unsigned(Mem((rs1 + to_integer(signed(imm))) / 4) (31 downto 24));
-        end case;
+        temp := unsigned(Mem(rs1 + to_integer(signed(imm))));
         
         Reg(rd) := bit_vector(temp);
     end procedure;
@@ -51,14 +41,8 @@ package body exec_procedures_pack is
             severity warning;
         end if;
         
-        case (rs1 + to_integer(signed(imm))) mod 4 is
-            when 0 => temp := signed(Mem((rs1 + to_integer(signed(imm))) / 4) (15 downto 0));
-            when 2 => temp := signed(Mem((rs1 + to_integer(signed(imm))) / 4) (31 downto 16));
-            when others =>
-                assert FALSE
-                report "Illegal Imm -- LH_exec"
-                severity error;
-        end case;
+        temp(31 downto 8)   := signed(Mem(rs1 + to_integer(signed(imm)) + 1));
+        temp(7 downto 0)    := signed(Mem(rs1 + to_integer(signed(imm))));
         
         Reg(rd) := bit_vector(temp);
     end procedure;
@@ -71,14 +55,8 @@ package body exec_procedures_pack is
             severity warning;
         end if;
         
-        case (rs1 + to_integer(signed(imm))) mod 4 is
-            when 0 => temp := unsigned(Mem((rs1 + to_integer(signed(imm))) / 4) (15 downto 0));
-            when 2 => temp := unsigned(Mem((rs1 + to_integer(signed(imm))) / 4) (31 downto 16));
-            when others =>
-                assert FALSE
-                report "Illegal Imm -- LHU_exec"
-                severity error;
-        end case;
+        temp(31 downto 8)   := unsigned(Mem(rs1 + to_integer(signed(imm)) + 1));
+        temp(7 downto 0)    := unsigned(Mem(rs1 + to_integer(signed(imm))));
         
         Reg(rd) := bit_vector(temp);
     end procedure;
@@ -91,13 +69,10 @@ package body exec_procedures_pack is
             severity warning;
         end if;
         
-        case (rs1 + to_integer(signed(imm))) mod 4 is
-            when 0 => temp := signed(Mem((rs1 + to_integer(signed(imm))) / 4));
-            when others =>
-                assert FALSE
-                report "Illegal Imm -- LB_exec"
-                severity error;
-        end case;
+        temp(31 downto 24)  := signed(Mem(rs1 + to_integer(signed(imm)) + 3));
+        temp(24 downto 16)  := signed(Mem(rs1 + to_integer(signed(imm)) + 2));
+        temp(15 downto 8)   := signed(Mem(rs1 + to_integer(signed(imm)) + 1));
+        temp(7 downto 0)    := signed(Mem(rs1 + to_integer(signed(imm))));
         
         Reg(rd) := bit_vector(temp);
     end procedure;
@@ -109,13 +84,7 @@ package body exec_procedures_pack is
             severity warning;
         end if;
         
-        case (rs1 + to_integer(signed(imm))) mod 4 is
-            when 0 => Mem((rs1 + to_integer(signed(imm))) / 4) (7 downto 0)     := Reg(rs2)(7 downto 0);
-            when 1 => Mem((rs1 + to_integer(signed(imm))) / 4) (15 downto 8)    := Reg(rs2)(7 downto 0);
-            when 2 => Mem((rs1 + to_integer(signed(imm))) / 4) (23 downto 16)   := Reg(rs2)(7 downto 0);
-            when 3 => Mem((rs1 + to_integer(signed(imm))) / 4) (32 downto 24)   := Reg(rs2)(7 downto 0);
-        end case;
-        
+        Mem(rs1 + to_integer(signed(imm))) := Reg(rs2)(7 downto 0);
     end procedure;
     
     procedure SH_exec (rs1, rs2 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType) is
@@ -125,15 +94,8 @@ package body exec_procedures_pack is
             severity warning;
         end if;
         
-        case (rs1 + to_integer(signed(imm))) mod 4 is
-            when 0 => Mem((rs1 + to_integer(signed(imm))) / 4) (15 downto 0)     := Reg(rs2)(15 downto 0);
-            when 2 => Mem((rs1 + to_integer(signed(imm))) / 4) (31 downto 16)   := Reg(rs2)(15 downto 0);
-            when others =>
-                assert FALSE
-                report "Illegal Imm -- SH_exec"
-                severity error;
-        end case;
-        
+        Mem(rs1 + to_integer(signed(imm)) + 1)  := Reg(rs2)(15 downto 8);
+        Mem(rs1 + to_integer(signed(imm)))      := Reg(rs2)(7 downto 0);        
     end procedure;
     
     procedure SW_exec (rs1, rs2 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType) is
@@ -143,13 +105,10 @@ package body exec_procedures_pack is
             severity warning;
         end if;
         
-        case (rs1 + to_integer(signed(imm))) mod 4 is
-            when 0 => Mem((rs1 + to_integer(signed(imm))) / 4) := Reg(rs2);
-            when others =>
-                assert FALSE
-                report "Illegal Imm -- SW_exec"
-                severity error;
-        end case;
+        Mem(rs1 + to_integer(signed(imm)) + 3)  := Reg(rs2)(31 downto 24);
+        Mem(rs1 + to_integer(signed(imm)) + 2)  := Reg(rs2)(23 downto 16);
+        Mem(rs1 + to_integer(signed(imm)) + 1)  := Reg(rs2)(15 downto 8);
+        Mem(rs1 + to_integer(signed(imm)))      := Reg(rs2)(7 downto 0);
     end procedure;
     
     procedure ADD_exec (rd, rs1, rs2 : RegAddrType; Reg : inout RegType; Mem : inout MemType) is
@@ -169,7 +128,7 @@ package body exec_procedures_pack is
     procedure ADDI_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType) is
         variable temp : signed(RegDataSize-1 downto 0);
     begin
-        temp := signed(Reg(rs1)) + resize(signed(imm), RegDataSize);
+        temp := signed(Reg(rs1)) + signed(imm);
         Reg(rd) := bit_vector(temp);
     end procedure;
     
