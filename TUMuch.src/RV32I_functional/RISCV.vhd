@@ -5,7 +5,7 @@ library work;
 use work.defs_pack.all;
 use work.inst_encoding_pack.all;
 use work.inst_layout_pack.all;
-
+use work.exec_procedures_pack.all; 
 
 
 entity RISCV is
@@ -141,6 +141,13 @@ begin
                             report "Illegal Operation -- OP-LOAD"
                             severity error;
                 end case;
+            when OP_JALR => 
+                rd := to_integer(unsigned(Instr(11 downto 7)));
+                rs1 := to_integer(unsigned(Instr(19 downto 15)));
+                imm(4 downto 1) := Instr(24 downto 21);
+                imm(10 downto 5) := Instr(30 downto 25);
+                imm(31 downto 11) := (others => Instr(31));                
+                JALR_exec(rs1, rd, imm, mem, reg, pc);
             -- end I-Type Instructions
             -----------------------------------------------------------------------
             -- S-Type Instructions
@@ -187,7 +194,7 @@ begin
                 imm(11) := Instr(20);
                 imm(19 downto 12) := Instr(19 downto 12);
                 imm(31 downto 20) := (others => Instr(31));
-                null;                                       -- JAL to be implemented
+                JAL_exec(rd, imm, mem, reg, pc);
             -- end J-Type Instructions
             -----------------------------------------------------------------------
             -- B-Type Instructions
@@ -202,12 +209,12 @@ begin
                 imm(31 downto 12) := (others => Instr(31));
                 
                 case func3 is
-                    when F3_BEQ =>  null;               -- BEQ to be implemented
-                    when F3_BNE =>  null;               -- BNE to be implemented
-                    when F3_BLT =>  null;               -- BLT to be implemented
-                    when F3_BGE =>  null;               -- BGE to be implemented
-                    when F3_BLTU =>  null;              -- BLTU to be implemented
-                    when F3_BGEU =>  null;              -- BGEU to be implemented
+                    when F3_BEQ  => BEQ_exec (rs1, rs2, imm, mem, reg, pc);               
+                    when F3_BNE  => BNE_exec (rs1, rs2, imm, mem, reg, pc);               
+                    when F3_BLT  => BLT_exec (rs1, rs2, imm, mem, reg, pc);
+                    when F3_BGE  => BGE_exec (rs1, rs2, imm, mem, reg, pc);
+                    when F3_BLTU => BLTU_exec (rs1, rs2, imm, mem, reg, pc);
+                    when F3_BGEU => BGEU_exec (rs1, rs2, imm, mem, reg, pc);
                     when others =>                      -- covers invalid cases
                         assert FALSE 
                         report "Illegal Operation -- OP_BRANCH" 

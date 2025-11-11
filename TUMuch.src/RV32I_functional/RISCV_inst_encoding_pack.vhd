@@ -46,10 +46,7 @@ package inst_encoding_pack is
     function BLTU_code (rs1, rs2 : RegAddrType; imm : RegDataType) return InstrType; --imm[12] imm[10:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:1] imm[11] opcode[6:0]
     function BGE_code  (rs1, rs2 : RegAddrType; imm : RegDataType) return InstrType; --imm[12] imm[10:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:1] imm[11] opcode[6:0]   
     function BGEU_code (rs1, rs2 : RegAddrType; imm : RegDataType) return InstrType; --imm[12] imm[10:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:1] imm[11] opcode[6:0]
-    
-    --function BGT_code(r1 : RegAddrType) return InstrType;     --anscheinend nicht wichtig
-    --function BGTU_code(r1 : RegAddrType) return InstrType;    --anscheinend nicht wichtig
-    
+        
     --load instructions: 
     function LW_code  (rs1, rd : RegAddrType; imm : RegDataType) return InstrType; --imm[11:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
     function LH_code  (rs1, rd : RegAddrType; imm : RegDataType) return InstrType; --imm[11:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
