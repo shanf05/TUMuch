@@ -21,7 +21,6 @@ package mem_pack is
     --auxiliary functions
     function hex_string_to_dec (s : string) return integer;
     
-    
 end mem_pack;    
     
     
@@ -33,28 +32,28 @@ package body mem_pack is
     variable result : integer := 0;
     begin
     for i in s'range loop
-    case s(i) is
-        when '0' => value := 0;
-        when '1' => value := 1;
-        when '2' => value := 2;
-        when '3' => value := 3;
-        when '4' => value := 4;
-        when '5' => value := 5;
-        when '6' => value := 6;
-        when '7' => value := 7;
-        when '8' => value := 8;
-        when '9' => value := 9;
-        when 'A' | 'a' => value := 10;
-        when 'B' | 'b' => value := 11;
-        when 'C' | 'c' => value := 12;
-        when 'D' | 'd' => value := 13;
-        when 'E' | 'e' => value := 14;
-        when 'F' | 'f' => value := 15;
-        when others => assert false report "Invalid Operation -- Invalid Address" severity error;
-            value := 0;
-    end case;
+        case s(i) is
+            when '0' => value := 0;
+            when '1' => value := 1;
+            when '2' => value := 2;
+            when '3' => value := 3;
+            when '4' => value := 4;
+            when '5' => value := 5;
+            when '6' => value := 6;
+            when '7' => value := 7;
+            when '8' => value := 8;
+            when '9' => value := 9;
+            when 'A' | 'a' => value := 10;
+            when 'B' | 'b' => value := 11;
+            when 'C' | 'c' => value := 12;
+            when 'D' | 'd' => value := 13;
+            when 'E' | 'e' => value := 14;
+            when 'F' | 'f' => value := 15;
+            when others => assert false report "Invalid Operation -- Invalid Address" severity error;
+                value := 0;
+        end case;
     
-    result := 16 * result + value;
+        result := 16 * result + value;
     end loop;
     return result;
  
@@ -255,11 +254,11 @@ package body mem_pack is
             elsif mnemonic = LBU_mnemonic then instr := LBU_Code(rs1 => rs1, rd => rd, imm => imm);
             
             --store instructions
-            elsif mnemonic = SW_mnemonic then instr := SW_Code(rs1 => rs1, rs2 => rs2, rd => rd, imm => imm);
+            elsif mnemonic = SW_mnemonic then instr := SW_Code(rs1 => rs1, rs2 => rd, imm => imm);
             
-            elsif mnemonic = SH_mnemonic then instr := SH_Code(rs1 => rs1, rs2 => rs2, rd => rd, imm => imm);
+            elsif mnemonic = SH_mnemonic then instr := SH_Code(rs1 => rs1, rs2 => rd, imm => imm);
             
-            elsif mnemonic = SB_mnemonic then instr := SB_Code(rs1 => rs1, rs2 => rs2, rd => rd, imm => imm);
+            elsif mnemonic = SB_mnemonic then instr := SB_Code(rs1 => rs1, rs2 => rd, imm => imm);
             
             --store data (constants) at specific memory address range
             --elsif mnemonic = VAL_mnemonic then instr := VAL_Code(imm => imm) 
