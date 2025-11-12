@@ -55,9 +55,9 @@ package inst_encoding_pack is
     function LBU_code (rs1, rd : RegAddrType; imm : RegDataType) return InstrType; --imm[11:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
     
     --store instructions:
-    function SW_code (rs1, rs2, rd : RegAddrType; imm : RegDataType) return InstrType; --imm[11:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:0] opcode[6:0]
-    function SH_code (rs1, rs2, rd : RegAddrType; imm : RegDataType) return InstrType; --imm[11:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:0] opcode[6:0]
-    function SB_code (rs1, rs2, rd : RegAddrType; imm : RegDataType) return InstrType; --imm[11:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:0] opcode[6:0]   
+    function SW_code (rs1, rs2 : RegAddrType; imm : RegDataType) return InstrType; --imm[11:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:0] opcode[6:0]
+    function SH_code (rs1, rs2 : RegAddrType; imm : RegDataType) return InstrType; --imm[11:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:0] opcode[6:0]
+    function SB_code (rs1, rs2 : RegAddrType; imm : RegDataType) return InstrType; --imm[11:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:0] opcode[6:0]   
    
 end package inst_encoding_pack;
 

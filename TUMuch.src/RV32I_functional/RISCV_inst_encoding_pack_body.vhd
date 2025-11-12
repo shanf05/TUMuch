@@ -193,19 +193,19 @@ package body inst_encoding_pack is
     return imm(11 downto 0) & bit_vector(to_unsigned(rs1,5)) & F3_LBU & bit_vector(to_unsigned(rd,5)) & OP_LOAD;
     end function; --imm[11:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
     
-    function SW_code  (rs1, rs2, rd : RegAddrType; imm : RegDataType) return InstrType is
+    function SW_code  (rs1, rs2 : RegAddrType; imm : RegDataType) return InstrType is
     begin
-    return imm(11 downto 5) & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs2,5)) & F3_SW & imm(4 downto 0) & OP_LOAD;
+    return imm(11 downto 5) & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_SW & imm(4 downto 0) & OP_LOAD;
     end function; --imm[11:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:0] opcode[6:0]
     
-    function SH_code  (rs1, rs2, rd : RegAddrType; imm : RegDataType) return InstrType is
+    function SH_code  (rs1, rs2 : RegAddrType; imm : RegDataType) return InstrType is
     begin
-    return imm(11 downto 5) & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs2,5)) & F3_SH & imm(4 downto 0) & OP_LOAD;
+    return imm(11 downto 5) & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_SH & imm(4 downto 0) & OP_LOAD;
     end function; --imm[11:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:0] opcode[6:0]
     
-    function SB_code  (rs1, rs2, rd : RegAddrType; imm : RegDataType) return InstrType is
+    function SB_code  (rs1, rs2 : RegAddrType; imm : RegDataType) return InstrType is
     begin
-    return imm(11 downto 5) & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs2,5)) & F3_SB & imm(4 downto 0) & OP_LOAD;
+    return imm(11 downto 5) & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_SB & imm(4 downto 0) & OP_LOAD;
     end function; --imm[11:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:0] opcode[6:0]   
     
 end package body inst_encoding_pack;
