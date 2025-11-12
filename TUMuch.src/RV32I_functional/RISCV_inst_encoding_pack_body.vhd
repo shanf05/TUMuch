@@ -83,7 +83,7 @@ package body inst_encoding_pack is
     
     function AND_code  (rs1, rs2, rd : RegAddrType) return InstrType is
     begin
-    return F7_ADD & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_ADD & bit_vector(to_unsigned(rd,5)) & OP_OP;
+    return F7_AND & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_AND & bit_vector(to_unsigned(rd,5)) & OP_OP;
     end function; --funct7[6:0] rs2[4:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
     
     function OR_code   (rs1, rs2, rd : RegAddrType) return InstrType is

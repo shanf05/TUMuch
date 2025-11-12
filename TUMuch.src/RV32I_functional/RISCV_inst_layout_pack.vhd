@@ -48,6 +48,7 @@ package inst_layout_pack is
     constant F3_JALR : Funct3 := "000";
     
     constant F7_ADD : Funct7 := "0000000";
+    constant F7_AND : Funct7 := "0000000";
     constant F7_SUB : Funct7 := "0100000";
     constant F7_SRL : Funct7 := "0000000";    
     constant F7_SRA : Funct7 := "0100000";

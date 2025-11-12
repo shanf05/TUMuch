@@ -49,13 +49,91 @@ package body trace_pack is
     begin
         case instr(6 downto 0) is            
             when OP_AUIPC => return AUIPC_mnemonic;
-            when OP_LUI  => return LUI_mnemonic;                
-            when OP_JAL  => return JAL_mnemonic;
-            when OP_JALR => return JALR_mnemonic;   
-            when OP_IMM => 
-                return "ERROR";   --not yet implemented                          
+            when OP_LUI   => return LUI_mnemonic;                
+            when OP_JAL   => return JAL_mnemonic;
+            when OP_JALR  => return JALR_mnemonic;   
+            when OP_IMM   => 
+                case instr(14 downto 12) is     
+                when F3_ADD  => return ADDI_mnemonic;
+                when F3_SLT  => return SLTI_mnemonic;
+                when F3_SLTU => return SLTIU_mnemonic;
+                when F3_AND  => return ANDI_mnemonic;
+                when F3_OR   => return ORI_mnemonic;
+                when F3_XOR  => return XORI_mnemonic;
+                when F3_SLL  => return SLLI_mnemonic;
+                when F3_SRL | F3_SRA  => 
+                    if    (Instr(31 downto 25) = F7_SRL) then return SRLI_mnemonic;
+                    elsif (Instr(31 downto 25) = F7_SRA) then return SRAI_mnemonic;
+                    elsif (Instr(31 downto 25) = F7_SLL) then return SLLI_mnemonic;
+                    else                                     
+                        assert FALSE;
+                        return "ERROR";
+                    end if;                           
+                when others  => 
+                    assert FALSE;
+                    return "ERROR";
+                end case;                                            
             when OP_OP => 
-                return "ERROR";   --not yet implemented           
+                case instr(14 downto 12) is     
+                when F3_ADD  => 
+                    if    (Instr(31 downto 25) = F7_ADD) then return ADD_mnemonic;
+                    elsif (Instr(31 downto 25) = F7_SUB) then return SUB_mnemonic;
+                    else                                      
+                        assert FALSE;
+                        return "ERROR";
+                    end if;
+                when F3_SLT  => 
+                    if (Instr(31 downto 25) = F7_SLT) then return SLT_mnemonic;                    
+                    else
+                        assert FALSE;                                   
+                        return "ERROR"; 
+                    end if;
+                when F3_SLTU => 
+                    if (Instr(31 downto 25) = F7_SLT) then return SLTU_mnemonic;                    
+                    else                                   
+                        assert FALSE;
+                        return "ERROR"; 
+                    end if;
+                when F3_AND  => 
+                    if (Instr(31 downto 25) = F7_AND) then return AND_mnemonic;                    
+                    else                                   
+                        assert FALSE;
+                        return "ERROR"; 
+                    end if; 
+                when F3_OR   => 
+                    if (Instr(31 downto 25) = F7_OR) then return OR_mnemonic;                    
+                    else                                  
+                        assert FALSE;
+                        return "ERROR"; 
+                    end if; 
+                when F3_XOR  => 
+                    if (Instr(31 downto 25) = F7_XOR) then return XOR_mnemonic;                    
+                    else   
+                        assert FALSE;                                   
+                        return "ERROR"; 
+                    end if; 
+                when F3_SLL  => 
+                    if (Instr(31 downto 25) = F7_SLL) then return SLL_mnemonic;                    
+                    else                                   
+                        assert FALSE;
+                        return "ERROR"; 
+                    end if; 
+                when F3_SRL  => 
+                    if (Instr(31 downto 25) = F7_SRL) then return SRL_mnemonic;                    
+                    else                                   
+                        assert FALSE;
+                        return "ERROR"; 
+                    end if; 
+                when F3_SRA  =>  
+                    if (Instr(31 downto 25) = F7_SRA) then return SRA_mnemonic;                    
+                    else                                   
+                        assert FALSE;
+                        return "ERROR"; 
+                    end if;                 
+                when others  => 
+                    assert FALSE;
+                    return "ERROR";
+                end case;                  
             when OP_BRANCH => 
                 case instr(14 downto 12) is     
                 when F3_BEQ  => return BEQ_mnemonic;
@@ -64,7 +142,9 @@ package body trace_pack is
                 when F3_BLTU => return BLTU_mnemonic;
                 when F3_BGE  => return BGEU_mnemonic;
                 when F3_BGEU => return BGEU_mnemonic;
-                when others  => return "ERROR";
+                when others  => 
+                    assert FALSE;
+                    return "ERROR";
                 end case;
             when OP_LOAD => 
                 case instr(14 downto 12) is     
@@ -73,20 +153,22 @@ package body trace_pack is
                 when F3_LH  => return LH_mnemonic;
                 when F3_LHU => return LHU_mnemonic;
                 when F3_LW  => return LW_mnemonic;
-                when others => return "ERROR";
+                when others => 
+                    assert FALSE;
+                    return "ERROR";
                 end case;
             when OP_STORE => 
                 case instr(14 downto 12) is     
                 when F3_SB  => return SB_mnemonic;
                 when F3_SH  => return SH_mnemonic;
                 when F3_SW  => return SW_mnemonic;                
-                when others => return "ERROR";     
+                when others => 
+                    assert FALSE;
+                    return "ERROR";     
                 end case;        
             when others =>
-                assert FALSE
-                report "Illegal command in cmd_image"
-                severity warning;
-                return "";
+                assert FALSE;               
+                return "ERROR";
         end case;
     end cmd_image; 
     
