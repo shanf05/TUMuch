@@ -184,11 +184,12 @@ package body trace_pack is
     
     function hex_image_addr(addr : integer) return string is
         constant hex_table : string(1 to 16):= "0123456789ABCDEF";
-        variable result : string( 1 to 3 );        
+        variable result : string( 1 to 4 );        
     begin        
-        result(3):=hex_table(addr mod 16 + 1);
-        result(2):=hex_table((addr / 16) mod 16 + 1);
-        result(1):=hex_table(addr / 256 + 1);
+        result(4):=hex_table(addr mod 16 + 1);
+        result(3):=hex_table((addr / 16) mod 16 + 1);
+        result(2):=hex_table((addr / 256) mod 16 + 1);
+        result(1):=hex_table((addr / 4096) mod 16 + 1);
         return result;
     end hex_image_addr;
     
