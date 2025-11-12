@@ -139,32 +139,32 @@ package body inst_encoding_pack is
     --conditional branches:
     function BEQ_code  (rs1, rs2 : RegAddrType; imm : RegDataType) return InstrType is
     begin
-    return imm(12) & imm(10 downto 5) & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_BEQ & imm(4 downto 1) & OP_BRANCH;
+    return imm(12) & imm(10 downto 5) & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_BEQ & imm(4 downto 1) & imm(11) & OP_BRANCH;
     end function; --imm[12] imm[10:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:1] imm[11] opcode[6:0]
     
     function BNE_code  (rs1, rs2 : RegAddrType; imm : RegDataType) return InstrType is
     begin
-    return imm(12) & imm(10 downto 5) & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_BNE & imm(4 downto 1) & OP_BRANCH;
+    return imm(12) & imm(10 downto 5) & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_BNE & imm(4 downto 1) & imm(11) & OP_BRANCH;
     end function; --imm[12] imm[10:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:1] imm[11] opcode[6:0]
     
     function BLT_code  (rs1, rs2 : RegAddrType; imm : RegDataType) return InstrType is
     begin
-    return imm(12) & imm(10 downto 5) & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_BLT & imm(4 downto 1) & OP_BRANCH;
+    return imm(12) & imm(10 downto 5) & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_BLT & imm(4 downto 1) & imm(11) & OP_BRANCH;
     end function; --imm[12] imm[10:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:1] imm[11] opcode[6:0]
     
     function BLTU_code (rs1, rs2 : RegAddrType; imm : RegDataType) return InstrType is
     begin
-    return imm(12) & imm(10 downto 5) & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_BLTU & imm(4 downto 1) & OP_BRANCH;
+    return imm(12) & imm(10 downto 5) & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_BLTU & imm(4 downto 1) & imm(11) & OP_BRANCH;
     end function; --imm[12] imm[10:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:1] imm[11] opcode[6:0]
     
     function BGE_code  (rs1, rs2 : RegAddrType; imm : RegDataType) return InstrType is
     begin
-    return imm(12) & imm(10 downto 5) & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_BGE & imm(4 downto 1) & OP_BRANCH;
+    return imm(12) & imm(10 downto 5) & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_BGE & imm(4 downto 1) & imm(11) & OP_BRANCH;
     end function; --imm[12] imm[10:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:1] imm[11] opcode[6:0]   
     
     function BGEU_code (rs1, rs2 : RegAddrType; imm : RegDataType) return InstrType is
     begin
-    return imm(12) & imm(10 downto 5) & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_BGEU & imm(4 downto 1) & OP_BRANCH;
+    return imm(12) & imm(10 downto 5) & bit_vector(to_unsigned(rs2,5)) & bit_vector(to_unsigned(rs1,5)) & F3_BGEU & imm(4 downto 1) & imm(11) & OP_BRANCH;
     end function; --imm[12] imm[10:5] rs2[4:0] rs1[4:0] funct3[2:0] imm[4:1] imm[11] opcode[6:0]
     
     --load and store instructions:
