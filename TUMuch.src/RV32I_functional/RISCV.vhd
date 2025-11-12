@@ -7,22 +7,22 @@ use work.inst_encoding_pack.all;
 use work.inst_layout_pack.all;
 use work.exec_procedures_pack.all; 
 use work.trace_pack.all; 
+use work.mem_pack.all;
 use std.textio.all; 
 
 entity RISCV is
 end RISCV;
 
 architecture functional of RISCV is
-    file TraceFile : Text is out "Trace";
-    shared variable l : line;
+    file TraceFile : Text is out "trace.txt"; 
 begin
     print_header(TraceFile);
-    print_tail(TraceFile);
+    print_tail(TraceFile);    
     process
-        variable PC    : MemAddrType;
+        variable PC    : MemAddrType := 0;
         variable Instr : InstrType := (others=>'0');
         variable Reg   : RegType := (others=>(others=>'0'));
-        variable Mem   : MemType := (others=>(others=>'0'));
+        variable Mem   : MemType := init_memory("asm_input.txt");
         
         variable op_code : OpCode:= "0000000";
         variable func3   : Funct3;
@@ -32,11 +32,12 @@ begin
         variable funct7  : Funct7;
         variable shamt   : bit_vector(4 downto 0);                   -- only used for modified I-Type Instruction
         variable imm     : ImmType := (others => '0');     
+        variable l       : line;
     begin 
         -- fetch instruction
         Instr := Mem(PC);
         op_code := Instr(6 downto 0);
-        
+            
         if (PC >= 2**MemAddrSize-1) then PC := 0;
         --else PC := PC + 4;   note severin: ich würde das bei den einzelnen executions machen, weil nicht immer +4 (z.b. jumps etc)
         end if;
