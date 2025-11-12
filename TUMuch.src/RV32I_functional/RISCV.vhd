@@ -94,7 +94,7 @@ begin
                 rd := to_integer(unsigned(Instr(11 downto 7)));
                 rs1 := to_integer(unsigned(Instr(19 downto 15)));
                 imm(10 downto 0) := Instr(30 downto 20);
-                imm(31 downto 11) := (others => Instr(20));
+                imm(31 downto 11) := (others => Instr(31));
                 
                 case func3 is
                     -- basic I-Type
@@ -146,8 +146,7 @@ begin
             when OP_JALR => 
                 rd := to_integer(unsigned(Instr(11 downto 7)));
                 rs1 := to_integer(unsigned(Instr(19 downto 15)));
-                imm(4 downto 1) := Instr(24 downto 21);
-                imm(10 downto 5) := Instr(30 downto 25);
+                imm(10 downto 1) := Instr(30 downto 21);
                 imm(31 downto 11) := (others => Instr(31));      
                 write_instruction_trace(l=>l, reg=>reg, instr=>instr, pc=>pc);          
                 JALR_exec(rs1, rd, imm, mem, reg, pc);               
@@ -160,10 +159,9 @@ begin
                 rd := to_integer(unsigned(Instr(11 downto 7)));
                 rs1 := to_integer(unsigned(Instr(19 downto 15)));
                 rs2 := to_integer(unsigned(Instr(24 downto 20)));
-                imm(0) := Instr(7);
-                imm(4 downto 1) := Instr(11 downto 8);
+                imm(4 downto 0) := Instr(11 downto 7);
                 imm(10 downto 5) := Instr(30 downto 25);
-                imm(31 downto 11) := (others => Instr(20));
+                imm(31 downto 11) := (others => Instr(31));
                 
                 case func3 is
                     when F3_SB  => null;                    -- SB to be implemented
