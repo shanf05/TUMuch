@@ -198,8 +198,107 @@ package body exec_procedures_pack is
         end if; 
         pc := pc + to_integer(offset);                                                      
     end procedure;
+
+    ---------------------------------------
+-- erstellt von Max Biricz; Teil Lila; LUI AUIPC XORI ORI ANDI SLLI SRLI SRAI SLTI SLTIU
+     procedure LUI_exec(rd : RegAddrType; imm : ImmType; mem : inout MemType; Reg : inout RegType; pc : inout MemAddrType) is
+    begin
+        Reg(rd) := imm;             --no concatenation with X"000" -> already implemented in RISCV.vhd execute case
+    end procedure LUI_exec;
     
-     
+    procedure AUIPC_exec(rd : RegAddrType; imm : ImmType; mem : inout MemType; reg : inout RegType; pc : inout MemAddrType) is
+    begin
+        Reg(rd) := bit_vector(to_unsigned(pc + to_integer(signed(imm)), 32));
+    end procedure AUIPC_exec;
+    
+    
+    procedure XORI_exec(rs1, rd : RegAddrType; imm : ImmType; mem : inout MemType; reg : inout RegType; pc : inout MemAddrType) is
+    variable temp : RegDatatype;
+    begin
+       temp := Reg(rs1) xor imm;       --no concatenation with X"000" -> already implemented in RISCV.vhd execute case
+       Reg(rd) := bit_vector(temp);
+        
+    end procedure XORI_exec;
+    
+    procedure ORI_exec(rs1, rd : RegAddrType; imm : Immtype; mem : inout MemType; reg : inout RegType; pc : inout MemAddrType) is
+    variable temp : RegDataType;
+    begin
+       temp := Reg(rs1) or imm;
+       Reg(rd) := bit_vector(temp);
+        
+    end procedure ORI_exec;
+    
+    
+    procedure ANDI_exec(rs1, rd : RegAddrType; imm : ImmType; mem : inout MemType; reg : inout RegType; pc : inout MemAddrType) is
+    variable temp : RegDatatype;
+    begin
+        
+        temp := Reg(rs1) and imm;
+        Reg(rd) := bit_vector(temp);
+    end procedure ANDI_exec;
+    
+    procedure SLLI_exec(rs1, rd : RegAddrType; imm : ImmType; mem : inout MemType; reg : inout RegType; pc : inout MemAddrType) is
+    variable temp : RegDataType;
+    variable shamt : ShamtType := imm(4 downto 0);
+    begin
+        temp := reg(rs1) sll to_integer(unsigned(shamt));
+        reg(rd) := temp;
+    end procedure SLLI_exec;
+    
+    
+    
+    procedure SRLI_exec(rs1, rd : RegAddrType; imm : Immtype; mem : inout MemType; reg : inout RegType; pc : inout MemAddrType) is
+    variable temp : RegDataType;
+    variable shamt : ShamtType := imm(4 downto 0);
+    begin
+        temp := reg(rs1) srl to_integer(unsigned(shamt));
+        reg(rd) := temp;
+    end procedure SRLI_exec;
+    
+    
+    procedure SRAI_exec(rs1, rd : RegAddrType; imm : ImmType; mem : inout MemType; reg : inout RegType; pc : inout MemAddrType) is
+    variable shamt : ShamtType := imm(4 downto 0);
+    variable rs1_temp : RegDataType := bit_vector(reg(rs1));
+    variable temp : RegDataType;
+    variable msb : bit_vector(0 downto 0);
+    variable shift_index : integer := 32 - to_integer(unsigned(shamt));
+    begin
+        --case 1: shift by 0 places
+        if to_integer(unsigned(shamt)) = 0 then
+            reg(rd) := reg(rs1);
+        --case 2: shift by >= 1 bits
+        else
+        msb(0) := rs1_temp(31);
+        temp := rs1_temp srl to_integer(unsigned(shamt));
+        temp(31 downto shift_index ) := (others => msb(0));
+        reg(rd) := temp; 
+        end if;
+         
+    end procedure SRAI_exec;
+    
+    procedure SLTI_exec(rs1, rd : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout MemAddrType) is
+    variable rs1_buff : RegDataType := reg(rs1);
+    begin
+        if to_integer(signed(rs1_buff)) < to_integer(signed(imm)) then
+            reg(rd) := bit_vector(to_unsigned(1, 32));
+        else
+            reg(rd) := bit_vector(to_unsigned(0, 32));
+        end if;
+        
+    end procedure SLTI_exec;
+    
+    procedure SLTIU_exec(rs1, rd : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout MemAddrType) is
+    variable rs1_buff : RegDataType := reg(rs1);
+    begin
+        if to_integer(unsigned(rs1_buff)) < to_integer(unsigned(imm)) then
+            reg(rd) := bit_vector(to_unsigned(1, 32));
+        else
+            reg(rd) := bit_vector(to_unsigned(0, 32));
+        end if;
+    end procedure SLTIU_exec;   
+    
+    
+    ---------------------------------------
     
     
 end package body exec_procedures_pack;

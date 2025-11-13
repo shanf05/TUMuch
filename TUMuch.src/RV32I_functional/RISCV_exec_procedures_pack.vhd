@@ -24,4 +24,17 @@ package exec_procedures_pack is
     procedure BLTU_exec (rs1, rs2 : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout MemAddrType);        --Severin Hanf
     procedure BGEU_exec (rs1, rs2 : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout MemAddrType);        --Severin Hanf
 
+    --erstellt von Max Biricz; Teil Lila; LUI AUIPC XORI ORI ANDI SLLI SRLI SRAI SLTI SLTIU
+    procedure LUI_exec   (rd : RegAddrType; imm : ImmType; mem : inout MemType; reg : inout RegType; pc : inout MemAddrType);
+    procedure AUIPC_exec (rd : RegAddrType; imm : ImmType; mem : inout MemType; reg : inout RegType; pc : inout MemAddrType);
+    procedure XORI_exec  (rs1, rd : RegAddrType; imm : ImmType; mem : inout MemType; reg : inout RegType; pc : inout MemAddrType);
+    procedure ORI_exec   (rs1, rd : RegAddrType; imm : ImmType; mem : inout MemType; reg : inout RegType; pc : inout MemAddrType);
+    procedure ANDI_exec  (rs1, rd : RegAddrType; imm : ImmType; mem : inout MemType; reg : inout RegType; pc : inout MemAddrType);
+    procedure SLLI_exec  (rs1, rd : RegAddrType; imm : ImmType; mem : inout MemType; reg : inout RegType; pc : inout MemAddrType);
+    procedure SRLI_exec  (rs1, rd : RegAddrType; imm : ImmType; mem : inout MemType; reg : inout RegType; pc : inout MemAddrType);
+    procedure SRAI_exec  (rs1, rd : RegAddrType; imm : ImmType; mem : inout MemType; reg : inout RegType; pc : inout MemAddrType);
+    procedure SLTI_exec  (rs1, rd : RegAddrType; imm : ImmType; mem : inout MemType; reg : inout RegType; pc : inout MemAddrType);
+    procedure SLTIU_exec (rs1, rd : RegAddrType; imm : ImmType; mem : inout MemType; reg : inout RegType; pc : inout MemAddrType);
+
 end package exec_procedures_pack;
+    
