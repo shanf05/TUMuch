@@ -56,8 +56,8 @@ begin
                 
                 case func3 is
                     when F3_ADD =>      -- F3_ADD and F3_SUB have the same value "000"
-                        if funct7 = F7_ADD then      null;  -- ADD to be implemented
-                        elsif funct7 = F7_SUB then   null;  -- SUB to be implemented
+                        if funct7 = F7_ADD then      ADD_exec(rd, rs1, rs2, reg, mem);  -- ADD to be implemented
+                        elsif funct7 = F7_SUB then   SUB_exec(rd, rs1, rs2, reg, mem);  -- SUB to be implemented
                         else                                -- cover invalid cases
                             assert FALSE
                             report "Illegal Operation -- ADD | SUB"
@@ -98,7 +98,7 @@ begin
                 
                 case func3 is
                     -- basic I-Type
-                    when F3_ADDI   => ADDI_exec(rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);                
+                    when F3_ADDI   => ADDI_exec(rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg);                
                     when F3_XOR    => XORI_exec(rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
                     when F3_OR     => ORI_exec (rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
                     when F3_AND    => ANDI_exec(rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
@@ -132,11 +132,11 @@ begin
                 imm(31 downto 11) := (others => Instr(20));
                 
                 case func3 is
-                    when F3_LB      => null;                -- LB to be implemented
-                    when F3_LH      => null;                -- LH to be implemented
-                    when F3_LW      => null;                -- LW to be implemented
-                    when F3_LBU     => null;                -- LBU to be implemented
-                    when F3_LHU     => null;                -- LHU to be implemented
+                    when F3_LB      => LB_exec(rs1, rs2, imm, reg, mem);                -- LB to be implemented
+                    when F3_LH      => LH_exec(rs1, rs2, imm, reg, mem);                -- LH to be implemented
+                    when F3_LW      => LW_exec(rs1, rs2, imm, reg, mem);                -- LW to be implemented
+                    when F3_LBU     => LBU_exec(rs1, rs2, imm, reg, mem);                -- LBU to be implemented
+                    when F3_LHU     => LHU_exec(rs1, rs2, imm, reg, mem);                -- LHU to be implemented
                     when others =>                          -- cover invalid cases
                             assert FALSE
                             report "Illegal Operation -- OP-LOAD"
@@ -164,9 +164,9 @@ begin
                 imm(31 downto 11) := (others => Instr(31));
                 
                 case func3 is
-                    when F3_SB  => null;                    -- SB to be implemented
-                    when F3_SH  => null;                    -- SH to be implemented
-                    when F3_SW  => null;                    -- SW to be implemented
+                    when F3_SB  => SB_exec(rs1, rs2, imm, reg, mem);                    -- SB to be implemented
+                    when F3_SH  => SH_exec(rs1, rs2, imm, reg, mem);                    -- SH to be implemented
+                    when F3_SW  => SW_exec(rs1, rs2, imm, reg, mem);                    -- SW to be implemented
                     when others =>                          -- covers invalid cases
                             assert FALSE
                             report "Illegal Operation -- OP-STORE"
