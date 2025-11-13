@@ -19,26 +19,26 @@ begin
     print_header(TraceFile);
     print_tail(TraceFile);    
     process
-        variable PC    : MemAddrType := 0;
-        variable Instr : InstrType := (others=>'0');
-        variable Reg   : RegType := (others=>(others=>'0'));
-        variable Mem   : MemType := init_memory("asm_input.txt");
+        variable PC    : PCType     := (others=>'0');
+        variable Instr : InstrType  := (others=>'0');
+        variable Reg   : RegType    := (others=>(others=>'0'));
+        variable Mem   : MemType    := init_memory("asm_input.txt");
         
-        variable op_code : OpCode:= "0000000";
+        variable op_code : OpCode   := "0000000";
         variable func3   : Funct3;
         variable rd      : RegAddrType;
         variable rs1     : RegAddrType;
         variable rs2     : RegAddrType;
         variable funct7  : Funct7;
-        variable shamt   : bit_vector(4 downto 0);                   -- only used for modified I-Type Instruction
+        variable shamt   : ShamtType;                   -- only used for modified I-Type Instruction
         variable imm     : ImmType := (others => '0');     
         variable l       : line;
     begin 
         -- fetch instruction
-        Instr := Mem(PC);
+        Instr := Mem(to_integer(unsigned(PC(AddrSize - 1 downto ByteAddrSize))));
         op_code := Instr(6 downto 0);
-            
-        if (PC >= 2**MemAddrSize-1) then PC := 0;
+        
+        if (to_integer(unsigned(PC)) >= 2**16-1) then PC := X"0000";
         --else PC := PC + 4;   note severin: ich würde das bei den einzelnen executions machen, weil nicht immer +4 (z.b. jumps etc)
         end if;
         
@@ -56,30 +56,30 @@ begin
                 
                 case func3 is
                     when F3_ADD =>      -- F3_ADD and F3_SUB have the same value "000"
-                        if funct7 = F7_ADD then      ADD_exec(rd, rs1, rs2, reg, mem);  -- ADD to be implemented
-                        elsif funct7 = F7_SUB then   SUB_exec(rd, rs1, rs2, reg, mem);  -- SUB to be implemented
+                        if funct7 = F7_ADD then      ADD_exec(rd, rs1, rs2, reg, mem, pc);  -- ADD to be implemented
+                        elsif funct7 = F7_SUB then   SUB_exec(rd, rs1, rs2, reg, mem, pc);  -- SUB to be implemented
                         else                                -- cover invalid cases
                             assert FALSE
                             report "Illegal Operation -- ADD | SUB"
                             severity error;
                         end if;
                         
-                    when F3_SLL =>  null;   -- SLL to be implemented
+                    when F3_SLL     =>  SLL_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);   -- SLL to be implemented
                     
                     when F3_SRL =>      -- F3_SRL and F3_SRA have the same value "101"
-                        if funct7 = F7_SRL then     null;   -- SRL to be implemented
-                        elsif funct7 = F7_SRA then  null;   -- SRA to be implemented
+                        if funct7 = F7_SRL      then      SRL_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);   -- SRL to be implemented
+                        elsif funct7 = F7_SRA   then      SRA_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);   -- SRA to be implemented
                         else                                -- cover invalid cases
                             assert FALSE
                             report "Illegal Operation -- OP -> SRL | SRA"
                             severity error;
                         end if;
                         
-                    when F3_XOR =>  null;                   -- XOR to be implemented
-                    when F3_OR =>   null;                   -- OR to be implemented
-                    when F3_AND =>  null;                   -- AND to be implemented
-                    when F3_SLT =>  null;                   -- SLT to be implemented
-                    when F3_SLTU => null;                   -- SLTU to be implemented
+                    when F3_XOR     =>  XOR_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);                   -- XOR to be implemented
+                    when F3_OR      =>  OR_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);                   -- OR to be implemented
+                    when F3_AND     =>  AND_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);                   -- AND to be implemented
+                    when F3_SLT     =>  SLT_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);                   -- SLT to be implemented
+                    when F3_SLTU    =>  SLTU_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);                   -- SLTU to be implemented
                     when others =>                          -- cover invalid cases
                         assert FALSE
                         report "Illegal Operation -- OP"
@@ -98,7 +98,7 @@ begin
                 
                 case func3 is
                     -- basic I-Type
-                    when F3_ADDI   => ADDI_exec(rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg);                
+                    when F3_ADDI   => ADDI_exec(rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);                
                     when F3_XOR    => XORI_exec(rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
                     when F3_OR     => ORI_exec (rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
                     when F3_AND    => ANDI_exec(rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
@@ -132,11 +132,11 @@ begin
                 imm(31 downto 11) := (others => Instr(20));
                 
                 case func3 is
-                    when F3_LB      => LB_exec(rs1, rs2, imm, reg, mem);                -- LB to be implemented
-                    when F3_LH      => LH_exec(rs1, rs2, imm, reg, mem);                -- LH to be implemented
-                    when F3_LW      => LW_exec(rs1, rs2, imm, reg, mem);                -- LW to be implemented
-                    when F3_LBU     => LBU_exec(rs1, rs2, imm, reg, mem);                -- LBU to be implemented
-                    when F3_LHU     => LHU_exec(rs1, rs2, imm, reg, mem);                -- LHU to be implemented
+                    when F3_LB      => LB_exec(rd => rd, rs1 => rs1, imm => imm, reg => reg, mem => mem, pc => pc);                -- LB to be implemented
+                    when F3_LH      => LH_exec(rd => rd, rs1 => rs1, imm => imm, reg => reg, mem => mem, pc => pc);                -- LH to be implemented
+                    when F3_LW      => LW_exec(rd => rd, rs1 => rs1, imm => imm, reg => reg, mem => mem, pc => pc);                -- LW to be implemented
+                    when F3_LBU     => LBU_exec(rd => rd, rs1 => rs1, imm => imm, reg => reg, mem => mem, pc => pc);                -- LBU to be implemented
+                    when F3_LHU     => LHU_exec(rd => rd, rs1 => rs1, imm => imm, reg => reg, mem => mem, pc => pc);                -- LHU to be implemented
                     when others =>                          -- cover invalid cases
                             assert FALSE
                             report "Illegal Operation -- OP-LOAD"
@@ -164,9 +164,9 @@ begin
                 imm(31 downto 11) := (others => Instr(31));
                 
                 case func3 is
-                    when F3_SB  => SB_exec(rs1, rs2, imm, reg, mem);                    -- SB to be implemented
-                    when F3_SH  => SH_exec(rs1, rs2, imm, reg, mem);                    -- SH to be implemented
-                    when F3_SW  => SW_exec(rs1, rs2, imm, reg, mem);                    -- SW to be implemented
+                    when F3_SB  => SB_exec(rs1 => rs1, rs2 => rs2, imm => imm, reg => reg, mem => mem, pc => pc);                    -- SB to be implemented
+                    when F3_SH  => SH_exec(rs1 => rs1, rs2 => rs2, imm => imm, reg => reg, mem => mem, pc => pc);                    -- SH to be implemented
+                    when F3_SW  => SW_exec(rs1 => rs1, rs2 => rs2, imm => imm, reg => reg, mem => mem, pc => pc);                    -- SW to be implemented
                     when others =>                          -- covers invalid cases
                             assert FALSE
                             report "Illegal Operation -- OP-STORE"
@@ -194,11 +194,10 @@ begin
             when OP_JAL => 
                 rd := to_integer(unsigned(Instr(11 downto 7)));
                 imm(0) := '0';
-                imm(4 downto 1) := Instr(24 downto 21);
-                imm(10 downto 5) := Instr(30 downto 25);
-                imm(11) := Instr(20);
-                imm(19 downto 12) := Instr(19 downto 12);
-                imm(31 downto 20) := (others => Instr(31));
+                imm(10 downto 1)    := Instr(30 downto 21);
+                imm(11)             := Instr(20);
+                imm(19 downto 12)   := Instr(19 downto 12);
+                imm(31 downto 20)   := (others => Instr(31));
                 write_instruction_trace(l=>l, reg=>reg, instr=>instr, pc=>pc);
                 JAL_exec(rd, imm, mem, reg, pc);
             -- end J-Type Instructions

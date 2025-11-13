@@ -9,7 +9,7 @@ use IEEE.numeric_bit.all;
 package trace_pack is
     procedure print_header(file TraceFile : Text);
     procedure print_tail(file TraceFile : Text);
-    procedure write_instruction_trace(l: inout line; reg : RegType; instr : InstrType; pc : MemAddrType);
+    procedure write_instruction_trace(l: inout line; reg : RegType; instr : InstrType; pc : PCType);
     function  cmd_image(instr : InstrType) return string;
     function  hex_image_data(data : integer) return string; 
     function  hex_image_addr(addr : integer) return string;   
@@ -193,10 +193,10 @@ package body trace_pack is
         return result;
     end hex_image_addr;
     
-    procedure write_instruction_trace(l: inout line; reg : RegType; instr : InstrType; pc : MemAddrType) is
+    procedure write_instruction_trace(l: inout line; reg : RegType; instr : InstrType; pc : PCType) is
     begin 
         --write program counter
-        write( l , hex_image_addr(pc), left, 3);
+        write( l , hex_image_addr(to_integer(unsigned(pc))), left, 3);
         write( l , string'(" | ") );
         
         --write instruction mnemonic

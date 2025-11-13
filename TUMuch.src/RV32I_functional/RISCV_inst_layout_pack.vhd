@@ -6,7 +6,6 @@ package inst_layout_pack is
     subtype OpCode is bit_vector (OpCodeSize-1 downto 0);
     subtype Funct3 is bit_vector (2 downto 0);
     subtype Funct7 is bit_vector (6 downto 0);
-    subtype ShamtType is bit_vector (4 downto 0); -- added by Max Biricz for shift procedures in exec_procedures_pack_body.vhd
     
     constant OP_IMM    : OpCode := "0010011";   
     constant OP_AUIPC  : OpCOde := "0010111";

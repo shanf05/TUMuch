@@ -6,7 +6,9 @@ package defs_pack is
     
     -------- OBJECT SIZES --------    
     -- memory sizes    
-    constant MemAddrSize : integer := 16; -- untersten 2 bit für Byte adressierung
+    constant AddrSize       : integer := 16;
+    constant ByteAddrSize   : integer := 2;
+    constant MemAddrSize    : integer := AddrSize - ByteAddrSize; -- untersten 2 bit für Byte adressierung
     
     -- instruction size
     constant InstrSize : integer := 32; -- Achtung: hier weicht von Folie ab! wahrscheinlich Schreibfehler
@@ -31,4 +33,6 @@ package defs_pack is
     -------- INSTR. COMP. SIZES -------- 
     -- to be implemented during fetch 
     subtype ImmType         is bit_vector (RegDataSize-1 downto 0);
+    subtype ShamtType       is bit_vector (4 downto 0);
+    subtype PCType          is bit_vector (AddrSize downto 0);
 end;
