@@ -98,19 +98,19 @@ begin
                 
                 case func3 is
                     -- basic I-Type
-                    when F3_ADDI   => null;                -- ADDI to be implemented
-                    when F3_XOR    => null;                 -- XORI to be implemented
-                    when F3_OR     => null;                 -- ORI to be implemented
-                    when F3_AND    => null;                 -- ANDI to be implemented
-                    when F3_SLT    => null;                 -- SLTI to be implemented
-                    when F3_SLTU   => null;                 -- SLTIU to be implemented
+                    when F3_ADDI   => ADDI_exec(rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);                
+                    when F3_XOR    => XORI_exec(rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
+                    when F3_OR     => ORI_exec (rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
+                    when F3_AND    => ANDI_exec(rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
+                    when F3_SLT    => SLTI_exec(rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
+                    when F3_SLTU   => SLTIU_exec(rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
                     -- I-Type Instructions modified
                     when F3_SLL | F3_SRL => -- F3_SRL and F3_SRA have the same value "101"
                         funct7 := Instr(31 downto 25);
                         shamt := Instr(24 downto 20);
-                        if func3 = F3_SLL and funct7 = F7_SRL then null;        -- SLLI to be implemented 
-                        elsif func3 = F3_SRL and funct7 = F7_SRL then null;     -- SRLI to be implemented
-                        elsif func3 = F3_SRA and funct7 = F7_SRA then null;     -- SRAI to be implemented
+                        if func3 = F3_SLL and funct7 = F7_SRL then SLLI_exec(rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
+                        elsif func3 = F3_SRL and funct7 = F7_SRL then SRLI_exec(rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
+                        elsif func3 = F3_SRA and funct7 = F7_SRA then SRAI_exec(rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
                         else                                                    -- cover invalid cases
                             assert FALSE
                             report "Illegal Operation -- OP-IMM -> SRL | SRA"
@@ -181,13 +181,13 @@ begin
                 imm(31 downto 12) := Instr(31 downto 12);
                 imm(11 downto 0) := (others => '0');
                 write_instruction_trace(l=>l, reg=>reg, instr=>instr, pc=>pc);
-                null;                                       -- LUI to be implemented
+                LUI_exec(rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
             when OP_AUIPC   => 
                 rd := to_integer(unsigned(Instr(11 downto 7)));
                 imm(31 downto 12) := Instr(31 downto 12);
                 imm(11 downto 0) := (others => '0');
                 write_instruction_trace(l=>l, reg=>reg, instr=>instr, pc=>pc);
-                null;                                       -- AUIPC to be implemented
+                AUIPC_exec(rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
             -- end U-Type Instructions
             -----------------------------------------------------------------------
             -- J-Type Instructions
