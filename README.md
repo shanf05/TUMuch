@@ -1,29 +1,18 @@
 # TUMuch
 Entwurf digitaler Schaltungen mit VHDL und SystemC
 
-
 # Gruppenmitglieder
-Severin Hanf
-
-Max Biricz
-
-Jeongjoo Lim
-
+Severin Hanf,
+Max Biricz,
+Jeongjoo Lim,
 Josip Pepić
 
-# Benennungen Dateien:
+# Assembly Syntax für den Parser:
 
-• name.vhd: VHDL-Beschreibung der Schaltung name; enthält die Entity und die
-zugehörige Architecture (sinnvoll: Entity-Name := name).
-(Entity und Architecture können auch in verschiedenen Dateien abgelegt
-werden.)
+- Register immer starten mit 'x' oder 'X' gefolgt von ZWEI Ziffern. Beispiel: X17.
+- Immediates immer starten mit '#' gefolgt von 5 Ziffern HexCode. Beispiel: #12af0
+- Für die Mnemonics nur RVI32 supportet -> siehe RISCV_mnemonic_pack.vhd
 
-• name_tb.vhd: VHDL-Beschreibung der Testumgebung (VHDL-Testbench) für die
-Schaltung name (der Inhalt der Testbenches wird später erklärt).
+# Alternative Speicher initialisierung über Bit-Code
 
-• name_sim.tcl: Skript, welches eine projektspezifische Konfiguration erstellt und somit
-die Simulation der Schaltung name erleichtert (wird später genauer
-erläutert); keine VHDL-Beschreibung, sondern spezifisch für Vivado!
-
-• name.xdc: Xilinx Design Constraint Datei enthält Constraints (wie die
-Taktfrequenz und Pin Zuweisungen) für die Synthese; keine VHDLBeschreibung, sondern spezifisch für Vivado!
+- coming soon...
