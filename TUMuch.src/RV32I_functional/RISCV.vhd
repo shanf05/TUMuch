@@ -15,7 +15,7 @@ end RISCV;
 
 architecture functional of RISCV is
     file TraceFile : Text open write_mode is "../../../../TUMuch.rsc/trace.txt"; 
-    file AsmFile : Text open write_mode is "../../../../TUMuch.rsc/asm_input.txt";
+    file AsmFile : Text open read_mode is "../../../../TUMuch.rsc/asm_input.txt";
 begin       
     process
         variable PC    : PCType     := 0;

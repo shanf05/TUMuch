@@ -11,7 +11,7 @@ use work.inst_encoding_pack.all;
 package mem_pack is
     
     --function returning memory
-    impure function init_memory (filename : text) return Memtype;
+    impure function init_memory (file filename : text) return Memtype;
 
     --functions for Type conversions from textfile
     function to_MemAddrType (MemAddr : string(1 to 6)) return MemAddrType;
@@ -105,8 +105,8 @@ package body mem_pack is
     
     
 
-    impure function init_memory (filename : text) return MemType is
-        file f : text is in filename;
+    impure function init_memory (file filename : text) return MemType is
+
         variable l : line;                                          --buffer variable to store line of textfile
         variable mem : MemType := (others => (others => '0'));      --initialising memory
         variable success : boolean;
@@ -121,8 +121,8 @@ package body mem_pack is
     begin 
         --iterate through all lines in file
         line_loop: loop
-            exit when endfile(f);
-            readline(f, l);
+            exit when endfile(filename);
+            readline(filename, l);
             --flags which instruction operands are used
             success:= true;
             rd_set := false;
