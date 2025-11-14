@@ -20,7 +20,7 @@ begin
         variable PC    : PCType     := 0;
         variable Instr : InstrType  := (others=>'0');
         variable Reg   : RegType    := (others=>(others=>'0'));
-        variable Mem   : MemType    := init_memory("../../../../TUMuch.rsc/asm_input.txt");        
+        variable Mem   : MemType    := (others=>(others=>'0'));        
         variable op_code : OpCode   := "0000000";
         variable func3   : Funct3;
         variable rd      : RegAddrType;
@@ -33,7 +33,7 @@ begin
     begin 
         print_header(TraceFile);
         print_tail(TraceFile); 
-        
+        mem := init_memory("../../../../TUMuch.rsc/asm_input.txt");
         for i in 0 to 10 loop       --workaround. actually we wait for a stop statement; ->loop needed for print functions
         -- fetch instruction
         Instr := Mem(pc/4);
