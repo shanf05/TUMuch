@@ -19,7 +19,7 @@ begin
     print_header(TraceFile);
     print_tail(TraceFile);    
     process
-        variable PC    : PCType     := (others=>'0');
+        variable PC    : PCType     := 0;
         variable Instr : InstrType  := (others=>'0');
         variable Reg   : RegType    := (others=>(others=>'0'));
         variable Mem   : MemType    := init_memory("asm_input.txt");
@@ -35,13 +35,9 @@ begin
         variable l       : line;
     begin 
         -- fetch instruction
-        Instr := Mem(to_integer(unsigned(PC(AddrSize - 1 downto ByteAddrSize))));
+        Instr := Mem(pc/4);
         op_code := Instr(6 downto 0);
-        
-        if (to_integer(unsigned(PC)) >= 2**16-1) then PC := X"0000";
-        --else PC := PC + 4;   note severin: ich würde das bei den einzelnen executions machen, weil nicht immer +4 (z.b. jumps etc)
-        end if;
-        
+                
         -- decode and execute instruction
         case op_code is
             -----------------------------------------------------------------------
@@ -56,30 +52,30 @@ begin
                 
                 case func3 is
                     when F3_ADD =>      -- F3_ADD and F3_SUB have the same value "000"
-                        if funct7 = F7_ADD then      ADD_exec(rd, rs1, rs2, reg, mem, pc);  -- ADD to be implemented
-                        elsif funct7 = F7_SUB then   SUB_exec(rd, rs1, rs2, reg, mem, pc);  -- SUB to be implemented
+                        if funct7 = F7_ADD then      ADD_exec(rd, rs1, rs2, reg, mem, pc);
+                        elsif funct7 = F7_SUB then   SUB_exec(rd, rs1, rs2, reg, mem, pc);
                         else                                -- cover invalid cases
                             assert FALSE
                             report "Illegal Operation -- ADD | SUB"
                             severity error;
                         end if;
                         
-                    when F3_SLL     =>  SLL_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);   -- SLL to be implemented
+                    when F3_SLL     =>  SLL_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);   
                     
                     when F3_SRL =>      -- F3_SRL and F3_SRA have the same value "101"
-                        if funct7 = F7_SRL      then      SRL_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);   -- SRL to be implemented
-                        elsif funct7 = F7_SRA   then      SRA_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);   -- SRA to be implemented
+                        if funct7 = F7_SRL      then      SRL_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);   
+                        elsif funct7 = F7_SRA   then      SRA_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);   
                         else                                -- cover invalid cases
                             assert FALSE
                             report "Illegal Operation -- OP -> SRL | SRA"
                             severity error;
                         end if;
                         
-                    when F3_XOR     =>  XOR_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);                   -- XOR to be implemented
-                    when F3_OR      =>  OR_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);                   -- OR to be implemented
-                    when F3_AND     =>  AND_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);                   -- AND to be implemented
-                    when F3_SLT     =>  SLT_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);                   -- SLT to be implemented
-                    when F3_SLTU    =>  SLTU_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);                   -- SLTU to be implemented
+                    when F3_XOR     =>  XOR_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);
+                    when F3_OR      =>  OR_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc); 
+                    when F3_AND     =>  AND_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);
+                    when F3_SLT     =>  SLT_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);
+                    when F3_SLTU    =>  SLTU_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);
                     when others =>                          -- cover invalid cases
                         assert FALSE
                         report "Illegal Operation -- OP"
@@ -132,11 +128,11 @@ begin
                 imm(31 downto 11) := (others => Instr(20));
                 
                 case func3 is
-                    when F3_LB      => LB_exec(rd => rd, rs1 => rs1, imm => imm, reg => reg, mem => mem, pc => pc);                -- LB to be implemented
-                    when F3_LH      => LH_exec(rd => rd, rs1 => rs1, imm => imm, reg => reg, mem => mem, pc => pc);                -- LH to be implemented
-                    when F3_LW      => LW_exec(rd => rd, rs1 => rs1, imm => imm, reg => reg, mem => mem, pc => pc);                -- LW to be implemented
-                    when F3_LBU     => LBU_exec(rd => rd, rs1 => rs1, imm => imm, reg => reg, mem => mem, pc => pc);                -- LBU to be implemented
-                    when F3_LHU     => LHU_exec(rd => rd, rs1 => rs1, imm => imm, reg => reg, mem => mem, pc => pc);                -- LHU to be implemented
+                    when F3_LB      => LB_exec(rd => rd, rs1 => rs1, imm => imm, reg => reg, mem => mem, pc => pc);
+                    when F3_LH      => LH_exec(rd => rd, rs1 => rs1, imm => imm, reg => reg, mem => mem, pc => pc);
+                    when F3_LW      => LW_exec(rd => rd, rs1 => rs1, imm => imm, reg => reg, mem => mem, pc => pc);
+                    when F3_LBU     => LBU_exec(rd => rd, rs1 => rs1, imm => imm, reg => reg, mem => mem, pc => pc);
+                    when F3_LHU     => LHU_exec(rd => rd, rs1 => rs1, imm => imm, reg => reg, mem => mem, pc => pc);
                     when others =>                          -- cover invalid cases
                             assert FALSE
                             report "Illegal Operation -- OP-LOAD"
@@ -164,9 +160,9 @@ begin
                 imm(31 downto 11) := (others => Instr(31));
                 
                 case func3 is
-                    when F3_SB  => SB_exec(rs1 => rs1, rs2 => rs2, imm => imm, reg => reg, mem => mem, pc => pc);                    -- SB to be implemented
-                    when F3_SH  => SH_exec(rs1 => rs1, rs2 => rs2, imm => imm, reg => reg, mem => mem, pc => pc);                    -- SH to be implemented
-                    when F3_SW  => SW_exec(rs1 => rs1, rs2 => rs2, imm => imm, reg => reg, mem => mem, pc => pc);                    -- SW to be implemented
+                    when F3_SB  => SB_exec(rs1 => rs1, rs2 => rs2, imm => imm, reg => reg, mem => mem, pc => pc);
+                    when F3_SH  => SH_exec(rs1 => rs1, rs2 => rs2, imm => imm, reg => reg, mem => mem, pc => pc);
+                    when F3_SW  => SW_exec(rs1 => rs1, rs2 => rs2, imm => imm, reg => reg, mem => mem, pc => pc);
                     when others =>                          -- covers invalid cases
                             assert FALSE
                             report "Illegal Operation -- OP-STORE"
