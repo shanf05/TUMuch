@@ -175,7 +175,7 @@ package body trace_pack is
                 end case;        
             when others =>
                 assert FALSE;               
-                return "ERROR";
+                return "NO_OP";
         end case;
     end cmd_image; 
     

@@ -311,7 +311,7 @@ package body mem_pack is
         variable l : line; 
         variable v : string(1 to 32);
         variable success : boolean;
-        variable addr : PcType := 0; 
+        variable addr : MemAddrType := 0; 
         variable mem : MemType := (others=>(others=>'0'));
         
     begin
@@ -321,7 +321,7 @@ package body mem_pack is
             read(l, v(1 to 32), success);
             mem(addr) := Binary_to_data(v(1 to 32));
             report(v(1 to 32));
-            addr := addr + 4;            
+            addr := addr + 1;            
         end loop;   
         return mem;                    --returning memory filled with binary stream for executing instructions
     end function;

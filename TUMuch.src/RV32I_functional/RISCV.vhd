@@ -217,10 +217,14 @@ begin
             -- end B-Type Instructions
             -----------------------------------------------------------------------
 
-            when others =>          -- covers invalid cases                
-                assert FALSE
-                report "Illegal Operation -- no OP_CODE"
-                severity warning;
+            when others =>          -- covers invalid cases    
+                if (Instr = "00000000000000000000000000000000") then 
+                    exit;
+                else             
+                    assert FALSE
+                    report "Illegal Operation -- no OP_CODE"
+                    severity warning;
+                end if; 
         end case;
         end loop;
         print_tail(Tracefile);      
