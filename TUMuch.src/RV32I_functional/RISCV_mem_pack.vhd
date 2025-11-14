@@ -101,10 +101,25 @@ package body mem_pack is
     
     
     function to_ImmType (ImmString : string) return ImmType is
-    variable Imm_dec : integer := hex_string_to_dec(ImmString);
+        variable Imm_dec : integer := hex_string_to_dec(ImmString);
     begin
         return bit_vector(to_signed(Imm_dec, RegDataSize));
     end function to_ImmType;
+    
+    function Binary_to_data (s : string(1 to 32)) return MemDataType is
+        variable data : MemDataType := (others=>'0');
+    begin        
+        for i in 1 to 32 loop            
+            if s(33 - i) = '0' then
+                data(i-1) := '0';
+            elsif s(33 - i) = '1' then
+                data(i-1) := '1';
+            else
+                data(i-1) := '0';   --if wrong input use 0 
+            end if;
+        end loop;
+        return data;
+    end function Binary_to_data;
     
     
 
@@ -304,7 +319,8 @@ package body mem_pack is
             exit when endfile(BinFile);
             readline(BinFile, l);
             read(l, v(1 to 32), success);
-            mem(addr) := to_ImmType(v(1 to 32));
+            mem(addr) := Binary_to_data(v(1 to 32));
+            report(v(1 to 32));
             addr := addr + 4;            
         end loop;   
         return mem;                    --returning memory filled with binary stream for executing instructions
