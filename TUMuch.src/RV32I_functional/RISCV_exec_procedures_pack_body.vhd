@@ -10,22 +10,22 @@ package body exec_procedures_pack is
     procedure LB_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
     begin        
         case to_integer(signed(imm)) is
-        when 0 => 
-            Reg(rd)(7 downto 0)  := Mem(rs1)(7 downto 0);     
-            Reg(rd)(31 downto 8) := (others=>'0'); --unsigned extension o upper 24 bits
-        when 1 => 
-            Reg(rd)(7 downto 0)  := Mem(rs1)(15 downto 8);     
-            Reg(rd)(31 downto 8) := (others=>'0'); --unsigned extension o upper 24 bits        
-        when 2 => 
-            Reg(rd)(7 downto 0)  := Mem(rs1)(23 downto 16);
-            Reg(rd)(31 downto 8) := (others=>'0'); --unsigned extension o upper 24 bits
-        when 3 => 
-            Reg(rd)(7 downto 0)  := Mem(rs1)(31 downto 24);     
-            Reg(rd)(31 downto 8) := (others=>'0'); --unsigned extension o upper 24 bits
-        when others =>
-            assert(false);
-            report "Address misalignment -- LB_exec"
-            severity warning;            
+            when 0 => 
+                Reg(rd)(7 downto 0)  := Mem(rs1)(7 downto 0);     
+                Reg(rd)(31 downto 8) := (others=>'0'); --unsigned extension o upper 24 bits
+            when 1 => 
+                Reg(rd)(7 downto 0)  := Mem(rs1)(15 downto 8);     
+                Reg(rd)(31 downto 8) := (others=>'0'); --unsigned extension o upper 24 bits        
+            when 2 => 
+                Reg(rd)(7 downto 0)  := Mem(rs1)(23 downto 16);
+                Reg(rd)(31 downto 8) := (others=>'0'); --unsigned extension o upper 24 bits
+            when 3 => 
+                Reg(rd)(7 downto 0)  := Mem(rs1)(31 downto 24);     
+                Reg(rd)(31 downto 8) := (others=>'0'); --unsigned extension o upper 24 bits
+            when others =>
+                assert(false);
+                report "Invalid offset -- LB_exec"
+                severity warning;            
         end case;
         IncrementPc(pc);
     end procedure;
@@ -33,22 +33,22 @@ package body exec_procedures_pack is
     procedure LBU_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
     begin    
         case to_integer(signed(imm)) is
-        when 0 => 
-            Reg(rd)(7 downto 0)  := Mem(rs1)(7 downto 0);     
-            Reg(rd)(31 downto 8) := (others=>Mem(rs1)(7)); --signed extension o upper 24 bits
-        when 1 => 
-            Reg(rd)(7 downto 0)  := Mem(rs1)(15 downto 8);     
-            Reg(rd)(31 downto 8) := (others=>Mem(rs1)(7)); --signed extension o upper 24 bits        
-        when 2 => 
-            Reg(rd)(7 downto 0)  := Mem(rs1)(23 downto 16);
-            Reg(rd)(31 downto 8) := (others=>Mem(rs1)(7)); --signed extension o upper 24 bits
-        when 3 => 
-            Reg(rd)(7 downto 0)  := Mem(rs1)(31 downto 24);     
-            Reg(rd)(31 downto 8) := (others=>Mem(rs1)(7)); --signed extension o upper 24 bits
-        when others =>
-            assert(false);
-            report "Address misalignment -- LBU_exec"
-            severity warning;            
+            when 0 => 
+                Reg(rd)(7 downto 0)  := Mem(rs1)(7 downto 0);     
+                Reg(rd)(31 downto 8) := (others=>Mem(rs1)(7)); --signed extension o upper 24 bits
+            when 1 => 
+                Reg(rd)(7 downto 0)  := Mem(rs1)(15 downto 8);     
+                Reg(rd)(31 downto 8) := (others=>Mem(rs1)(7)); --signed extension o upper 24 bits        
+            when 2 => 
+                Reg(rd)(7 downto 0)  := Mem(rs1)(23 downto 16);
+                Reg(rd)(31 downto 8) := (others=>Mem(rs1)(7)); --signed extension o upper 24 bits
+            when 3 => 
+                Reg(rd)(7 downto 0)  := Mem(rs1)(31 downto 24);     
+                Reg(rd)(31 downto 8) := (others=>Mem(rs1)(7)); --signed extension o upper 24 bits
+            when others =>
+                assert(false);
+                report "Invalid offset -- LBU_exec"
+                severity warning;            
         end case;
         IncrementPc(pc);
     end procedure;
@@ -56,16 +56,16 @@ package body exec_procedures_pack is
     procedure LH_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
     begin
         case to_integer(signed(imm)) is
-        when 0 => 
-            Reg(rd)(15 downto 0)  := Mem(rs1)(15 downto 0);     
-            Reg(rd)(31 downto 16) := (others=>Mem(rs1)(15)); --signed extension o upper 16 bits
-        when 2 => 
-            Reg(rd)(15 downto 0)  := Mem(rs1)(31 downto 16);
-            Reg(rd)(31 downto 16) := (others=>Mem(rs1)(15)); --signed extension o upper 16 bits
-        when others =>
-            assert(false);
-            report "Address misalignment -- LH_exec"
-            severity warning;            
+            when 0 => 
+                Reg(rd)(15 downto 0)  := Mem(rs1)(15 downto 0);     
+                Reg(rd)(31 downto 16) := (others=>Mem(rs1)(15)); --signed extension o upper 16 bits
+            when 2 => 
+                Reg(rd)(15 downto 0)  := Mem(rs1)(31 downto 16);
+                Reg(rd)(31 downto 16) := (others=>Mem(rs1)(15)); --signed extension o upper 16 bits
+            when others =>
+                assert(false);
+                report "Invalid offset -- LH_exec"
+                severity warning;            
         end case;
         IncrementPc(pc);
     end procedure;
@@ -73,12 +73,12 @@ package body exec_procedures_pack is
     procedure LHU_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
     begin         
         case to_integer(signed(imm)) is
-        when 0 => Reg(rd) := "0000000000000000" & Mem(rs1)(15 downto 0);    --unsigned extension o upper 16 bits    
-        when 2 => Reg(rd) := "0000000000000000" & Mem(rs1)(31 downto 16);   --unsigned extension o upper 16 bits
-        when others =>
-            assert(false);
-            report "Address misalignment -- LHU_exec"
-            severity warning;            
+            when 0 => Reg(rd) := "0000000000000000" & Mem(rs1)(15 downto 0);    --unsigned extension o upper 16 bits    
+            when 2 => Reg(rd) := "0000000000000000" & Mem(rs1)(31 downto 16);   --unsigned extension o upper 16 bits
+            when others =>
+                assert(false);
+                report "Invalid offset -- LHU_exec"
+                severity warning;            
         end case;
         IncrementPc(pc);
     end procedure;
@@ -88,9 +88,9 @@ package body exec_procedures_pack is
     	case to_integer(signed(imm)) is
     	    when 0 => Reg(rd) := Mem(rs1);
     	    when others =>
-	        assert(false);
-	        report "Address misalignment -- LW_exec"
-	        severity warning;            
+                assert(false);
+                report "Invalid offset -- LW_exec"
+                severity warning;            
     	end case;    	              
         IncrementPc(pc);
     end procedure;
@@ -98,14 +98,14 @@ package body exec_procedures_pack is
     procedure SB_exec (rs1, rs2 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
     begin
         case to_integer(unsigned(imm)) is
-        when 0 => Mem(rs1) := "000000000000000000000000" & Reg(rs2)(7 downto 0);
-        when 1 => Mem(rs1) := "0000000000000000" & Reg(rs2)(7 downto 0) & "00000000";
-        when 2 => Mem(rs1) := "00000000" & Reg(rs2)(7 downto 0) & "0000000000000000";
-        when 3 => Mem(rs1) := Reg(rs2)(7 downto 0) & "000000000000000000000000";
-        when others => 
-            assert(false); 
-            report "Address misalignment -- SB_exec"
-            severity warning;
+            when 0 => Mem(rs1)(7 downto 0)      := Reg(rs2)(7 downto 0);
+            when 1 => Mem(rs1)(15 downto 8)     := Reg(rs2)(7 downto 0);
+            when 2 => Mem(rs1)(23 downto 16)    := Reg(rs2)(7 downto 0);
+            when 3 => Mem(rs1)(31 downto 24)    := Reg(rs2)(7 downto 0);
+            when others => 
+                assert(false); 
+                report "Invalid offset -- SB_exec"
+                severity warning;
         end case;
         IncrementPc(pc);
     end procedure;
@@ -113,12 +113,12 @@ package body exec_procedures_pack is
     procedure SH_exec (rs1, rs2 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
     begin
         case to_integer(unsigned(imm)) is
-        when 0 => Mem(rs1) := "0000000000000000" & Reg(rs2)(15 downto 0);        
-        when 2 => Mem(rs1) := Reg(rs2)(15 downto 0) & "0000000000000000";        
-        when others => 
-            assert(false); 
-            report "Address misalignment -- SH_exec"
-            severity warning;
+            when 0 => Mem(rs1)(15 downto 0)     := Reg(rs2)(15 downto 0);        
+            when 2 => Mem(rs1)(31 downto 16)    := Reg(rs2)(15 downto 0);        
+            when others => 
+                assert(false); 
+                report "Invalid offset -- SH_exec"
+                severity warning;
         end case;
         IncrementPc(pc);       
     end procedure;
@@ -128,9 +128,9 @@ package body exec_procedures_pack is
     	case to_integer(signed(imm)) is
     	    when 0 => Mem(rs1) := Mem(rs2);
     	    when others =>
-	        assert(false);
-	        report "Address misalignment -- LW_exec"
-	        severity warning;            
+                assert(false);
+                report "Invalid offset -- LW_exec"
+                severity warning;            
     	end case;    	       
         IncrementPc(pc);
     end procedure;
