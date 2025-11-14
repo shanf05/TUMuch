@@ -7,11 +7,14 @@ library work;
 use work.defs_pack.all;
 use work.mnemonic_pack.all;
 use work.inst_encoding_pack.all;
+use work.trace_pack.all; 
 
 package mem_pack is
     
     --function returning memory
-    impure function init_memory (file filename : text) return Memtype;
+    impure function init_memory_asm (file filename : text) return Memtype;    
+    impure function init_memory_bin (mem : MemType; file DataDumpFile : text) return Memtype;  
+    procedure memory_data_dump (mem : MemType; file DataDumpFile : text);   
 
     --functions for Type conversions from textfile
     function to_MemAddrType (MemAddr : string(1 to 6)) return MemAddrType;
@@ -105,7 +108,7 @@ package body mem_pack is
     
     
 
-    impure function init_memory (file filename : text) return MemType is
+    impure function init_memory_asm (file filename : text) return MemType is
 
         variable l : line;                                          --buffer variable to store line of textfile
         variable mem : MemType := (others => (others => '0'));      --initialising memory
@@ -288,6 +291,22 @@ package body mem_pack is
         end loop;                      --end of line-loop
         return mem;                    --returning memory filled with binary stream for executing instructions
     end function;
+    
+    impure function init_memory_bin (mem : MemType; file DataDumpFile : text) return MemType is
+    variable l : line; 
+    begin
+           
+        return mem;                    --returning memory filled with binary stream for executing instructions
+    end function;
+    
+    procedure memory_data_dump (mem : MemType; file DataDumpFile : text) is         --evtl adresse und größe des dumps auswählba machen
+        variable l : line; 
+    begin
+        for i in 2**MemAddrSize-1 downto 0 loop            
+            write( l , hex_image_addr(to_integer(unsigned(mem(i)))), left, 8);
+            writeline(DataDumpFile, l);
+        end loop; 
+    end procedure; 
     
 end mem_pack;
 
