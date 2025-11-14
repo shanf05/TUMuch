@@ -11,7 +11,7 @@ use work.inst_encoding_pack.all;
 package mem_pack is
     
     --function returning memory
-    impure function init_memory (filename : string) return Memtype;
+    impure function init_memory (filename : text) return Memtype;
 
     --functions for Type conversions from textfile
     function to_MemAddrType (MemAddr : string(1 to 6)) return MemAddrType;
@@ -26,6 +26,7 @@ end mem_pack;
     
     
 package body mem_pack is
+
 
     function hex_string_to_dec (s : string) return integer is
     variable value : integer := 0;
@@ -64,7 +65,7 @@ package body mem_pack is
     variable MemAddrString : string (1 to 4) := MemAddr(3 to 6);
     variable MemAddr_dec : MemAddrtype;
     begin  
-        MemAddr_dec := hex_string_to_dec(MemAddrString);
+        MemAddr_dec := hex_string_to_dec(MemAddrString) / 4;
         if (0 <= MemAddr_dec) and (MemAddr_dec <= 2**MemAddrSize-1) then
             return MemAddr_dec;
         else
@@ -104,13 +105,13 @@ package body mem_pack is
     
     
 
-    impure function init_memory (filename : string) return MemType is
+    impure function init_memory (filename : text) return MemType is
         file f : text is in filename;
         variable l : line;                                          --buffer variable to store line of textfile
         variable mem : MemType := (others => (others => '0'));      --initialising memory
         variable success : boolean;
         variable index : MemAddrType := 0;                          --index to write at specific address in mem starting at address 0
-        variable v : string(1 to 50);                               --values in each line
+        variable v : string(1 to 50);                               --buffer variable for reading words in line
         variable rs1, rs2, rd : RegAddrType;
         variable mnemonic : MnemonicType;
         variable imm, data : ImmType;
@@ -124,9 +125,11 @@ package body mem_pack is
             readline(f, l);
             --flags which instruction operands are used
             success:= true;
-            rs1_set := false;
             rd_set := false;
+            rs1_set := false;
+            data_set := false;
             imm_set := false;
+            
             --read word from each line
             word_loop: while success loop
                 read(l, v(1), success);
@@ -167,7 +170,12 @@ package body mem_pack is
                         end if;
                     end if;
                 elsif (v(1) = 'V') or (v(1) = 'v') then      --case for storing data (constants) in memory
-                    data_set := true;
+                    read(l, v(2 to 3), success);
+                    if (v(2) = 'A' or v(2) = 'a') and (v(3) = 'L' or v(3) = 'l') then
+                            mnemonic := VAL_mnemonic;
+                            data_set := true;
+                    else assert False report "Invalid Operation - Operation not defined" severity error;
+                    end if;
                 else
                     for i in 2 to 5 loop
                         read(l, v(i), success);
@@ -260,8 +268,8 @@ package body mem_pack is
             
             elsif mnemonic = SB_mnemonic then instr := SB_Code(rs1 => rs1, rs2 => rd, imm => imm);
             
-            --store data (constants) at specific memory address range
-            --elsif mnemonic = VAL_mnemonic then instr := VAL_Code(imm => imm) 
+            --store data (constants) at specific memory address range @0xF000
+            elsif mnemonic = VAL_mnemonic then instr := data;
             
             else assert false report "Invalid Operation -- Operation not found" severity error;
                

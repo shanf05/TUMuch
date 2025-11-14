@@ -15,6 +15,7 @@ end RISCV;
 
 architecture functional of RISCV is
     file TraceFile : Text open write_mode is "../../../../TUMuch.rsc/trace.txt"; 
+    file AsmFile : Text open write_mode is "../../../../TUMuch.rsc/asm_input.txt";
 begin       
     process
         variable PC    : PCType     := 0;
@@ -33,7 +34,7 @@ begin
     begin 
         print_header(TraceFile);
         print_tail(TraceFile); 
-        mem := init_memory("../../../../TUMuch.rsc/asm_input.txt");
+        mem := init_memory(AsmFile);
         for i in 0 to 10 loop       --workaround. actually we wait for a stop statement; ->loop needed for print functions
         -- fetch instruction
         Instr := Mem(pc/4);
