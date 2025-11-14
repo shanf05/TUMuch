@@ -14,16 +14,13 @@ entity RISCV is
 end RISCV;
 
 architecture functional of RISCV is
-    file TraceFile : Text is out "trace.txt"; 
-begin
-    print_header(TraceFile);
-    print_tail(TraceFile);    
+    file TraceFile : Text open write_mode is "../../../../TUMuch.rsc/trace.txt"; 
+begin       
     process
-        variable PC    : PCType     := (others=>'0');
+        variable PC    : PCType     := 0;
         variable Instr : InstrType  := (others=>'0');
         variable Reg   : RegType    := (others=>(others=>'0'));
-        variable Mem   : MemType    := init_memory("asm_input.txt");
-        
+        variable Mem   : MemType    := (others=>(others=>'0'));        
         variable op_code : OpCode   := "0000000";
         variable func3   : Funct3;
         variable rd      : RegAddrType;
@@ -34,14 +31,15 @@ begin
         variable imm     : ImmType := (others => '0');     
         variable l       : line;
     begin 
+        print_header(TraceFile);
+        print_tail(TraceFile); 
+        mem := init_memory("../../../../TUMuch.rsc/asm_input.txt");
+        for i in 0 to 10 loop       --workaround. actually we wait for a stop statement; ->loop needed for print functions
         -- fetch instruction
-        Instr := Mem(to_integer(unsigned(PC(AddrSize - 1 downto ByteAddrSize))));
+        Instr := Mem(pc/4);
         op_code := Instr(6 downto 0);
-        
-        if (to_integer(unsigned(PC)) >= 2**16-1) then PC := X"0000";
-        --else PC := PC + 4;   note severin: ich würde das bei den einzelnen executions machen, weil nicht immer +4 (z.b. jumps etc)
-        end if;
-        
+        write_instruction_trace(l=>l, reg=>reg, instr=>instr, pc=>pc);  
+        writeline(TraceFile, l);      
         -- decode and execute instruction
         case op_code is
             -----------------------------------------------------------------------
@@ -52,40 +50,38 @@ begin
                 rd := to_integer(unsigned(Instr(11 downto 7)));
                 rs1 := to_integer(unsigned(Instr(19 downto 15)));
                 rs2 := to_integer(unsigned(Instr(24 downto 20)));
-                funct7 := Instr(31 downto 25);
-                
+                funct7 := Instr(31 downto 25);                
                 case func3 is
                     when F3_ADD =>      -- F3_ADD and F3_SUB have the same value "000"
-                        if funct7 = F7_ADD then      ADD_exec(rd, rs1, rs2, reg, mem, pc);  -- ADD to be implemented
-                        elsif funct7 = F7_SUB then   SUB_exec(rd, rs1, rs2, reg, mem, pc);  -- SUB to be implemented
+                        if funct7 = F7_ADD then      ADD_exec(rd=>rd, rs1=>rs1, rs2=>rs2, reg=>reg, mem=>mem, pc=>pc);
+                        elsif funct7 = F7_SUB then   SUB_exec(rd=>rd, rs1=>rs1, rs2=>rs2, reg=>reg, mem=>mem, pc=>pc);
                         else                                -- cover invalid cases
                             assert FALSE
-                            report "Illegal Operation -- ADD | SUB"
-                            severity error;
+                            report "Illegal Operation -- OP_OP -> ADD | SUB"
+                            severity warning;                            
                         end if;
                         
-                    when F3_SLL     =>  SLL_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);   -- SLL to be implemented
+                    when F3_SLL     =>  SLL_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);   
                     
                     when F3_SRL =>      -- F3_SRL and F3_SRA have the same value "101"
-                        if funct7 = F7_SRL      then      SRL_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);   -- SRL to be implemented
-                        elsif funct7 = F7_SRA   then      SRA_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);   -- SRA to be implemented
+                        if funct7 = F7_SRL      then      SRL_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);   
+                        elsif funct7 = F7_SRA   then      SRA_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);   
                         else                                -- cover invalid cases
                             assert FALSE
-                            report "Illegal Operation -- OP -> SRL | SRA"
-                            severity error;
-                        end if;
-                        
-                    when F3_XOR     =>  XOR_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);                   -- XOR to be implemented
-                    when F3_OR      =>  OR_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);                   -- OR to be implemented
-                    when F3_AND     =>  AND_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);                   -- AND to be implemented
-                    when F3_SLT     =>  SLT_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);                   -- SLT to be implemented
-                    when F3_SLTU    =>  SLTU_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);                   -- SLTU to be implemented
+                            report "Illegal Operation -- OP_OP -> SRL | SRA"
+                            severity warning;
+                        end if;                        
+                    when F3_XOR     =>  XOR_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);
+                    when F3_OR      =>  OR_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc); 
+                    when F3_AND     =>  AND_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);
+                    when F3_SLT     =>  SLT_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);
+                    when F3_SLTU    =>  SLTU_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);
                     when others =>                          -- cover invalid cases
                         assert FALSE
-                        report "Illegal Operation -- OP"
-                        severity error;
+                        report "Illegal Operation -- OP_OP"
+                        severity warning;
                 end case;
-                write_instruction_trace(l=>l, reg=>reg, instr=>instr, pc=>pc);
+                
             -- end R-Type Instructions
             -----------------------------------------------------------------------
             -- I-Type  Instructions
@@ -94,8 +90,7 @@ begin
                 rd := to_integer(unsigned(Instr(11 downto 7)));
                 rs1 := to_integer(unsigned(Instr(19 downto 15)));
                 imm(10 downto 0) := Instr(30 downto 20);
-                imm(31 downto 11) := (others => Instr(31));
-                
+                imm(31 downto 11) := (others => Instr(31));                
                 case func3 is
                     -- basic I-Type
                     when F3_ADDI   => ADDI_exec(rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);                
@@ -113,45 +108,41 @@ begin
                         elsif func3 = F3_SRA and funct7 = F7_SRA then SRAI_exec(rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
                         else                                                    -- cover invalid cases
                             assert FALSE
-                            report "Illegal Operation -- OP-IMM -> SRL | SRA"
-                            severity error;
+                            report "Illegal Operation -- OP_IMM -> SRL | SRA"
+                            severity warning;
                         end if;
                     -- end I-Type Instructions modified
                     when others =>                                  -- cover invalid cases
                             assert FALSE
-                            report "Illegal Operation -- OP-IMM"
-                            severity error;
-                end case;
-                write_instruction_trace(l=>l, reg=>reg, instr=>instr, pc=>pc);
+                            report "Illegal Operation -- OP_IMM"
+                            severity warning;
+                end case;                
                  
             when OP_LOAD =>
                 func3 := Instr(14 downto 12);
                 rd := to_integer(unsigned(Instr(11 downto 7)));
                 rs1 := to_integer(unsigned(Instr(19 downto 15)));
                 imm(10 downto 0) := Instr(30 downto 20);
-                imm(31 downto 11) := (others => Instr(20));
-                
+                imm(31 downto 11) := (others => Instr(20));                
                 case func3 is
-                    when F3_LB      => LB_exec(rd => rd, rs1 => rs1, imm => imm, reg => reg, mem => mem, pc => pc);                -- LB to be implemented
-                    when F3_LH      => LH_exec(rd => rd, rs1 => rs1, imm => imm, reg => reg, mem => mem, pc => pc);                -- LH to be implemented
-                    when F3_LW      => LW_exec(rd => rd, rs1 => rs1, imm => imm, reg => reg, mem => mem, pc => pc);                -- LW to be implemented
-                    when F3_LBU     => LBU_exec(rd => rd, rs1 => rs1, imm => imm, reg => reg, mem => mem, pc => pc);                -- LBU to be implemented
-                    when F3_LHU     => LHU_exec(rd => rd, rs1 => rs1, imm => imm, reg => reg, mem => mem, pc => pc);                -- LHU to be implemented
+                    when F3_LB      => LB_exec(rd => rd, rs1 => rs1, imm => imm, reg => reg, mem => mem, pc => pc);
+                    when F3_LH      => LH_exec(rd => rd, rs1 => rs1, imm => imm, reg => reg, mem => mem, pc => pc);
+                    when F3_LW      => LW_exec(rd => rd, rs1 => rs1, imm => imm, reg => reg, mem => mem, pc => pc);
+                    when F3_LBU     => LBU_exec(rd => rd, rs1 => rs1, imm => imm, reg => reg, mem => mem, pc => pc);
+                    when F3_LHU     => LHU_exec(rd => rd, rs1 => rs1, imm => imm, reg => reg, mem => mem, pc => pc);
                     when others =>                          -- cover invalid cases
                             assert FALSE
-                            report "Illegal Operation -- OP-LOAD"
-                            severity error;
+                            report "Illegal Operation -- OP_LOAD"
+                            severity warning;
                 end case;
-                write_instruction_trace(l=>l, reg=>reg, instr=>instr, pc=>pc);
-            when OP_JALR => 
+                
+            when OP_JALR =>                 
                 rd := to_integer(unsigned(Instr(11 downto 7)));
                 rs1 := to_integer(unsigned(Instr(19 downto 15)));
                 imm(10 downto 1) := Instr(30 downto 21);
-                imm(31 downto 11) := (others => Instr(31));      
-                write_instruction_trace(l=>l, reg=>reg, instr=>instr, pc=>pc);          
-                JALR_exec(rs1, rd, imm, mem, reg, pc);               
-                
-            -- end I-Type Instructions
+                imm(31 downto 11) := (others => Instr(31));
+                JALR_exec(rs1=>rs1, rd=>rd, imm=>imm, mem=>mem, reg=>reg, pc=>pc);
+                -- end I-Type Instructions
             -----------------------------------------------------------------------
             -- S-Type Instructions
             when OP_STORE =>
@@ -161,32 +152,28 @@ begin
                 rs2 := to_integer(unsigned(Instr(24 downto 20)));
                 imm(4 downto 0) := Instr(11 downto 7);
                 imm(10 downto 5) := Instr(30 downto 25);
-                imm(31 downto 11) := (others => Instr(31));
-                
+                imm(31 downto 11) := (others => Instr(31));                
                 case func3 is
-                    when F3_SB  => SB_exec(rs1 => rs1, rs2 => rs2, imm => imm, reg => reg, mem => mem, pc => pc);                    -- SB to be implemented
-                    when F3_SH  => SH_exec(rs1 => rs1, rs2 => rs2, imm => imm, reg => reg, mem => mem, pc => pc);                    -- SH to be implemented
-                    when F3_SW  => SW_exec(rs1 => rs1, rs2 => rs2, imm => imm, reg => reg, mem => mem, pc => pc);                    -- SW to be implemented
+                    when F3_SB  => SB_exec(rs1 => rs1, rs2 => rs2, imm => imm, reg => reg, mem => mem, pc => pc);
+                    when F3_SH  => SH_exec(rs1 => rs1, rs2 => rs2, imm => imm, reg => reg, mem => mem, pc => pc);
+                    when F3_SW  => SW_exec(rs1 => rs1, rs2 => rs2, imm => imm, reg => reg, mem => mem, pc => pc);
                     when others =>                          -- covers invalid cases
                             assert FALSE
-                            report "Illegal Operation -- OP-STORE"
-                            severity error;
-                end case;
-                write_instruction_trace(l=>l, reg=>reg, instr=>instr, pc=>pc);
+                            report "Illegal Operation -- OP_STORE"
+                            severity warning;
+                end case;                
             -- end S-Type Instructions
             -----------------------------------------------------------------------
             -- U-Type Instructions
             when OP_LUI => 
                 rd := to_integer(unsigned(Instr(11 downto 7)));
                 imm(31 downto 12) := Instr(31 downto 12);
-                imm(11 downto 0) := (others => '0');
-                write_instruction_trace(l=>l, reg=>reg, instr=>instr, pc=>pc);
+                imm(11 downto 0) := (others => '0');                
                 LUI_exec(rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
             when OP_AUIPC   => 
                 rd := to_integer(unsigned(Instr(11 downto 7)));
                 imm(31 downto 12) := Instr(31 downto 12);
-                imm(11 downto 0) := (others => '0');
-                write_instruction_trace(l=>l, reg=>reg, instr=>instr, pc=>pc);
+                imm(11 downto 0) := (others => '0');                
                 AUIPC_exec(rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
             -- end U-Type Instructions
             -----------------------------------------------------------------------
@@ -197,9 +184,8 @@ begin
                 imm(10 downto 1)    := Instr(30 downto 21);
                 imm(11)             := Instr(20);
                 imm(19 downto 12)   := Instr(19 downto 12);
-                imm(31 downto 20)   := (others => Instr(31));
-                write_instruction_trace(l=>l, reg=>reg, instr=>instr, pc=>pc);
-                JAL_exec(rd, imm, mem, reg, pc);
+                imm(31 downto 20)   := (others => Instr(31));                
+                JAL_exec(rd=>rd, imm=>imm, mem=>mem, reg=>reg, pc=>pc);
             -- end J-Type Instructions
             -----------------------------------------------------------------------
             -- B-Type Instructions
@@ -211,30 +197,29 @@ begin
                 imm(4 downto 1) := Instr(11 downto 8);
                 imm(10 downto 5) := Instr(30 downto 25);
                 imm(11) := Instr(7);
-                imm(31 downto 12) := (others => Instr(31));
-                
+                imm(31 downto 12) := (others => Instr(31));                
                 case func3 is
-                    when F3_BEQ  => BEQ_exec (rs1, rs2, imm, mem, reg, pc);               
-                    when F3_BNE  => BNE_exec (rs1, rs2, imm, mem, reg, pc);               
-                    when F3_BLT  => BLT_exec (rs1, rs2, imm, mem, reg, pc);
-                    when F3_BGE  => BGE_exec (rs1, rs2, imm, mem, reg, pc);
-                    when F3_BLTU => BLTU_exec (rs1, rs2, imm, mem, reg, pc);
-                    when F3_BGEU => BGEU_exec (rs1, rs2, imm, mem, reg, pc);
+                    when F3_BEQ  => BEQ_exec (rs1=>rs1, rs2=>rs2, imm=>imm, mem=>mem, reg=>reg, pc=>pc);               
+                    when F3_BNE  => BNE_exec (rs1=>rs1, rs2=>rs2, imm=>imm, mem=>mem, reg=>reg, pc=>pc);               
+                    when F3_BLT  => BLT_exec (rs1=>rs1, rs2=>rs2, imm=>imm, mem=>mem, reg=>reg, pc=>pc);
+                    when F3_BGE  => BGE_exec (rs1=>rs1, rs2=>rs2, imm=>imm, mem=>mem, reg=>reg, pc=>pc);
+                    when F3_BLTU => BLTU_exec (rs1=>rs1, rs2=>rs2, imm=>imm, mem=>mem, reg=>reg, pc=>pc);
+                    when F3_BGEU => BGEU_exec (rs1=>rs1, rs2=>rs2, imm=>imm, mem=>mem, reg=>reg, pc=>pc);
                     when others =>                      -- covers invalid cases
                         assert FALSE 
                         report "Illegal Operation -- OP_BRANCH" 
-                        severity error;
-                end case;
-                write_instruction_trace(l=>l, reg=>reg, instr=>instr, pc=>pc);
+                        severity warning;
+                end case;                
             -- end B-Type Instructions
             -----------------------------------------------------------------------
 
-            when others =>          -- covers invalid cases
+            when others =>          -- covers invalid cases                
                 assert FALSE
-                report "Illegal Operation"
-                severity error;
-        end case;      
+                report "Illegal Operation -- no OP_CODE"
+                severity warning;
+        end case;
+        end loop;
+        print_tail(Tracefile);      
         wait;
-    end process;
-    print_tail(TraceFile);
+    end process;    
 end functional;

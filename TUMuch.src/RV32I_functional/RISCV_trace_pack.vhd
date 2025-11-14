@@ -22,7 +22,7 @@ package body trace_pack is
         variable l : line; 
     begin
         --write program counter
-        write( l , string'("PC "));
+        write( l , string'(" PC "));
         write( l , string'(" | ") );
         --write instruction
         write( l , string'(" CMD "));
@@ -30,8 +30,8 @@ package body trace_pack is
                
         --write registers
         for i in 0 to 31 loop 
-            write( l , string'(" x"), left );
-            write( l , i , left, 6);
+            write( l , string'("   x"), left );
+            write( l , i , left, 4);
             write( l , string'(" | ") );
         end loop;  
         writeline(TraceFile, l);
@@ -39,9 +39,16 @@ package body trace_pack is
     
     procedure print_tail(file TraceFile : Text) is
         variable l : line; 
+        variable tmp : string(1 to 366); 
     begin
         --write border
-        write(l, string'("---------------------------------------------------------------------"));
+        tmp := "----------------------------------------------------------------------" &
+               "----------------------------------------------------------------------" &
+               "----------------------------------------------------------------------" &
+               "----------------------------------------------------------------------" &
+               "----------------------------------------------------------------------" &
+               "----------------";
+        write(l, tmp);
         writeline(TraceFile, l);
     end procedure; 
         
@@ -196,7 +203,7 @@ package body trace_pack is
     procedure write_instruction_trace(l: inout line; reg : RegType; instr : InstrType; pc : PCType) is
     begin 
         --write program counter
-        write( l , hex_image_addr(to_integer(unsigned(pc))), left, 3);
+        write( l , hex_image_addr(pc), left, 3);
         write( l , string'(" | ") );
         
         --write instruction mnemonic
