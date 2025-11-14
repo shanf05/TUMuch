@@ -133,7 +133,7 @@ package body mem_pack is
         variable rs1, rs2, rd : RegAddrType;
         variable mnemonic : MnemonicType;
         variable imm, data : ImmType;
-        variable rs1_set, rd_set, imm_set, data_set : boolean;
+        variable rs1_set, rd_set, imm_set, data_set, mnemonic_set : boolean;
         variable instr : InstrType;
         
     begin 
@@ -147,11 +147,14 @@ package body mem_pack is
             rs1_set := false;
             data_set := false;
             imm_set := false;
+            mnemonic_set := false;
             
             --read word from each line
             word_loop: while success loop
                 read(l, v(1), success);
-                if v(1) = '@' then
+                if v(1) = ' ' then
+                    null;
+                elsif v(1) = '@' then
                     read(l, v(1 to 6), success);
                     index := to_MemAddrType(v(1 to 6));
                 elsif v(1) = '#' then
@@ -162,15 +165,16 @@ package body mem_pack is
                         imm := to_ImmType(v(1 to 5));
                         imm_set := true;
                     end if;
-                elsif ((v(1) = 'X') or (v(1) = 'x')) then
+                elsif (v(1) = 'X') or (v(1) = 'x') then
                     read(l, v(2), success);
       
                     --case 1: word is instruction XOR/XORI
-                    if (v(2) = 'O') or (v(2) = 'o') then
+                    if ((v(2) = 'O') or (v(2) = 'o')) and (mnemonic_set = false) then
                         for i in 3 to 5 loop
                             read(l, v(i), success);
                         end loop;
                         mnemonic := MnemonicType'(v(1 to 5));
+                        mnemonic_set := true;
                     --case 2: word is a register
                     else
                         v(1) := v(2);
@@ -195,10 +199,16 @@ package body mem_pack is
                     else assert False report "Invalid Operation - Operation not defined" severity error;
                     end if;
                 else
-                    for i in 2 to 5 loop
-                        read(l, v(i), success);
-                    end loop;
-                    mnemonic := MnemonicType'(v(1 to 5));
+                    if mnemonic_set = true then
+                        assert false report "Invalid Operation - Mnemonic already set" severity error;
+                    else
+                        for i in 2 to 5 loop
+                            read(l, v(i), success);
+                        end loop;
+                        mnemonic := MnemonicType'(v(1 to 5));
+                        mnemonic_set := true;
+                     end if;
+
                 end if;
                 
             end loop;                   --end of word loop
@@ -294,6 +304,7 @@ package body mem_pack is
             end if;
             
             Mem(index) := instr;
+
             if index = 2**MemAddrSize-1 then --arrived at last line address of memory
                 exit line_loop;
             else 
@@ -306,6 +317,7 @@ package body mem_pack is
         end loop;                      --end of line-loop
         return mem;                    --returning memory filled with binary stream for executing instructions
     end function;
+
     
     impure function init_memory_bin (file BinFile : text) return MemType is
         variable l : line; 
