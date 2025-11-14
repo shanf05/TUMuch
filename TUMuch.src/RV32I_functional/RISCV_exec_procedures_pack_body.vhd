@@ -8,77 +8,73 @@ use work.defs_pack.all;
 package body exec_procedures_pack is   
 
     procedure LB_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
-        variable temp : signed(RegDataSize-1 downto 0);
     begin        
         case to_integer(signed(imm)) is
         when 0 => 
-            Reg(rd)(7 downto 0)  := Reg(rs1)(7 downto 0);     
+            Reg(rd)(7 downto 0)  := Mem(rs1)(7 downto 0);     
             Reg(rd)(31 downto 8) := (others=>'0'); --unsigned extension o upper 24 bits
         when 1 => 
-            Reg(rd)(7 downto 0)  := Reg(rs1)(15 downto 8);     
+            Reg(rd)(7 downto 0)  := Mem(rs1)(15 downto 8);     
             Reg(rd)(31 downto 8) := (others=>'0'); --unsigned extension o upper 24 bits        
         when 2 => 
-            Reg(rd)(7 downto 0)  := Reg(rs1)(23 downto 16);
+            Reg(rd)(7 downto 0)  := Mem(rs1)(23 downto 16);
             Reg(rd)(31 downto 8) := (others=>'0'); --unsigned extension o upper 24 bits
         when 3 => 
-            Reg(rd)(7 downto 0)  := Reg(rs1)(31 downto 24);     
+            Reg(rd)(7 downto 0)  := Mem(rs1)(31 downto 24);     
             Reg(rd)(31 downto 8) := (others=>'0'); --unsigned extension o upper 24 bits
         when others =>
             assert(false);
-            report "Address misalignment -- LHU_exec"
+            report "Address misalignment -- LB_exec"
             severity warning;            
         end case;
         IncrementPc(pc);
     end procedure;
     
     procedure LBU_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
-        variable temp : unsigned(RegDataSize-1 downto 0);
     begin    
         case to_integer(signed(imm)) is
         when 0 => 
-            Reg(rd)(7 downto 0)  := Reg(rs1)(7 downto 0);     
-            Reg(rd)(31 downto 8) := (others=>Reg(rs1)(7)); --signed extension o upper 24 bits
+            Reg(rd)(7 downto 0)  := Mem(rs1)(7 downto 0);     
+            Reg(rd)(31 downto 8) := (others=>Mem(rs1)(7)); --signed extension o upper 24 bits
         when 1 => 
-            Reg(rd)(7 downto 0)  := Reg(rs1)(15 downto 8);     
-            Reg(rd)(31 downto 8) := (others=>Reg(rs1)(7)); --signed extension o upper 24 bits        
+            Reg(rd)(7 downto 0)  := Mem(rs1)(15 downto 8);     
+            Reg(rd)(31 downto 8) := (others=>Mem(rs1)(7)); --signed extension o upper 24 bits        
         when 2 => 
-            Reg(rd)(7 downto 0)  := Reg(rs1)(23 downto 16);
-            Reg(rd)(31 downto 8) := (others=>Reg(rs1)(7)); --signed extension o upper 24 bits
+            Reg(rd)(7 downto 0)  := Mem(rs1)(23 downto 16);
+            Reg(rd)(31 downto 8) := (others=>Mem(rs1)(7)); --signed extension o upper 24 bits
         when 3 => 
-            Reg(rd)(7 downto 0)  := Reg(rs1)(31 downto 24);     
-            Reg(rd)(31 downto 8) := (others=>Reg(rs1)(7)); --signed extension o upper 24 bits
+            Reg(rd)(7 downto 0)  := Mem(rs1)(31 downto 24);     
+            Reg(rd)(31 downto 8) := (others=>Mem(rs1)(7)); --signed extension o upper 24 bits
         when others =>
             assert(false);
-            report "Address misalignment -- LHU_exec"
+            report "Address misalignment -- LBU_exec"
             severity warning;            
         end case;
         IncrementPc(pc);
     end procedure;
     
     procedure LH_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
-        variable temp : signed(RegDataSize-1 downto 0);
     begin
         case to_integer(signed(imm)) is
         when 0 => 
-            Reg(rd)(15 downto 0)  := Reg(rs1)(15 downto 0);     
-            Reg(rd)(31 downto 16) := (others=>Reg(rs1)(15)); --signed extension o upper 16 bits
+            Reg(rd)(15 downto 0)  := Mem(rs1)(15 downto 0);     
+            Reg(rd)(31 downto 16) := (others=>Mem(rs1)(15)); --signed extension o upper 16 bits
         when 2 => 
-            Reg(rd)(15 downto 0)  := Reg(rs1)(31 downto 16);
-            Reg(rd)(31 downto 16) := (others=>Reg(rs1)(15)); --signed extension o upper 16 bits
+            Reg(rd)(15 downto 0)  := Mem(rs1)(31 downto 16);
+            Reg(rd)(31 downto 16) := (others=>Mem(rs1)(15)); --signed extension o upper 16 bits
         when others =>
             assert(false);
-            report "Address misalignment -- LHU_exec"
+            report "Address misalignment -- LH_exec"
             severity warning;            
         end case;
         IncrementPc(pc);
     end procedure;
         
     procedure LHU_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
-        variable temp : unsigned(RegDataSize-1 downto 0);
     begin         
         case to_integer(signed(imm)) is
-        when 0 => Reg(rd) := "0000000000000000" & Reg(rs1)(15 downto 0);    --unsigned extension o upper 16 bits    
-        when 2 => Reg(rd) := "0000000000000000" & Reg(rs1)(31 downto 16);   --unsigned extension o upper 16 bits
+        when 0 => Reg(rd) := "0000000000000000" & Mem(rs1)(15 downto 0);    --unsigned extension o upper 16 bits    
+        when 2 => Reg(rd) := "0000000000000000" & Mem(rs1)(31 downto 16);   --unsigned extension o upper 16 bits
         when others =>
             assert(false);
             report "Address misalignment -- LHU_exec"
@@ -88,21 +84,18 @@ package body exec_procedures_pack is
     end procedure;
     
     procedure LW_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
-        variable temp : unsigned(RegDataSize-1 downto 0);
     begin
-        if rs1 + to_integer(signed(imm)) mod 4 /= 0 then
-            assert(false);
-            report "Address misalignment -- LB_exec"
-            severity warning;
-        else    
-            temp := unsigned(Mem(rs1 + to_integer(signed(imm)))); 
-            Reg(rd) := bit_vector(temp);
-        end if;               
+    	case to_integer(signed(imm)) is
+    	    when 0 => Reg(rd) := Mem(rs1);
+    	    when others =>
+	        assert(false);
+	        report "Address misalignment -- LW_exec"
+	        severity warning;            
+    	end case;    	              
         IncrementPc(pc);
     end procedure;
     
     procedure SB_exec (rs1, rs2 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
-        variable addr : PcType;
     begin
         case to_integer(unsigned(imm)) is
         when 0 => Mem(rs1) := "000000000000000000000000" & Reg(rs2)(7 downto 0);
@@ -132,13 +125,13 @@ package body exec_procedures_pack is
     
     procedure SW_exec (rs1, rs2 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
     begin
-        if rs1 + to_integer(signed(imm)) mod 4 /= 0 then
-            assert(false);
-            report "Address misalignment -- SW_exec"
-            severity warning;
-        else 
-            Mem(rs1 + to_integer(signed(imm))) := Reg(rs2);
-        end if;   
+    	case to_integer(signed(imm)) is
+    	    when 0 => Mem(rs1) := Mem(rs2);
+    	    when others =>
+	        assert(false);
+	        report "Address misalignment -- LW_exec"
+	        severity warning;            
+    	end case;    	       
         IncrementPc(pc);
     end procedure;
     
