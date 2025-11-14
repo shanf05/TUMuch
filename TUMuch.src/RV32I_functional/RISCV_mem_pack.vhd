@@ -13,7 +13,7 @@ package mem_pack is
     
     --function returning memory
     impure function init_memory_asm (file filename : text) return Memtype;    
-    impure function init_memory_bin (mem : MemType; file BinFile : text) return Memtype;  
+    impure function init_memory_bin (file BinFile : text) return Memtype;  
     procedure memory_data_dump (mem : MemType; file DataDumpFile : text);   
 
     --functions for Type conversions from textfile
@@ -292,10 +292,21 @@ package body mem_pack is
         return mem;                    --returning memory filled with binary stream for executing instructions
     end function;
     
-    impure function init_memory_bin (mem : MemType; file BinFile : text) return MemType is
-    variable l : line; 
+    impure function init_memory_bin (file BinFile : text) return MemType is
+        variable l : line; 
+        variable v : string(1 to 32);
+        variable success : boolean;
+        variable addr : PcType := 0; 
+        variable mem : MemType := (others=>(others=>'0'));
+        
     begin
-           
+        loop 
+            exit when endfile(BinFile);
+            readline(BinFile, l);
+            read(l, v(1 to 32), success);
+            mem(addr) := to_ImmType(v(1 to 32));
+            addr := addr + 4;            
+        end loop;   
         return mem;                    --returning memory filled with binary stream for executing instructions
     end function;
     

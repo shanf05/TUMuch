@@ -36,8 +36,8 @@ begin
     begin 
         print_header(TraceFile);
         print_tail(TraceFile); 
-        mem := init_memory_asm(AsmFile);
-        --mem := init_memory_bin(AsmFile); alternative
+        --mem := init_memory_asm(AsmFile);
+        mem := init_memory_bin(BinFile); --alternative
         for i in 0 to 10 loop       --workaround. actually we wait for a stop statement; ->loop needed for print functions
         -- fetch instruction
         Instr := Mem(pc/4);
