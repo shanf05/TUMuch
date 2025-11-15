@@ -9,8 +9,13 @@ Josip Pepić
 
 # Assembly Syntax für den Parser:
 
-- Register immer starten mit 'x' oder 'X' gefolgt von ZWEI Ziffern. Beispiel: X17.
-- Immediates immer starten mit '#' gefolgt von 5 Ziffern HexCode. Falls die Instruction nur weniger als 20 Bit Immediate unterstützt, auffüllen mit 0. Beispiel: #123ab
+- Mnemonics müssen IMMER mind. 5 ZEICHEN (inkl. Whitespace) lang sein (ungültig: ADD) (gültig: ADD  )
+- 
+- Register immer starten mit 'x' oder 'X' gefolgt von ZWEI Ziffern. Beispiel: X07 X15 etc.
+- Immediates immer starten mit '#'. Es gibt 4 Operationen die einen 20-Bit Immediate benötigen (LUI, AUIPC, JAL, VAL), alle anderen verwenden 12 Bit Immediates -> (1) ADDI  X01 X02 #ABC  (2) LUI X3 #ABCDE
+- Zur Festlegung des Index (analog zu Folien) im Speicher immer mit @ anfangen und 0x gefolgt von der Adresse in Hex-Form angeben -> Bsp.: @0xF000
+-Wichtig: Keine LEERE ZEILE im Assembly Code verwenden -> Sonst: Parser wählt random Zeichen und diese werden als mnemonic gedeutet
+- Zum Speichern von Daten: Verwende Mnemonic VAL gefolgt von 20 Bit Immediate -> Bsp.: VAL  #ABCDE
 - Für die Mnemonics nur RVI32 supportet -> siehe RISCV_mnemonic_pack.vhd
 
 # Alternative Speicher initialisierung über Bit-Code

@@ -11,7 +11,7 @@ use work.inst_encoding_pack.all;
 use work.trace_pack.all; 
 
 package mem_pack is
-    
+ 
     --function returning memory
     impure function init_memory_asm (file filename : text) return Memtype;    
     impure function init_memory_bin (file BinFile : text) return Memtype;  
@@ -20,24 +20,21 @@ package mem_pack is
     --functions for Type conversions from textfile
     function to_MemAddrType (MemAddr : string(1 to 6)) return MemAddrType;
     function to_RegAddrType (Reg : string(1 to 2)) return RegAddrType;
-    function to_ImmType (ImmString : string) return ImmType;
+    function to_ImmType (ImmString : string; sign : boolean) return ImmType;
     
     --auxiliary functions
-    function hex_string_to_dec (s : string) return integer;
-    
+    function hexstr_to_int (s : string; sign : boolean) return integer;
+    function hexchar_to_int (char : character) return integer;
+ 
 end mem_pack;    
-    
     
     
 package body mem_pack is
 
-
-    function hex_string_to_dec (s : string) return integer is
+    function hexchar_to_int (char : character) return integer is
     variable value : integer := 0;
-    variable result : integer := 0;
     begin
-    for i in s'range loop
-        case s(i) is
+        case char is
             when '0' => value := 0;
             when '1' => value := 1;
             when '2' => value := 2;
@@ -55,20 +52,36 @@ package body mem_pack is
             when 'E' | 'e' => value := 14;
             when 'F' | 'f' => value := 15;
             when others => assert false report "Invalid Operation -- Invalid Address" severity error;
-        end case;
+            end case;
+        return value;
+    end function hexchar_to_int;
     
-        result := 16 * result + value;
-    end loop;
+    function hexstr_to_int (s : string; sign : boolean) return integer is
+    variable temp : integer := 0;
+    variable result : integer := 0;
+    variable bits : natural := 4 * s'length;
+    begin
+        for i in s'range loop
+            temp := hexchar_to_int(s(i));
+            result := result * 16 + temp;
+        end loop;   
+        
+        if sign then
+            if result >= 2**(bits - 1) then
+                result := result - 2**bits;
+            end if;
+        end if;
+    
     return result;
  
-    end function hex_string_to_dec;
+    end function hexstr_to_int;
      
 
     function to_MemAddrType (MemAddr : string (1 to 6)) return MemAddrType is
     variable MemAddrString : string (1 to 4) := MemAddr(3 to 6);
     variable MemAddr_dec : MemAddrtype;
     begin  
-        MemAddr_dec := hex_string_to_dec(MemAddrString) / 4;                --remove last 2 bits for 14 bit address space
+        MemAddr_dec := hexstr_to_int(MemAddrString, false) / 4;                --remove last 2 bits for 14 bit address space
         if (0 <= MemAddr_dec) and (MemAddr_dec <= 2**MemAddrSize-1) then
             return MemAddr_dec;
         else
@@ -100,9 +113,10 @@ package body mem_pack is
     end function to_RegAddrType;
     
     
-    function to_ImmType (ImmString : string) return ImmType is
-        variable Imm_dec : integer := hex_string_to_dec(ImmString);
+    function to_ImmType (ImmString : string; sign : boolean) return ImmType is
+        variable Imm_dec : integer;
     begin
+        Imm_dec := hexstr_to_int(s => ImmString, sign => sign );
         return bit_vector(to_signed(Imm_dec, RegDataSize));
     end function to_ImmType;
     
@@ -157,11 +171,19 @@ package body mem_pack is
                     exit word_loop;
                 
                 elsif v(1) = '#' then
-                    read(l, v(1 to 5), success);
+                    --case 1: 20 Bit data constant
                     if mnemonic = VAL_mnemonic then
-                        data := to_ImmType(v(1 to 5));
+                        read(l, v(1 to 5), success);
+                        data := to_ImmType(v(1 to 5), true);
+                    --case 2: 20 Bit Immediate in Instruction
+                    elsif (mnemonic = JAL_mnemonic) or (mnemonic = LUI_mnemonic) or (mnemonic = AUIPC_mnemonic) then
+                        read(l, v(1 to 5), success);
+                        imm := to_ImmType(v(1 to 5), true);
+                        imm_set := true;
+                    --case 3: 12 Bit Immediate in Instruction
                     else
-                        imm := to_ImmType(v(1 to 5));
+                        read(l, v(1 to 3), success);
+                        imm := to_ImmType(v(1 to 3), true);
                         imm_set := true;
                     end if;
                     exit word_loop;                 --exit word loop as immediate always comes last in assembly syntax
@@ -202,7 +224,6 @@ package body mem_pack is
                         end loop;
                         mnemonic := MnemonicType'(v(1 to 5));
                         mnemonic_set := true;
-                        report "Mnemonic is:" & mnemonic;
                      end if;
                 end if;
                 
@@ -308,7 +329,7 @@ package body mem_pack is
             if mnemonic = INDEX_mnemonic then null; -- just keeping addrex index;
             else
                 Mem(index) := instr;
-                report("Instroutput: ");
+                report("Instr output: ");
                 write(debug_line, instr);
                 writeline(output, debug_line);
             end if;

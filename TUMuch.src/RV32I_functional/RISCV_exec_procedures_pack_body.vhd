@@ -297,21 +297,9 @@ package body exec_procedures_pack is
     
     procedure SRAI_exec(rs1, rd : RegAddrType; imm : ImmType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is   --erstellt von Max Biricz
     variable shamt : ShamtType := imm(4 downto 0);
-    variable rs1_temp : RegDataType := bit_vector(reg(rs1));
-    variable temp : RegDataType;
-    variable msb : bit_vector(0 downto 0);
-    variable shift_index : integer := 32 - to_integer(unsigned(shamt));
+    variable shift_index : integer := to_integer(unsigned(shamt));
     begin
-        --case 1: shift by 0 places
-        if to_integer(unsigned(shamt)) = 0 then
-            reg(rd) := reg(rs1);
-        --case 2: shift by >= 1 bits
-        else
-        msb(0) := rs1_temp(31);
-        temp := rs1_temp srl to_integer(unsigned(shamt));
-        temp(31 downto shift_index ) := (others => msb(0));
-        reg(rd) := temp; 
-        end if;
+        reg(rd) := reg(rs1) sra shift_index;
         IncrementPc(pc);
     end procedure SRAI_exec;
     
