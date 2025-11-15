@@ -3,6 +3,7 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use std.textio.all;
 use IEEE.numeric_bit.all;
+use IEEE.std_logic_textio.all;
 library work;
 use work.defs_pack.all;
 use work.mnemonic_pack.all;
@@ -54,7 +55,6 @@ package body mem_pack is
             when 'E' | 'e' => value := 14;
             when 'F' | 'f' => value := 15;
             when others => assert false report "Invalid Operation -- Invalid Address" severity error;
-                value := 0;
         end case;
     
         result := 16 * result + value;
@@ -68,7 +68,7 @@ package body mem_pack is
     variable MemAddrString : string (1 to 4) := MemAddr(3 to 6);
     variable MemAddr_dec : MemAddrtype;
     begin  
-        MemAddr_dec := hex_string_to_dec(MemAddrString) / 4;
+        MemAddr_dec := hex_string_to_dec(MemAddrString) / 4;                --remove last 2 bits for 14 bit address space
         if (0 <= MemAddr_dec) and (MemAddr_dec <= 2**MemAddrSize-1) then
             return MemAddr_dec;
         else
@@ -93,7 +93,7 @@ package body mem_pack is
             return RegAddr_dec;
         else
             assert false 
-            report "Invalid Operation -- Register address range: x0 - x31" 
+            report "Invalid Operation -- Register address range: x00 - x31" 
             severity error;
         end if;
       
@@ -126,6 +126,7 @@ package body mem_pack is
     impure function init_memory_asm (file filename : text) return MemType is
 
         variable l : line;                                          --buffer variable to store line of textfile
+        variable debug_line : line;
         variable mem : MemType := (others => (others => '0'));      --initialising memory
         variable success : boolean;
         variable index : MemAddrType := 0;                          --index to write at specific address in mem starting at address 0
@@ -133,7 +134,7 @@ package body mem_pack is
         variable rs1, rs2, rd : RegAddrType;
         variable mnemonic : MnemonicType;
         variable imm, data : ImmType;
-        variable rs1_set, rd_set, imm_set, data_set, mnemonic_set : boolean;
+        variable rs1_set, rd_set, imm_set, mnemonic_set : boolean;
         variable instr : InstrType;
         
     begin 
@@ -143,28 +144,28 @@ package body mem_pack is
             readline(filename, l);
             --flags which instruction operands are used
             success:= true;
-            rd_set := false;
-            rs1_set := false;
-            data_set := false;
-            imm_set := false;
-            mnemonic_set := false;
             
             --read word from each line
             word_loop: while success loop
                 read(l, v(1), success);
-                if v(1) = ' ' then
-                    null;
+                if v(1) = ' ' then null;
                 elsif v(1) = '@' then
                     read(l, v(1 to 6), success);
                     index := to_MemAddrType(v(1 to 6));
+                    mnemonic := INDEX_mnemonic;
+                    mnemonic_set := true;
+                    exit word_loop;
+                
                 elsif v(1) = '#' then
                     read(l, v(1 to 5), success);
-                    if data_set = true then
+                    if mnemonic = VAL_mnemonic then
                         data := to_ImmType(v(1 to 5));
                     else
                         imm := to_ImmType(v(1 to 5));
                         imm_set := true;
                     end if;
+                    exit word_loop;                 --exit word loop as immediate always comes last in assembly syntax
+
                 elsif (v(1) = 'X') or (v(1) = 'x') then
                     read(l, v(2), success);
       
@@ -182,6 +183,7 @@ package body mem_pack is
                         if rd_set = true then
                             if rs1_set = true then
                                 rs2 := to_RegAddrType(v(1 to 2));
+                                exit word_loop;
                             else
                                 rs1 := to_RegAddrType(v(1 to 2));
                                 rs1_set := true;
@@ -190,13 +192,6 @@ package body mem_pack is
                             rd := to_RegAddrType(v(1 to 2));
                             rd_set := true;
                         end if;
-                    end if;
-                elsif (v(1) = 'V') or (v(1) = 'v') then      --case for storing data (constants) in memory
-                    read(l, v(2 to 3), success);
-                    if (v(2) = 'A' or v(2) = 'a') and (v(3) = 'L' or v(3) = 'l') then
-                            mnemonic := VAL_mnemonic;
-                            data_set := true;
-                    else assert False report "Invalid Operation - Operation not defined" severity error;
                     end if;
                 else
                     if mnemonic_set = true then
@@ -207,113 +202,128 @@ package body mem_pack is
                         end loop;
                         mnemonic := MnemonicType'(v(1 to 5));
                         mnemonic_set := true;
+                        report "Mnemonic is:" & mnemonic;
                      end if;
-
                 end if;
                 
             end loop;                   --end of word loop
             
             -- Matching Cmd from Input file to valid mnemonic and returning instruction code
+            if mnemonic_set = true then
             -- register-immediate instructions
-            if mnemonic = ADDI_mnemonic then instr := ADDI_code(rs1 => rs1, rd => rd, imm => imm);
+                if mnemonic = ADDI_mnemonic then instr := ADDI_code(rs1 => rs1, rd => rd, imm => imm);
+                    
+                elsif mnemonic = SLTI_mnemonic then instr := SLTI_code(rs1 => rs1, rd => rd, imm => imm);
+                    
+                elsif mnemonic = SLTIU_mnemonic then instr := SLTIU_code(rs1 => rs1, rd => rd, imm => imm);
+                    
+                elsif mnemonic = ANDI_mnemonic then instr := ANDI_code(rs1 => rs1, rd => rd, imm => imm);
+                    
+                elsif mnemonic = ORI_mnemonic then instr := ORI_code(rs1 => rs1, rd => rd, imm => imm);
+                    
+                elsif mnemonic = XORI_mnemonic then instr := XORI_code(rs1 => rs1, rd => rd, imm => imm);
+                    
+                elsif mnemonic = SLLI_mnemonic then instr := SLLI_code(rs1 => rs1, rd => rd, imm => imm);
                 
-            elsif mnemonic = SLTI_mnemonic then instr := SLTI_code(rs1 => rs1, rd => rd, imm => imm);
+                elsif mnemonic = SRLI_mnemonic then instr := SRLI_code(rs1 => rs1, rd => rd, imm => imm);
+                    
+                elsif mnemonic = SRAI_mnemonic then instr := SRAI_code(rs1 => rs1, rd => rd, imm => imm);
                 
-            elsif mnemonic = SLTIU_mnemonic then instr := SLTIU_code(rs1 => rs1, rd => rd, imm => imm);
+                elsif mnemonic = LUI_mnemonic then instr := LUI_code(rd => rd, imm => imm);
                 
-            elsif mnemonic = ANDI_mnemonic then instr := ANDI_code(rs1 => rs1, rd => rd, imm => imm);
+                elsif mnemonic = AUIPC_mnemonic then instr := AUIPC_code(rd => rd, imm => imm);
+                    
+                --register-register instructions:
+                elsif mnemonic = ADD_mnemonic then instr := ADD_code(rs1 => rs1, rs2 => rs2, rd => rd);
+                    
+                elsif mnemonic = SLT_mnemonic then instr := SLT_code(rs1 => rs1, rs2 => rs2, rd => rd);
+                    
+                elsif mnemonic = SLTU_mnemonic then instr := SLTU_code(rs1 => rs1, rs2 => rs2, rd => rd);
+                    
+                elsif mnemonic = AND_mnemonic then instr := AND_code(rs1 => rs1, rs2 => rs2, rd => rd);
+                    
+                elsif mnemonic = OR_mnemonic then instr := OR_code(rs1 => rs1, rs2 => rs2, rd => rd);
+                    
+                elsif mnemonic = XOR_mnemonic then instr := XOR_code(rs1 => rs1, rs2 => rs2, rd => rd);
+                    
+                elsif mnemonic = SLL_mnemonic then instr := SLL_code(rs1 => rs1, rs2 => rs2, rd => rd);
                 
-            elsif mnemonic = ORI_mnemonic then instr := ORI_code(rs1 => rs1, rd => rd, imm => imm);
+                elsif mnemonic = SRL_mnemonic then instr := SRL_code(rs1 => rs1, rs2 => rs2, rd => rd);
+                    
+                elsif mnemonic = SUB_mnemonic then instr := SUB_code(rs1 => rs1, rs2 => rs2, rd => rd);
                 
-            elsif mnemonic = XORI_mnemonic then instr := XORI_code(rs1 => rs1, rd => rd, imm => imm);
+                elsif mnemonic = SRA_mnemonic then instr := SRA_code(rs1 => rs1, rs2 => rs2, rd => rd);
                 
-            elsif mnemonic = SLLI_mnemonic then instr := SLLI_code(rs1 => rs1, rd => rd, imm => imm);
-            
-            elsif mnemonic = SRLI_mnemonic then instr := SRLI_code(rs1 => rs1, rd => rd, imm => imm);
+                --NOP-instruction
+                elsif mnemonic = NOP_mnemonic then instr := NOP_Code;
                 
-            elsif mnemonic = SRAI_mnemonic then instr := SRAI_code(rs1 => rs1, rd => rd, imm => imm);
-            
-            elsif mnemonic = LUI_mnemonic then instr := LUI_code(rd => rd, imm => imm);
-            
-            elsif mnemonic = AUIPC_mnemonic then instr := AUIPC_code(rd => rd, imm => imm);
+                --unconditional branches: require switching of inputs as reg variables are filled in order (1)rd (2)rs1 (3)rs2
+                elsif mnemonic = JAL_mnemonic then instr := JAL_Code(rd => rd, imm => imm);
                 
-            --register-register instructions:
-            elsif mnemonic = ADD_mnemonic then instr := ADD_code(rs1 => rs1, rs2 => rs2, rd => rd);
+                elsif mnemonic = JALR_mnemonic then instr := JALR_Code(rs1 => rs1, rd => rd, imm => imm);
                 
-            elsif mnemonic = SLT_mnemonic then instr := SLT_code(rs1 => rs1, rs2 => rs2, rd => rd);
+                elsif mnemonic = BEQ_mnemonic then instr := BEQ_Code(rs1 => rd, rs2 => rs1, imm => imm);
                 
-            elsif mnemonic = SLTU_mnemonic then instr := SLTU_code(rs1 => rs1, rs2 => rs2, rd => rd);
+                elsif mnemonic = BNE_mnemonic then instr := BNE_Code(rs1 => rd, rs2 => rs1, imm => imm);
                 
-            elsif mnemonic = AND_mnemonic then instr := AND_code(rs1 => rs1, rs2 => rs2, rd => rd);
+                elsif mnemonic = BLT_mnemonic then instr := BLT_Code(rs1 => rd, rs2 => rs1, imm => imm);
                 
-            elsif mnemonic = OR_mnemonic then instr := OR_code(rs1 => rs1, rs2 => rs2, rd => rd);
+                elsif mnemonic = BLTU_mnemonic then instr := BLTU_Code(rs1 => rd, rs2 => rs1, imm => imm);
                 
-            elsif mnemonic = XOR_mnemonic then instr := XOR_code(rs1 => rs1, rs2 => rs2, rd => rd);
+                elsif mnemonic = BGE_mnemonic then instr := BGE_Code(rs1 => rd, rs2 => rs1, imm => imm);
                 
-            elsif mnemonic = SLL_mnemonic then instr := SLL_code(rs1 => rs1, rs2 => rs2, rd => rd);
-            
-            elsif mnemonic = SRL_mnemonic then instr := SRL_code(rs1 => rs1, rs2 => rs2, rd => rd);
+                elsif mnemonic = BGEU_mnemonic then instr := BGEU_Code(rs1 => rd, rs2 => rs1, imm => imm);
                 
-            elsif mnemonic = SUB_mnemonic then instr := SUB_code(rs1 => rs1, rs2 => rs2, rd => rd);
-            
-            elsif mnemonic = SRA_mnemonic then instr := SRA_code(rs1 => rs1, rs2 => rs2, rd => rd);
-            
-            --NOP-instruction
-            elsif mnemonic = NOP_mnemonic then instr := NOP_Code;
-            
-            --unconditional branches: require switching of inputs as reg variables are filled in order (1)rd (2)rs1 (3)rs2
-            elsif mnemonic = JAL_mnemonic then instr := JAL_Code(rd => rd, imm => imm);
-            
-            elsif mnemonic = JALR_mnemonic then instr := JALR_Code(rs1 => rs1, rd => rd, imm => imm);
-            
-            elsif mnemonic = BEQ_mnemonic then instr := BEQ_Code(rs1 => rd, rs2 => rs1, imm => imm);
-            
-            elsif mnemonic = BNE_mnemonic then instr := BNE_Code(rs1 => rd, rs2 => rs1, imm => imm);
-            
-            elsif mnemonic = BLT_mnemonic then instr := BLT_Code(rs1 => rd, rs2 => rs1, imm => imm);
-            
-            elsif mnemonic = BLTU_mnemonic then instr := BLTU_Code(rs1 => rd, rs2 => rs1, imm => imm);
-            
-            elsif mnemonic = BGE_mnemonic then instr := BGE_Code(rs1 => rd, rs2 => rs1, imm => imm);
-            
-            elsif mnemonic = BGEU_mnemonic then instr := BGEU_Code(rs1 => rd, rs2 => rs1, imm => imm);
-            
-            --load instructions
-            elsif mnemonic = LW_mnemonic then instr := LW_Code(rs1 => rs1, rd => rd, imm => imm);
-            
-            elsif mnemonic = LH_mnemonic then instr := LH_Code(rs1 => rs1, rd => rd, imm => imm);
-            
-            elsif mnemonic = LHU_mnemonic then instr := LHU_Code(rs1 => rs1, rd => rd, imm => imm);
-            
-            elsif mnemonic = LB_mnemonic then instr := LB_Code(rs1 => rs1, rd => rd, imm => imm);
-            
-            elsif mnemonic = LBU_mnemonic then instr := LBU_Code(rs1 => rs1, rd => rd, imm => imm);
-            
-            --store instructions
-            elsif mnemonic = SW_mnemonic then instr := SW_Code(rs1 => rs1, rs2 => rd, imm => imm);
-            
-            elsif mnemonic = SH_mnemonic then instr := SH_Code(rs1 => rs1, rs2 => rd, imm => imm);
-            
-            elsif mnemonic = SB_mnemonic then instr := SB_Code(rs1 => rs1, rs2 => rd, imm => imm);
-            
-            --store data (constants) at specific memory address range @0xF000
-            elsif mnemonic = VAL_mnemonic then instr := data;
-            
-            else assert false report "Invalid Operation -- Operation not found" severity error;
-               
+                --load instructions
+                elsif mnemonic = LW_mnemonic then instr := LW_Code(rs1 => rs1, rd => rd, imm => imm);
+                
+                elsif mnemonic = LH_mnemonic then instr := LH_Code(rs1 => rs1, rd => rd, imm => imm);
+                
+                elsif mnemonic = LHU_mnemonic then instr := LHU_Code(rs1 => rs1, rd => rd, imm => imm);
+                
+                elsif mnemonic = LB_mnemonic then instr := LB_Code(rs1 => rs1, rd => rd, imm => imm);
+                
+                elsif mnemonic = LBU_mnemonic then instr := LBU_Code(rs1 => rs1, rd => rd, imm => imm);
+                
+                --store instructions
+                elsif mnemonic = SW_mnemonic then instr := SW_Code(rs1 => rs1, rs2 => rd, imm => imm);
+                
+                elsif mnemonic = SH_mnemonic then instr := SH_Code(rs1 => rs1, rs2 => rd, imm => imm);
+                
+                elsif mnemonic = SB_mnemonic then instr := SB_Code(rs1 => rs1, rs2 => rd, imm => imm);
+                
+                
+                --store data (constants) at specific memory address range @0xF000
+                
+                elsif mnemonic = VAL_mnemonic then instr := InstrType(to_signed(to_integer(signed(data)), RegDataSize)); 
+                
+                elsif mnemonic = INDEX_mnemonic then null;
+                
+                else assert false report "Invalid Operation -- Unknown Operation" severity error;
+                   
+                end if;
+            else assert false report "Invalid Operation -- No Operation has been detected" severity error; --case: no mnemonic parsed from file
             end if;
             
-            Mem(index) := instr;
+            if mnemonic = INDEX_mnemonic then null; -- just keeping addrex index;
+            else
+                Mem(index) := instr;
+                report("Instroutput: ");
+                write(debug_line, instr);
+                writeline(output, debug_line);
+            end if;
+
 
             if index = 2**MemAddrSize-1 then --arrived at last line address of memory
+                report "Last Memory Address reached";
                 exit line_loop;
             else 
                 index := index + 1;
             end if;    
             rd_set := false;
             rs1_set := false;
-            data_set := false;
             imm_set := false;
+            mnemonic_set := false;
         end loop;                      --end of line-loop
         return mem;                    --returning memory filled with binary stream for executing instructions
     end function;
