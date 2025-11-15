@@ -8,60 +8,63 @@ use work.defs_pack.all;
 package body exec_procedures_pack is   
 
     procedure LB_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
-    begin        
-        case to_integer(signed(imm)) is
-            when 0 => 
-                Reg(rd)(7 downto 0)  := Mem(to_integer(unsigned(Reg(rs1))))(7 downto 0);     
-                Reg(rd)(31 downto 8) := (others =>  Mem(to_integer(unsigned(Reg(rs1))))(7)); --signed extension o upper 24 bits
+        variable memAddr: MemAddrType;
+    begin
+        memAddr := to_integer(unsigned(Reg(rs1))) + to_integer(signed(imm))/4; -- word address
+                
+        case to_integer(signed(imm)) mod 4 is
+            when 0 =>
+                Reg(rd)(7 downto 0)  := Mem(memAddr)(7 downto 0);     
+                Reg(rd)(31 downto 8) := (others =>  Mem(memAddr)(7)); --signed extension o upper 24 bits
             when 1 => 
-                Reg(rd)(7 downto 0)  := Mem(to_integer(unsigned(Reg(rs1))))(15 downto 8);     
-                Reg(rd)(31 downto 8) := (others =>  Mem(to_integer(unsigned(Reg(rs1))))(15)); --signed extension o upper 24 bits
+                Reg(rd)(7 downto 0)  := Mem(memAddr)(15 downto 8);     
+                Reg(rd)(31 downto 8) := (others =>  Mem(memAddr)(15)); --signed extension o upper 24 bits
             when 2 => 
-                Reg(rd)(7 downto 0)  := Mem(to_integer(unsigned(Reg(rs1))))(23 downto 16);
-                Reg(rd)(31 downto 8) := (others =>  Mem(to_integer(unsigned(Reg(rs1))))(23)); --signed extension o upper 24 bits
+                Reg(rd)(7 downto 0)  := Mem(memAddr)(23 downto 16);
+                Reg(rd)(31 downto 8) := (others =>  Mem(memAddr)(23)); --signed extension o upper 24 bits
             when 3 => 
-                Reg(rd)(7 downto 0)  := Mem(to_integer(unsigned(Reg(rs1))))(31 downto 24);     
-                Reg(rd)(31 downto 8) := (others =>  Mem(to_integer(unsigned(Reg(rs1))))(31)); --signed extension o upper 24 bits
-            when others =>
-                assert(false);
-                report "Invalid offset -- LB_exec"
-                severity warning;            
+                Reg(rd)(7 downto 0)  := Mem(memAddr)(31 downto 24);     
+                Reg(rd)(31 downto 8) := (others =>  Mem(memAddr)(31)); --signed extension o upper 24 bits
+            when others => NULL;
         end case;
         IncrementPc(pc);
     end procedure;
     
     procedure LBU_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
-    begin    
-        case to_integer(signed(imm)) is
+        variable memAddr: MemAddrType;
+    begin
+        memAddr := to_integer(unsigned(Reg(rs1))) + to_integer(signed(imm))/4; -- word address
+            
+        case to_integer(signed(imm)) mod 4 is
             when 0 => 
-                Reg(rd)(7 downto 0)  := Mem(to_integer(unsigned(Reg(rs1))))(7 downto 0);     
+                Reg(rd)(7 downto 0)  := Mem(memAddr)(7 downto 0);     
                 Reg(rd)(31 downto 8) := (others =>  '0'); --unsigned extension o upper 24 bits
             when 1 => 
-                Reg(rd)(7 downto 0)  := Mem(to_integer(unsigned(Reg(rs1))))(15 downto 8);     
+                Reg(rd)(7 downto 0)  := Mem(memAddr)(15 downto 8);     
                 Reg(rd)(31 downto 8) := (others =>  '0'); --unsigned extension o upper 24 bits        
             when 2 => 
-                Reg(rd)(7 downto 0)  := Mem(to_integer(unsigned(Reg(rs1))))(23 downto 16);
+                Reg(rd)(7 downto 0)  := Mem(memAddr)(23 downto 16);
                 Reg(rd)(31 downto 8) := (others =>  '0'); --unsigned extension o upper 24 bits
             when 3 => 
-                Reg(rd)(7 downto 0)  := Mem(to_integer(unsigned(Reg(rs1))))(31 downto 24);     
+                Reg(rd)(7 downto 0)  := Mem(memAddr)(31 downto 24);     
                 Reg(rd)(31 downto 8) := (others =>  '0'); --unsigned extension o upper 24 bits
-            when others =>
-                assert(false);
-                report "Invalid offset -- LBU_exec"
-                severity warning;            
+            when others => NULL;
         end case;
         IncrementPc(pc);
     end procedure;
     
     procedure LH_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
+        variable memAddr: MemAddrType;
     begin
-        case to_integer(signed(imm)) is
+        memAddr := to_integer(unsigned(Reg(rs1))) + to_integer(signed(imm))/4; -- word address
+        
+        case to_integer(signed(imm)) mod 4 is
             when 0 => 
-                Reg(rd)(15 downto 0)  := Mem(to_integer(unsigned(Reg(rs1))))(15 downto 0);     
-                Reg(rd)(31 downto 16) := (others=>Mem(to_integer(unsigned(Reg(rs1))))(15)); --signed extension o upper 16 bits
+                Reg(rd)(15 downto 0)  := Mem(memAddr)(15 downto 0);     
+                Reg(rd)(31 downto 16) := (others=>Mem(memAddr)(15)); --signed extension o upper 16 bits
             when 2 => 
-                Reg(rd)(15 downto 0)  := Mem(to_integer(unsigned(Reg(rs1))))(31 downto 16);
-                Reg(rd)(31 downto 16) := (others=>Mem(to_integer(unsigned(Reg(rs1))))(31)); --signed extension o upper 16 bits
+                Reg(rd)(15 downto 0)  := Mem(memAddr)(31 downto 16);
+                Reg(rd)(31 downto 16) := (others=>Mem(memAddr)(31)); --signed extension o upper 16 bits
             when others =>
                 assert(false);
                 report "Invalid offset -- LH_exec"
@@ -71,10 +74,13 @@ package body exec_procedures_pack is
     end procedure;
         
     procedure LHU_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
-    begin         
-        case to_integer(signed(imm)) is
-            when 0 => Reg(rd) := "0000000000000000" & Mem(to_integer(unsigned(Reg(rs1))))(15 downto 0);    --unsigned extension o upper 16 bits    
-            when 2 => Reg(rd) := "0000000000000000" & Mem(to_integer(unsigned(Reg(rs1))))(31 downto 16);   --unsigned extension o upper 16 bits
+        variable memAddr: MemAddrType;
+    begin
+        memAddr := to_integer(unsigned(Reg(rs1))) + to_integer(signed(imm))/4; -- word address
+                 
+        case to_integer(signed(imm)) mod 4 is
+            when 0 => Reg(rd) := "0000000000000000" & Mem(memAddr)(15 downto 0);    --unsigned extension o upper 16 bits    
+            when 2 => Reg(rd) := "0000000000000000" & Mem(memAddr)(31 downto 16);   --unsigned extension o upper 16 bits
             when others =>
                 assert(false);
                 report "Invalid offset -- LHU_exec"
@@ -84,9 +90,12 @@ package body exec_procedures_pack is
     end procedure;
     
     procedure LW_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
+        variable memAddr: MemAddrType;
     begin
-    	case to_integer(signed(imm)) is
-    	    when 0 => Reg(rd) := Mem(to_integer(unsigned(Reg(rs1))));
+        memAddr := to_integer(unsigned(Reg(rs1))) + to_integer(signed(imm))/4; -- word address
+        
+    	case to_integer(signed(imm)) mod 4 is
+    	    when 0 => Reg(rd) := Mem(memAddr);
     	    when others =>
                 assert(false);
                 report "Invalid offset -- LW_exec"
@@ -96,12 +105,15 @@ package body exec_procedures_pack is
     end procedure;
     
     procedure SB_exec (rs1, rs2 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
+        variable memAddr: MemAddrType;
     begin
-        case to_integer(unsigned(imm)) is
-            when 0 => Mem(to_integer(unsigned(Reg(rs1))))(7 downto 0)      := Reg(rs2)(7 downto 0);
-            when 1 => Mem(to_integer(unsigned(Reg(rs1))))(15 downto 8)     := Reg(rs2)(7 downto 0);
-            when 2 => Mem(to_integer(unsigned(Reg(rs1))))(23 downto 16)    := Reg(rs2)(7 downto 0);
-            when 3 => Mem(to_integer(unsigned(Reg(rs1))))(31 downto 24)    := Reg(rs2)(7 downto 0);
+        memAddr := to_integer(unsigned(Reg(rs1))) + to_integer(signed(imm))/4; -- word address
+        
+    	case to_integer(signed(imm)) mod 4 is
+            when 0 => Mem(memAddr)(7 downto 0)      := Reg(rs2)(7 downto 0);
+            when 1 => Mem(memAddr)(15 downto 8)     := Reg(rs2)(7 downto 0);
+            when 2 => Mem(memAddr)(23 downto 16)    := Reg(rs2)(7 downto 0);
+            when 3 => Mem(memAddr)(31 downto 24)    := Reg(rs2)(7 downto 0);
             when others => 
                 assert(false); 
                 report "Invalid offset -- SB_exec"
@@ -111,10 +123,13 @@ package body exec_procedures_pack is
     end procedure;
     
     procedure SH_exec (rs1, rs2 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
+        variable memAddr: MemAddrType;
     begin
-        case to_integer(unsigned(imm)) is
-            when 0 => Mem(to_integer(unsigned(Reg(rs1))))(15 downto 0)     := Reg(rs2)(15 downto 0);        
-            when 2 => Mem(to_integer(unsigned(Reg(rs1))))(31 downto 16)    := Reg(rs2)(15 downto 0);        
+        memAddr := to_integer(unsigned(Reg(rs1))) + to_integer(signed(imm))/4; -- word address
+        
+    	case to_integer(signed(imm)) mod 4 is
+            when 0 => Mem(memAddr)(15 downto 0)     := Reg(rs2)(15 downto 0);        
+            when 2 => Mem(memAddr)(31 downto 16)    := Reg(rs2)(15 downto 0);        
             when others => 
                 assert(false); 
                 report "Invalid offset -- SH_exec"
@@ -124,9 +139,12 @@ package body exec_procedures_pack is
     end procedure;
     
     procedure SW_exec (rs1, rs2 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
+        variable memAddr: MemAddrType;
     begin
-    	case to_integer(signed(imm)) is
-    	    when 0 => Mem(to_integer(unsigned(Reg(rs1)))) := Reg(rs2);
+        memAddr := to_integer(unsigned(Reg(rs1))) + to_integer(signed(imm))/4; -- word address
+        
+    	case to_integer(signed(imm)) mod 4 is
+    	    when 0 => Mem(memAddr) := Reg(rs2);
     	    when others =>
                 assert(false);
                 report "Invalid offset -- LW_exec"
