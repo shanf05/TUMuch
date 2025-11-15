@@ -57,12 +57,12 @@ package body inst_encoding_pack is
     
     function LUI_code   (rd : RegAddrType; imm : RegDataType)      return InstrType is
     begin
-    return imm(31 downto 12) & bit_vector(to_unsigned(rd,5)) & OP_LUI;
+    return imm(19 downto 0) & bit_vector(to_unsigned(rd,5)) & OP_LUI;
     end function; --imm[31:12] rd[4:0] opcode[6:0]
     
     function AUIPC_code (rd : RegAddrType; imm : RegDataType)      return InstrType is
     begin
-    return imm(31 downto 12) & bit_vector(to_unsigned(rd,5)) & OP_AUIPC;
+    return imm(19 downto 0) & bit_vector(to_unsigned(rd,5)) & OP_AUIPC;
     end function; --imm[31:12] rd[4:0] opcode[6:0]
     
     --register-register instructions:
