@@ -11,7 +11,7 @@ package trace_pack is
     procedure print_tail(file TraceFile : Text);
     procedure write_instruction_trace(l: inout line; reg : RegType; instr : InstrType; pc : PCType);
     function  cmd_image(instr : InstrType) return string;
-    function  hex_image_data(data : integer) return string; 
+    function  hex_image_data(data : bit_vector(31 downto 0)) return string; 
     function  hex_image_addr(addr : integer) return string;   
 end package trace_pack; 
 
@@ -179,15 +179,19 @@ package body trace_pack is
         end case;
     end cmd_image; 
     
-    function hex_image_data(data : integer) return string is
-        constant hex_table : string(1 to 16):= "0123456789ABCDEF";
-        variable result : string( 1 to 8 );        
-    begin        
-        for i in 0 to 7 loop 
-            result(8 - i) := hex_table( (data / (16**i)) mod 16 +1);
-        end loop; 
+    function hex_image_data(data : bit_vector(31 downto 0)) return string is
+        constant hex_chars : string := "0123456789ABCDEF";
+        variable result    : string(1 to 8);
+        variable sector    : unsigned(3 downto 0);
+    begin
+        for i in 0 to 7 loop
+            -- select 4-bit sector
+            sector := unsigned(data(31 - i*4 downto 28 - i*4));
+            -- map sector (0-15) to hex char
+            result(i+1) := hex_chars(to_integer(sector) + 1);
+        end loop;
         return result;
-    end hex_image_data;
+    end function;
     
     function hex_image_addr(addr : integer) return string is
         constant hex_table : string(1 to 16):= "0123456789ABCDEF";
@@ -212,7 +216,7 @@ package body trace_pack is
         
         --write registers
         for i in 0 to 31 loop 
-            write( l , hex_image_data(to_integer(unsigned(reg(i)))) , left, 8);
+            write( l , hex_image_data(reg(i)) , left, 8);
             write( l , string'(" | ") );
         end loop; 
     end procedure;
