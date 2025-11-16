@@ -341,7 +341,13 @@ package body exec_procedures_pack is
             reg(rd) := bit_vector(to_unsigned(0, 32));
         end if;
         IncrementPc(pc);
-    end procedure SLTIU_exec;   
+    end procedure SLTIU_exec;
+    
+    procedure STOP_exec is --erstellt von Max Biricz
+    begin
+        report "End of programm reached -- Stopping execution";
+        wait;
+    end procedure STOP_exec;      
     
     procedure XOR_exec(rd, rs1, rs2 : RegAddrType; reg : inout RegType; pc : inout PCType) is -- ERSTELLT VON JOSIP PEPIC 
     begin 
