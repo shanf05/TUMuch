@@ -35,6 +35,7 @@ package exec_procedures_pack is
     procedure SRAI_exec  (rs1, rd : RegAddrType; imm : ImmType; mem : inout MemType; reg : inout RegType; pc : inout PCType);
     procedure SLTI_exec  (rs1, rd : RegAddrType; imm : ImmType; mem : inout MemType; reg : inout RegType; pc : inout PCType);
     procedure SLTIU_exec (rs1, rd : RegAddrType; imm : ImmType; mem : inout MemType; reg : inout RegType; pc : inout PCType);
+    procedure STOP_exec;
 
     -- ERSTELLT VON JOSIP PEPIC; Teil Pink; XOR OR AND SLL SRL SRA SLT EXEC
     procedure XOR_exec  (rd, rs1, rs2   : RegAddrType; reg : inout RegType; pc : inout PCType);

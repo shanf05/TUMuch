@@ -278,6 +278,8 @@ package body mem_pack is
                 --NOP-instruction
                 elsif mnemonic = NOP_mnemonic then instr := NOP_Code;
                 
+                elsif mnemonic = STOP_mnemonic then instr := STOP_Code;
+                
                 --unconditional branches: require switching of inputs as reg variables are filled in order (1)rd (2)rs1 (3)rs2
                 elsif mnemonic = JAL_mnemonic then instr := JAL_Code(rd => rd, imm => imm);
                 

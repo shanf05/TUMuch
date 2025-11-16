@@ -36,6 +36,9 @@ subtype MnemonicType is string(1 to 5);
     --nop instruction:
     constant NOP_mnemonic   : MnemonicType := "NOP  ";
     
+    --stop instruction:
+    constant STOP_mnemonic  : MnemonicType := "STOP ";
+    
     --unconditional jumps:
     constant JAL_mnemonic   : MnemonicType := "JAL  ";
     constant JALR_mnemonic  : MnemonicType := "JALR ";
@@ -63,5 +66,6 @@ subtype MnemonicType is string(1 to 5);
     --store constant instruction:
     constant INDEX_mnemonic : MnemonicType := "INDEX";
     constant VAL_mnemonic   : MnemonicType := "VAL  ";
+    
     
 end package mnemonic_pack;

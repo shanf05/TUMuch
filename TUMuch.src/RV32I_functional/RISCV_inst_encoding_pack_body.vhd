@@ -125,6 +125,14 @@ package body inst_encoding_pack is
     return tmp1(16 downto 0) & F3_ADD & tmp2(4 downto 0) & OP_IMM;
     end function; --imm[11:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
     
+    --stop instruction:
+    function STOP_code return InstrType is
+    variable tmp1 : bit_vector(16 downto 0) := "01010101010101010";
+    variable tmp2 : bit_vector(4 downto 0) := "01010";
+    begin
+    return tmp1(16 downto 0) & F3_LHU & tmp2 (4 downto 0) & OP_STOP;
+    end function;
+    
     --uncondidional jumps:
     function JAL_code  (rd : RegAddrType; imm : RegDataType) return InstrType is
     begin

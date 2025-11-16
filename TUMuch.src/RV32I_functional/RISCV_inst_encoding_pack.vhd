@@ -35,6 +35,9 @@ package inst_encoding_pack is
     --nop instruction:
     function NOP_code return InstrType; --imm[11:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
     
+    --stop instruction:
+    function STOP_code return InstrType;
+    
     --uncondidional jumps:
     function JAL_code  (rd : RegAddrType; imm : RegDataType)     return InstrType; --imm[20] imm[10:1] imm[11] imm[19:12] rs1[4:0] opcode[6:0]
     function JALR_code (rs1, rd : RegAddrType; imm : RegDataType) return InstrType; --imm[11:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]

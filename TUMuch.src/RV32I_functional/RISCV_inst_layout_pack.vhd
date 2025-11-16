@@ -16,6 +16,7 @@ package inst_layout_pack is
     constant OP_BRANCH : OpCOde := "1100011";
     constant OP_LOAD   : OpCOde := "0000011";
     constant OP_STORE  : OpCOde := "0100011";
+    constant OP_STOP   : OPCOde := "1010101";
     
     constant F3_SLLI : Funct3 := "001";
     constant F3_SRLI : Funct3 := "101";
