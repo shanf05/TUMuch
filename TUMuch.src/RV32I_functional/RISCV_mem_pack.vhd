@@ -380,8 +380,17 @@ package body mem_pack is
     procedure memory_data_dump (mem : MemType; file DataDumpFile : text) is         --evtl adresse und größe des dumps auswählba machen
         variable l : line; 
     begin
-        for i in 2**MemAddrSize-1 downto 0 loop            
-            write( l , hex_image_addr(to_integer(unsigned(mem(i)))), left, 8);
+        write( l , string'("ADDR | HEX      | BIN"));
+        writeline(DataDumpFile, l);
+        write( l , string'("---------------------------------------------------"));
+        writeline(DataDumpFile, l);
+        
+        for i in 0 to 2**MemAddrSize-1 loop
+            write( l , hex_image_addr(i*4) ); 
+            write( l , string'(" | ") );           
+            write( l , hex_image_data(mem(i)), left, 8); 
+            write( l , string'(" | ") ); 
+            write( l , to_string(mem(i)) );
             writeline(DataDumpFile, l);
         end loop; 
     end procedure; 
