@@ -38,7 +38,7 @@ begin
         print_tail(TraceFile); 
         mem := init_memory_asm(AsmFile);
         --mem := init_memory_bin(BinFile); --alternative
-        for i in 0 to 10 loop       --workaround. actually we wait for a stop statement; ->loop needed for print functions
+        loop
         -- fetch instruction
         Instr := Mem(pc/4);
         op_code := Instr(6 downto 0);
@@ -219,21 +219,19 @@ begin
             
             --STOP Instruction
             when OP_STOP =>
-            if Instr = STOP_code then STOP_exec;
-            else
-                assert False
-                report "Illegal Operation -- STOP command"
-                severity warning;
+                if Instr = STOP_code then 
+                    STOP_exec;
+                    exit; 
+                else
+                    assert False
+                    report "Illegal Operation -- STOP command"
+                    severity warning;
             end if;
 
-            when others =>          -- covers invalid cases    
-                if (Instr = "00000000000000000000000000000000") then 
-                    exit;
-                else             
-                    assert FALSE
-                    report "Illegal Operation -- no OP_CODE"
-                    severity warning;
-                end if; 
+            when others =>          -- covers invalid cases                                 
+                assert FALSE
+                report "Illegal Operation -- no OP_CODE"
+                severity warning;                
         end case;
         end loop;
         print_tail(Tracefile);      
