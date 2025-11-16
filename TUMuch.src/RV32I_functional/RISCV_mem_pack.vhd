@@ -101,7 +101,6 @@ package body mem_pack is
         else
             RegAddr_dec := RegAddrType'value(Reg);
         end if;
-        
         if (0 <= RegAddr_dec) and (RegAddr_dec <= 2**RegAddrSize-1) then
             return RegAddr_dec;
         else
@@ -334,6 +333,9 @@ package body mem_pack is
                 report("Instr output: ");
                 write(debug_line, instr);
                 writeline(output, debug_line);
+                report"Index is:";
+                write(debug_line, index);
+                writeline(output, debug_line);
             end if;
 
 
@@ -341,7 +343,11 @@ package body mem_pack is
                 report "Last Memory Address reached";
                 exit line_loop;
             else 
-                index := index + 1;
+                if mnemonic = INDEX_mnemonic then
+                    null;
+                else
+                    index := index + 1;
+                end if;
             end if;    
             rd_set := false;
             rs1_set := false;
