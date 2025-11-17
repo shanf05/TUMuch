@@ -9,10 +9,10 @@ use IEEE.numeric_bit.all;
 package trace_pack is
     procedure print_header(file TraceFile : Text);
     procedure print_tail(file TraceFile : Text);
-    procedure write_instruction_trace(l: inout line; reg : RegType; instr : InstrType; pc : PCType);
+    procedure write_instr_info(l: inout line; instr : InstrType; pc : PCType; rs1, rs2, rd : RegAddrType);
+    procedure write_registers(l: inout line; reg : RegType; imm : ImmType; hasImm : boolean);
     function  cmd_image(instr : InstrType) return string;
-    function  hex_image_data(data : bit_vector(31 downto 0)) return string; 
-    function  hex_image_addr(addr : integer) return string;   
+    function  hex_image(data : bit_vector(31 downto 0); size : integer) return string;  
 end package trace_pack; 
 
 package body trace_pack is
@@ -24,22 +24,30 @@ package body trace_pack is
         --write program counter
         write( l , string'(" PC "));
         write( l , string'(" | ") );
+        
         --write instruction
         write( l , string'(" CMD "));
-        write( l , string'(" | ") );
+         write( l , string'(" | ") );
+         
+        --write registers used in instruction
+        write( l, string'("DE S1 S2"));
+         write( l , string'(" | ") );
+         
+        --write parameters
+        write( l, string'("  P  "));
                
         --write registers
         for i in 0 to 31 loop 
+            write( l , string'(" | ") );
             write( l , string'("   x"), left );
             write( l , i , left, 4);
-            write( l , string'(" | ") );
         end loop;  
         writeline(TraceFile, l);
     end procedure; 
     
     procedure print_tail(file TraceFile : Text) is
         variable l : line; 
-        variable tmp : string(1 to 366); 
+        variable tmp : string(1 to 385); 
     begin
         --write border
         tmp := "----------------------------------------------------------------------" &
@@ -47,7 +55,7 @@ package body trace_pack is
                "----------------------------------------------------------------------" &
                "----------------------------------------------------------------------" &
                "----------------------------------------------------------------------" &
-               "----------------";
+               "-----------------------------------";
         write(l, tmp);
         writeline(TraceFile, l);
     end procedure; 
@@ -172,54 +180,66 @@ package body trace_pack is
                 when others => 
                     assert FALSE;
                     return "ERROR";     
-                end case;        
+                end case;   
+            when OP_STOP => return STOP_mnemonic;
             when others =>
                 assert FALSE;               
                 return "NO_OP";
         end case;
-    end cmd_image; 
+    end function; 
     
-    function hex_image_data(data : bit_vector(31 downto 0)) return string is
-        constant hex_chars : string := "0123456789ABCDEF";
-        variable result    : string(1 to 8);
-        variable sector    : unsigned(3 downto 0);
-    begin
-        for i in 0 to 7 loop
+    function hex_image(data : bit_vector(31 downto 0); size : integer) return string is
+        constant hex_table : string := "0123456789ABCDEF";
+        variable result    : string(1 to size);
+        variable sector    : unsigned(3 downto 0);       
+    begin        
+        for i in 0 to size-1 loop
             -- select 4-bit sector
             sector := unsigned(data(31 - i*4 downto 28 - i*4));
             -- map sector (0-15) to hex char
-            result(i+1) := hex_chars(to_integer(sector) + 1);
+            result(i+1) := hex_table(to_integer(sector) + 1);
         end loop;
-        return result;
-    end function;
+        return result;        
+    end function; 
     
-    function hex_image_addr(addr : integer) return string is
-        constant hex_table : string(1 to 16):= "0123456789ABCDEF";
-        variable result : string( 1 to 4 );        
-    begin        
-        result(4):=hex_table(addr mod 16 + 1);
-        result(3):=hex_table((addr / 16) mod 16 + 1);
-        result(2):=hex_table((addr / 256) mod 16 + 1);
-        result(1):=hex_table((addr / 4096) mod 16 + 1);
-        return result;
-    end hex_image_addr;
     
-    procedure write_instruction_trace(l: inout line; reg : RegType; instr : InstrType; pc : PCType) is
+    procedure write_instr_info(l: inout line; instr : InstrType; pc : PCType; rs1, rs2, rd : RegAddrType) is
     begin 
         --write program counter
-        write( l , hex_image_addr(pc), left, 3);
+        write( l , hex_image(bit_vector(to_unsigned(pc, 32)),4), left, 3);
         write( l , string'(" | ") );
         
         --write instruction mnemonic
-        write( l , cmd_image(instr), left, 5);        
+        write( l , cmd_image(instr), left, 5);
         write( l , string'(" | ") );
+        
+        --write used registers
+        write( l , rd, left, 2 );
+        write( l , string'(" ") );
+        write( l , rs1, left, 2 );
+        write( l , string'(" ") );
+        write( l , rs2, left, 2 );
+        write( l , string'(" | ") );
+        
+    end procedure;
+    
+    procedure write_registers(l: inout line; reg : RegType; imm : ImmType; hasImm : boolean) is
+    begin
+        --write immediate
+        if hasImm then 
+            write( l , hex_image(imm,5) );
+        else 
+            write( l , string'(" --- ") );
+        end if;
         
         --write registers
         for i in 0 to 31 loop 
-            write( l , hex_image_data(reg(i)) , left, 8);
             write( l , string'(" | ") );
+            write( l , hex_image(reg(i),8) , left, 8);            
         end loop; 
     end procedure;
-
+    
+    
+    
 
 end package body trace_pack; 

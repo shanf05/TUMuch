@@ -345,8 +345,7 @@ package body exec_procedures_pack is
     
     procedure STOP_exec is --erstellt von Max Biricz
     begin
-        report "End of programm reached -- Stopping execution";
-        wait;
+        report "End of programm reached -- Stopping execution";       
     end procedure STOP_exec;      
     
     procedure XOR_exec(rd, rs1, rs2 : RegAddrType; reg : inout RegType; pc : inout PCType) is -- ERSTELLT VON JOSIP PEPIC 

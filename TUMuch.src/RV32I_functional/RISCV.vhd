@@ -45,8 +45,8 @@ begin
         -- fetch instruction
         Instr := Mem(pc/4);
         op_code := Instr(6 downto 0);
-        write_instruction_trace(l=>l, reg=>reg, instr=>instr, pc=>pc);  
-        writeline(TraceFile, l);      
+        --write_instruction_trace(l=>l, reg=>reg, instr=>instr, pc=>pc);  
+        --writeline(TraceFile, l);      
         -- decode and execute instruction
         case op_code is
             -----------------------------------------------------------------------
@@ -57,9 +57,13 @@ begin
                 rd := to_integer(unsigned(Instr(11 downto 7)));
                 rs1 := to_integer(unsigned(Instr(19 downto 15)));
                 rs2 := to_integer(unsigned(Instr(24 downto 20)));
-                funct7 := Instr(31 downto 25);                
+                funct7 := Instr(31 downto 25);           
+                imm := (others=>'0');   
+                write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd);
+                write_registers(l => l, reg => reg, imm => imm , hasImm => false);
+                
                 case func3 is
-                    when F3_ADD =>      -- F3_ADD and F3_SUB have the same value "000"
+                    when F3_ADD =>      -- F3_ADD and F3_SUB have the same value "000"                        
                         if funct7 = F7_ADD then      ADD_exec(rd=>rd, rs1=>rs1, rs2=>rs2, reg=>reg, mem=>mem, pc=>pc);
                         elsif funct7 = F7_SUB then   SUB_exec(rd=>rd, rs1=>rs1, rs2=>rs2, reg=>reg, mem=>mem, pc=>pc);
                         else                                -- cover invalid cases
@@ -96,8 +100,11 @@ begin
                 func3 := Instr(14 downto 12);
                 rd := to_integer(unsigned(Instr(11 downto 7)));
                 rs1 := to_integer(unsigned(Instr(19 downto 15)));
+                rs2 := 0;   --not best solution right now -> make it similar to no_param!
                 imm(10 downto 0) := Instr(30 downto 20);
-                imm(31 downto 11) := (others => Instr(31));                
+                imm(31 downto 11) := (others => Instr(31));  
+                write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd);
+                write_registers(l => l, reg => reg, imm => imm, hasImm => true);              
                 case func3 is
                     -- basic I-Type
                     when F3_ADDI   => ADDI_exec(rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);                
@@ -129,8 +136,11 @@ begin
                 func3 := Instr(14 downto 12);
                 rd := to_integer(unsigned(Instr(11 downto 7)));
                 rs1 := to_integer(unsigned(Instr(19 downto 15)));
+                rs2 := 0;               -- find better way of doing this
                 imm(10 downto 0) := Instr(30 downto 20);
-                imm(31 downto 11) := (others => Instr(20));                
+                imm(31 downto 11) := (others => Instr(20));
+                write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd);
+                write_registers(l => l, reg => reg, imm => imm, hasImm => true);                 
                 case func3 is
                     when F3_LB      => LB_exec(rd => rd, rs1 => rs1, imm => imm, reg => reg, mem => mem, pc => pc);
                     when F3_LH      => LH_exec(rd => rd, rs1 => rs1, imm => imm, reg => reg, mem => mem, pc => pc);
@@ -146,8 +156,11 @@ begin
             when OP_JALR =>                 
                 rd := to_integer(unsigned(Instr(11 downto 7)));
                 rs1 := to_integer(unsigned(Instr(19 downto 15)));
+                rs2 := 0;                
                 imm(10 downto 1) := Instr(30 downto 21);
                 imm(31 downto 11) := (others => Instr(31));
+                write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd);
+                write_registers(l => l, reg => reg, imm => imm, hasImm => true); 
                 JALR_exec(rs1=>rs1, rd=>rd, imm=>imm, mem=>mem, reg=>reg, pc=>pc);
                 -- end I-Type Instructions
             -----------------------------------------------------------------------
@@ -159,7 +172,9 @@ begin
                 rs2 := to_integer(unsigned(Instr(24 downto 20)));
                 imm(4 downto 0) := Instr(11 downto 7);
                 imm(10 downto 5) := Instr(30 downto 25);
-                imm(31 downto 11) := (others => Instr(31));                
+                imm(31 downto 11) := (others => Instr(31));   
+                write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd);
+                write_registers(l => l, reg => reg, imm => imm, hasImm => true);              
                 case func3 is
                     when F3_SB  => SB_exec(rs1 => rs1, rs2 => rs2, imm => imm, reg => reg, mem => mem, pc => pc);
                     when F3_SH  => SH_exec(rs1 => rs1, rs2 => rs2, imm => imm, reg => reg, mem => mem, pc => pc);
@@ -174,24 +189,36 @@ begin
             -- U-Type Instructions
             when OP_LUI => 
                 rd := to_integer(unsigned(Instr(11 downto 7)));
+                rs1 := 0; 
+                rs2 := 0; 
                 imm(31 downto 12) := Instr(31 downto 12);
-                imm(11 downto 0) := (others => '0');                
+                imm(11 downto 0) := (others => '0');               
+                write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd);
+                write_registers(l => l, reg => reg, imm => imm, hasImm => true); 
                 LUI_exec(rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
             when OP_AUIPC   => 
                 rd := to_integer(unsigned(Instr(11 downto 7)));
+                rs1 := 0; 
+                rs2 := 0;
                 imm(31 downto 12) := Instr(31 downto 12);
-                imm(11 downto 0) := (others => '0');                
+                imm(11 downto 0) := (others => '0');        
+                write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd);
+                write_registers(l => l, reg => reg, imm => imm, hasImm => true);         
                 AUIPC_exec(rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
             -- end U-Type Instructions
             -----------------------------------------------------------------------
             -- J-Type Instructions
             when OP_JAL => 
                 rd := to_integer(unsigned(Instr(11 downto 7)));
+                rs1 := 0; 
+                rs2 := 0; 
                 imm(0) := '0';
                 imm(10 downto 1)    := Instr(30 downto 21);
                 imm(11)             := Instr(20);
                 imm(19 downto 12)   := Instr(19 downto 12);
-                imm(31 downto 20)   := (others => Instr(31));                
+                imm(31 downto 20)   := (others => Instr(31));    
+                write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd);
+                write_registers(l => l, reg => reg, imm => imm, hasImm => true);             
                 JAL_exec(rd=>rd, imm=>imm, mem=>mem, reg=>reg, pc=>pc);
             -- end J-Type Instructions
             -----------------------------------------------------------------------
@@ -200,11 +227,14 @@ begin
                 func3 := Instr(14 downto 12);
                 rs1 := to_integer(unsigned(Instr(19 downto 15)));
                 rs2 := to_integer(unsigned(Instr(24 downto 20)));
+                rd := 0; 
                 imm(0) := '0';
                 imm(4 downto 1) := Instr(11 downto 8);
                 imm(10 downto 5) := Instr(30 downto 25);
                 imm(11) := Instr(7);
-                imm(31 downto 12) := (others => Instr(31));                
+                imm(31 downto 12) := (others => Instr(31));         
+                write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd);
+                write_registers(l => l, reg => reg, imm => imm, hasImm => true);        
                 case func3 is
                     when F3_BEQ  => BEQ_exec (rs1=>rs1, rs2=>rs2, imm=>imm, mem=>mem, reg=>reg, pc=>pc);               
                     when F3_BNE  => BNE_exec (rs1=>rs1, rs2=>rs2, imm=>imm, mem=>mem, reg=>reg, pc=>pc);               
@@ -223,19 +253,33 @@ begin
             --STOP Instruction
             when OP_STOP =>
                 if Instr = STOP_code then 
+                    rs1 := 0; 
+                    rs2 := 0; 
+                    rd := 0;
+                    imm := (others =>'0');
+                    write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd);
+                    write_registers(l => l, reg => reg, imm => imm, hasImm => false); 
+                    writeline(TraceFile, l);    --has to be done, because loop is exited right after
                     STOP_exec;
                     exit; 
                 else
                     assert False
                     report "Illegal Operation -- STOP command"
                     severity warning;
-            end if;
+                end if;
 
-            when others =>          -- covers invalid cases                                 
+            when others =>          -- covers invalid cases       
+                rs1 := 0; 
+                rs2 := 0; 
+                rd := 0; 
+                imm := (others =>'0');
+                write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd);
+                write_registers(l => l, reg => reg, imm => imm, hasImm => false);                           
                 assert FALSE
                 report "Illegal Operation -- no OP_CODE"
                 severity warning;                
         end case;
+        writeline(TraceFile, l);
         end loop;
         print_tail(Tracefile);      
         wait;
