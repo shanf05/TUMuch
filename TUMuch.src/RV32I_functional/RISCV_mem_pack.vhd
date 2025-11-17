@@ -24,8 +24,8 @@ package mem_pack is
 
     --auxiliary functions
     function hexstr_to_int (s : string; sign : boolean) return integer;
+    function hexstr_to_bit_vector(s : string) return bit_vector;
     function hexchar_to_int (char : character) return integer;
-
 end mem_pack;
 
 
@@ -75,6 +75,21 @@ package body mem_pack is
     return result;
 
     end function hexstr_to_int;
+    
+    function hexstr_to_bit_vector(s : string) return bit_vector is
+    variable length : integer := s'length;
+    variable result : bit_vector (4*length-1 downto 0);
+    variable temp : unsigned (3 downto 0);
+    begin
+    
+    for i in 0 to length-1 loop
+        temp := to_unsigned(hexchar_to_int(s(i+1)), 4);
+        for j in 0 to 3 loop
+        result(4*length- 1 - 4*i -j):= temp(3-j);
+        end loop;
+    end loop;
+    return result;
+    end function hexstr_to_bit_vector;
 
 
     function to_MemAddrType (MemAddr : string (1 to 6)) return MemAddrType is
@@ -170,10 +185,10 @@ package body mem_pack is
                     exit word_loop;
 
                 elsif v(1) = '#' then
-                    --case 1: 20 Bit data constant
+                    --case 1: 32 Bit data constant
                     if mnemonic = VAL_mnemonic then
-                        read(l, v(1 to 5), success);
-                        data := to_ImmType(v(1 to 5), true);
+                        read(l, v(1 to 8), success);
+                        data := hexstr_to_bit_vector(v(1 to 8));
                     --case 2: 20 Bit Immediate in Instruction
                     elsif (mnemonic = JAL_mnemonic) or (mnemonic = LUI_mnemonic) or (mnemonic = AUIPC_mnemonic) then
                         read(l, v(1 to 5), success);
@@ -227,7 +242,6 @@ package body mem_pack is
                 end if;
 
             end loop;                   --end of word loop
-
             -- Matching Cmd from Input file to valid mnemonic and returning instruction code
             if mnemonic_set = true then
             -- register-immediate instructions
@@ -333,9 +347,6 @@ package body mem_pack is
                 report("Instr output: ");
                 write(debug_line, instr);
                 writeline(output, debug_line);
-                report"Index is:";
-                write(debug_line, index);
-                writeline(output, debug_line);
             end if;
 
 
@@ -377,7 +388,7 @@ package body mem_pack is
         return mem;                    --returning memory filled with binary stream for executing instructions
     end function;
 
-    procedure memory_data_dump (mem : MemType; file DataDumpFile : text) is         --evtl adresse und gr√∂√üe des dumps ausw√§hlba machen
+    procedure memory_data_dump (mem : MemType; file DataDumpFile : text) is         --evtl adresse und grˆﬂe des dumps ausw‰hlba machen
         variable l : line;
     begin
         write( l , string'("ADDR | HEX      | BIN"));
@@ -398,3 +409,4 @@ package body mem_pack is
 
 end mem_pack;
 
+    
