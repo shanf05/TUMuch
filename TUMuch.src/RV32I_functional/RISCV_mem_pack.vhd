@@ -388,7 +388,7 @@ package body mem_pack is
         return mem;                    --returning memory filled with binary stream for executing instructions
     end function;
 
-    procedure memory_data_dump (mem : MemType; file DataDumpFile : text) is         --evtl adresse und größe des dumps auswählba machen
+    procedure memory_data_dump (mem : MemType; file DataDumpFile : text) is         --evtl adresse und grï¿½ï¿½e des dumps auswï¿½hlba machen
         variable l : line;
     begin
         write( l , string'("ADDR | HEX      | BIN"));
@@ -401,7 +401,7 @@ package body mem_pack is
             write( l , string'(" | ") );
             write( l , hex_image(mem(i), 8), left, 8);
             write( l , string'(" | ") );
-            --write( l , to_string(mem(i)) );
+            write( l , to_string(mem(i)) );
 
             writeline(DataDumpFile, l);
         end loop;
