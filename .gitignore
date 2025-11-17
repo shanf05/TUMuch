@@ -15,3 +15,8 @@ TUMuch.hw/
 # Ignore TUMuch ip user file directory 
 
 TUMuch.ip_user_files/
+
+
+# Ignore Data Dump 
+
+TUMuch.rsc/data_dump.txt
