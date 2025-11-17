@@ -101,8 +101,8 @@ begin
                 rd := to_integer(unsigned(Instr(11 downto 7)));
                 rs1 := to_integer(unsigned(Instr(19 downto 15)));
                 rs2 := 0;   --not best solution right now -> make it similar to no_param!
-                imm(10 downto 0) := Instr(30 downto 20);
-                imm(31 downto 11) := (others => Instr(31));  
+                imm(11 downto 0) := Instr(31 downto 20);
+                imm(31 downto 12) := (others => imm(11));  
                 write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd);
                 write_registers(l => l, reg => reg, imm => imm, hasImm => true);              
                 case func3 is
@@ -137,8 +137,8 @@ begin
                 rd := to_integer(unsigned(Instr(11 downto 7)));
                 rs1 := to_integer(unsigned(Instr(19 downto 15)));
                 rs2 := 0;               -- find better way of doing this
-                imm(10 downto 0) := Instr(30 downto 20);
-                imm(31 downto 11) := (others => Instr(20));
+                imm(11 downto 0) := Instr(31 downto 20);
+                imm(31 downto 12) := (others => imm(11));
                 write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd);
                 write_registers(l => l, reg => reg, imm => imm, hasImm => true);                 
                 case func3 is
