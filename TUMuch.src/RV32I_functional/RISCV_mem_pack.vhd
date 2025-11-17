@@ -386,11 +386,11 @@ package body mem_pack is
         writeline(DataDumpFile, l);
 
         for i in 0 to 2**MemAddrSize-1 loop
-            write( l , hex_image_addr(i*4) );
+            write( l , hex_image(bit_vector(to_unsigned(i, 14)), 4) );
             write( l , string'(" | ") );
-            write( l , hex_image_data(mem(i)), left, 8);
+            write( l , hex_image(mem(i), 8), left, 8);
             write( l , string'(" | ") );
-            write( l , to_string(mem(i)) );
+            --write( l , to_string(mem(i)) );
 
             writeline(DataDumpFile, l);
         end loop;
