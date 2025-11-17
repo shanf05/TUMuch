@@ -206,7 +206,7 @@ package body trace_pack is
     procedure write_instr_info(l: inout line; instr : InstrType; pc : PCType; rs1, rs2, rd : RegAddrType) is
     begin 
         --write program counter
-        write( l , hex_image(bit_vector(to_unsigned(pc, 32)),4), left, 3);
+        write( l , hex_image(bit_vector(to_unsigned(pc, 16)),4), left, 3);
         write( l , string'(" | ") );
         
         --write instruction mnemonic

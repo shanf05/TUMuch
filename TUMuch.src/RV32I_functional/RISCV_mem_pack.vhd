@@ -397,7 +397,7 @@ package body mem_pack is
         writeline(DataDumpFile, l);
 
         for i in 0 to 2**MemAddrSize-1 loop
-            write( l , hex_image(bit_vector(to_unsigned(i, 14)), 4) );
+            write( l , hex_image(bit_vector(to_unsigned(i*4, 16)), 4) );
             write( l , string'(" | ") );
             write( l , hex_image(mem(i), 8), left, 8);
             write( l , string'(" | ") );

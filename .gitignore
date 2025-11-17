@@ -12,13 +12,14 @@ TUMuch.xpr
 
 TUMuch.hw/
 
-# Ignore TUMuch ip user file directory 
+# Ignore TUMuch ip user file directory
 
 TUMuch.ip_user_files/
 
 
-# Ignore Data Dump 
+# Ignore Data Dump
 
 TUMuch.rsc/data_dump.txt
-TUMuch.rsc/data_dump.txt
+
+TUMuch.rsc/trace.txt
 /TUMuch.runs
