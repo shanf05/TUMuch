@@ -10,7 +10,7 @@ package body exec_procedures_pack is
     procedure LB_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
         variable memAddr: MemAddrType;
     begin
-        memAddr := to_integer(unsigned(Reg(rs1))) + to_integer(signed(imm))/4; -- word address
+        memAddr := to_integer(signed(Reg(rs1)) + signed(imm))/4; -- word address
                 
         case to_integer(signed(imm)) mod 4 is
             when 0 =>
@@ -33,7 +33,7 @@ package body exec_procedures_pack is
     procedure LBU_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
         variable memAddr: MemAddrType;
     begin
-        memAddr := to_integer(unsigned(Reg(rs1))) + to_integer(signed(imm))/4; -- word address
+        memAddr := to_integer(signed(Reg(rs1)) + signed(imm))/4; -- word address
             
         case to_integer(signed(imm)) mod 4 is
             when 0 => 
@@ -56,7 +56,7 @@ package body exec_procedures_pack is
     procedure LH_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
         variable memAddr: MemAddrType;
     begin
-        memAddr := to_integer(unsigned(Reg(rs1))) + to_integer(signed(imm))/4; -- word address
+        memAddr := to_integer(signed(Reg(rs1)) + signed(imm))/4; -- word address
         
         case to_integer(signed(imm)) mod 4 is
             when 0 => 
@@ -76,7 +76,7 @@ package body exec_procedures_pack is
     procedure LHU_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
         variable memAddr: MemAddrType;
     begin
-        memAddr := to_integer(unsigned(Reg(rs1))) + to_integer(signed(imm))/4; -- word address
+        memAddr := to_integer(signed(Reg(rs1)) + signed(imm))/4; -- word address
                  
         case to_integer(signed(imm)) mod 4 is
             when 0 => Reg(rd) := "0000000000000000" & Mem(memAddr)(15 downto 0);    --unsigned extension o upper 16 bits    
@@ -92,7 +92,7 @@ package body exec_procedures_pack is
     procedure LW_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
         variable memAddr: MemAddrType;
     begin
-        memAddr := to_integer(unsigned(Reg(rs1))) + to_integer(signed(imm))/4; -- word address
+        memAddr := to_integer(signed(Reg(rs1)) + signed(imm))/4; -- word address
         
     	case to_integer(signed(imm)) mod 4 is
     	    when 0 => Reg(rd) := Mem(memAddr);
@@ -107,7 +107,7 @@ package body exec_procedures_pack is
     procedure SB_exec (rs1, rs2 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
         variable memAddr: MemAddrType;
     begin
-        memAddr := to_integer(unsigned(Reg(rs1))) + to_integer(signed(imm))/4; -- word address
+        memAddr := to_integer(signed(Reg(rs1)) + signed(imm))/4; -- word address
         
     	case to_integer(signed(imm)) mod 4 is
             when 0 => Mem(memAddr)(7 downto 0)      := Reg(rs2)(7 downto 0);
@@ -125,7 +125,7 @@ package body exec_procedures_pack is
     procedure SH_exec (rs1, rs2 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
         variable memAddr: MemAddrType;
     begin
-        memAddr := to_integer(unsigned(Reg(rs1))) + to_integer(signed(imm))/4; -- word address
+        memAddr := to_integer(signed(Reg(rs1)) + signed(imm))/4; -- word address
         
     	case to_integer(signed(imm)) mod 4 is
             when 0 => Mem(memAddr)(15 downto 0)     := Reg(rs2)(15 downto 0);        
@@ -141,7 +141,7 @@ package body exec_procedures_pack is
     procedure SW_exec (rs1, rs2 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
         variable memAddr: MemAddrType;
     begin
-        memAddr := to_integer(unsigned(Reg(rs1))) + to_integer(signed(imm))/4; -- word address
+        memAddr := to_integer(signed(Reg(rs1)) + signed(imm))/4; -- word address
         
     	case to_integer(signed(imm)) mod 4 is
     	    when 0 => Mem(memAddr) := Reg(rs2);
