@@ -25,6 +25,7 @@ package mem_pack is
     --auxiliary functions
     function hexstr_to_int (s : string; sign : boolean) return integer;
     function hexstr_to_bit_vector(s : string) return bit_vector;
+    function func_to_string (bv : bit_vector(31 downto 0)) return string;
     function hexchar_to_int (char : character) return integer;
 end mem_pack;
 
@@ -90,6 +91,20 @@ package body mem_pack is
     end loop;
     return result;
     end function hexstr_to_bit_vector;
+    
+    function func_to_string (bv : bit_vector(31 downto 0)) return string is
+    variable result : string (1 to 32);
+    variable temp : character;
+    begin
+    for i in 1 to 32 loop
+        if bv(i-1) = '0' then temp := '0';
+        elsif bv(i-1) = '1' then temp := '1';
+        else assert False report "Invalid bitvector input"; 
+        end if;
+        result(33-i):= temp;
+    end loop;
+         return result;
+    end function func_to_string;
 
 
     function to_MemAddrType (MemAddr : string (1 to 6)) return MemAddrType is
@@ -404,7 +419,7 @@ package body mem_pack is
             write( l , string'(" | ") );
             write( l , hex_image_8(mem(i)), left, 8);
             write( l , string'(" | ") );
-            write( l , to_string(mem(i)) );
+            write( l , func_to_string(mem(i)));
 
             writeline(DataDumpFile, l);
         end loop;
