@@ -301,7 +301,7 @@ package body exec_procedures_pack is
     variable offset : PcType;
     begin
         if(unsigned(reg(rs1)) >= unsigned(reg(rs2))) then 
-            offset := to_integer(signed(imm)); --branch, because rs1 >= rs2
+            offset := to_integer(signed(imm(12 downto 1))); --branch, because rs1 >= rs2
         else 
             offset := 4;                                    --no branch
         end if; 

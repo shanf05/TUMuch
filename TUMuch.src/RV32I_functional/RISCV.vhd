@@ -154,8 +154,8 @@ begin
                 end case;
                 
             when OP_JALR =>                 
-                rd := to_integer(unsigned(Instr(11 downto 7)));
-                rs1 := to_integer(unsigned(Instr(19 downto 15)));
+                rd := to_integer(unsigned(Instr(11 downto 7)));     --return address
+                rs1 := to_integer(unsigned(Instr(19 downto 15)));   --base address
                 rs2 := 0;                
                 imm(10 downto 1) := Instr(30 downto 21);
                 imm(31 downto 11) := (others => Instr(31));
