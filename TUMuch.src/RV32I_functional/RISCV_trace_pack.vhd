@@ -13,7 +13,8 @@ package trace_pack is
     procedure write_registers(l: inout line; reg : RegType; imm : ImmType; hasImm : boolean);
     function  cmd_image(instr : InstrType) return string;
     function  hex_image_8(data : bit_vector(31 downto 0)) return string;
-    function  hex_image_5(data : bit_vector(31 downto 0)) return string;  
+    function  hex_image_5(data : bit_vector(31 downto 0)) return string;
+    function  hex_image_4(data : bit_vector(31 downto 0)) return string;  
 end package trace_pack; 
 
 package body trace_pack is
@@ -23,7 +24,7 @@ package body trace_pack is
         variable l : line; 
     begin
         --write program counter
-        write( l , string'(" PC  "));
+        write( l , string'(" PC "));
         write( l , string'(" | ") );
         
         --write instruction
@@ -227,12 +228,31 @@ package body trace_pack is
         return result;        
     end function; 
     
+    function hex_image_4(data : bit_vector(31 downto 0)) return string is
+        constant hex_table : string := "0123456789ABCDEF";
+        variable result    : string(1 to 4);
+        variable sector    : unsigned(3 downto 0);       
+    begin        
+        for i in 0 to 3 loop
+            -- select 4-bit sector
+            sector := unsigned(data(15 - i*4 downto 13 - i*4));
+            -- map sector (0-15) to hex char
+            result(i+1) := hex_table(to_integer(sector) + 1);
+            
+            --sector := unsigned(data(3 + i*4 downto i*4));
+            -- map sector (0-15) to hex char
+            --result(size - i) := hex_table(to_integer(sector) + 1);
+            
+        end loop;
+        return result;        
+    end function; 
+    
     
     procedure write_instr_info(l: inout line; instr : InstrType; pc : PCType; rs1, rs2, rd : RegAddrType) is
         variable temp : string(1 to 5);
     begin 
         --write program counter        
-        write( l , hex_image_5(bit_vector(to_unsigned(pc, 32))), left);
+        write( l , hex_image_4(bit_vector(to_unsigned(pc, 32))), left);
         write( l , string'(" | ") );
         
         --write instruction mnemonic

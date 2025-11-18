@@ -393,14 +393,14 @@ package body mem_pack is
     procedure memory_data_dump (mem : MemType; file DataDumpFile : text) is         --evtl adresse und gr��e des dumps ausw�hlba machen
         variable l : line;
     begin
-        write( l , string'("  ADDR  |   HEX    |              BIN"));
+        write( l , string'(" ADDR  |   HEX    |              BIN"));
         writeline(DataDumpFile, l);
         write( l , string'("-----------------------------------------------------"));
         writeline(DataDumpFile, l);
 
         for i in 0 to 2**MemAddrSize-1 loop
             write( l , string'("0x") );            
-            write( l , hex_image_5(bit_vector(to_unsigned(i*4, 32))) );
+            write( l , hex_image_4(bit_vector(to_unsigned(i*4, 32))) );
             write( l , string'(" | ") );
             write( l , hex_image_8(mem(i)), left, 8);
             write( l , string'(" | ") );
