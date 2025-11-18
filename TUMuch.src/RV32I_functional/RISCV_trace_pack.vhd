@@ -235,7 +235,7 @@ package body trace_pack is
     begin        
         for i in 0 to 3 loop
             -- select 4-bit sector
-            sector := unsigned(data(15 - i*4 downto 13 - i*4));
+            sector := unsigned(data(15 - i*4 downto 12 - i*4));
             -- map sector (0-15) to hex char
             result(i+1) := hex_table(to_integer(sector) + 1);
             
