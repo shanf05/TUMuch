@@ -166,8 +166,7 @@ begin
             -----------------------------------------------------------------------
             -- S-Type Instructions
             when OP_STORE =>
-                func3 := Instr(14 downto 12);
-                rd := to_integer(unsigned(Instr(11 downto 7)));
+                func3 := Instr(14 downto 12);                
                 rs1 := to_integer(unsigned(Instr(19 downto 15)));
                 rs2 := to_integer(unsigned(Instr(24 downto 20)));
                 imm(4 downto 0) := Instr(11 downto 7);
