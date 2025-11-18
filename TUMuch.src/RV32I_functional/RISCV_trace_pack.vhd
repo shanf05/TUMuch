@@ -23,7 +23,7 @@ package body trace_pack is
         variable l : line; 
     begin
         --write program counter
-        write( l , string'(" PC "));
+        write( l , string'(" PC  "));
         write( l , string'(" | ") );
         
         --write instruction
