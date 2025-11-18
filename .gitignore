@@ -17,9 +17,10 @@ TUMuch.hw/
 TUMuch.ip_user_files/
 
 
-# Ignore Data Dump
+# Ignore all .txt files used for generating
 
 TUMuch.rsc/data_dump.txt
 
 TUMuch.rsc/trace.txt
-/TUMuch.runs
+
+TUMuch.rsc/bin_input.txt

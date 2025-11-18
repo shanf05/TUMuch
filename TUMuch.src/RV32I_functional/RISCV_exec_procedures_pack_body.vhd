@@ -178,18 +178,32 @@ package body exec_procedures_pack is
     end procedure;    
     
     procedure JAL_exec  (rd : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is --erstellt von Severin Hanf 
+        variable offset : PcType; 
     begin    
-        reg(rd) := bit_vector(to_unsigned((pc + 4),32)); --store the return address in rd
-        pc := pc + to_integer(signed(imm));             --jump to the new address                       
+        reg(rd) := bit_vector(to_unsigned((pc + 4),32));            --store the return address in rd
+        offset := to_integer(signed(imm));            
+        if (pc +offset) >= 0 and (pc + offset) < 2**AddrSize -1 then 
+            pc := pc + offset;                                      --jump to the new address                                  
+        else 
+            assert false
+            report "Jump exceeds address range - offset: " & integer'image(offset)
+            severity error;
+        end if;                  
     end procedure;              
     
     procedure JALR_exec (rs1, rd : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is --erstellt von Severin Hanf
-    variable jumpAddress : PcType;    
+        variable jumpAddress : PcType;    
     begin
         reg(rd) := bit_vector(to_unsigned((pc+4),32));                           --store the return address        
         jumpAddress := to_integer(unsigned(reg(rs1))) + to_integer(signed(imm)); --get the jump address
         jumpAddress := (jumpAddress / 2) * 2;                                    --set lowest bit to zero
-        pc := jumpAddress;                                                       --jump to the new address
+        if jumpAddress >= 0 and jumpAddress < 2**AddrSize -1 then 
+            pc := jumpAddress;                                                   --jump to the new address                                 
+        else 
+            assert false
+            report "Jump exceeds address range"
+            severity error;
+        end if;                                                               
     end procedure; 
     
     procedure BEQ_exec (rs1, rs2 : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is --erstellt von Severin Hanf    
@@ -200,29 +214,51 @@ package body exec_procedures_pack is
         else 
             offset := 4;                                    --no branch, because not equal
         end if; 
-        pc := pc + offset;                                                      
+        if (pc + offset) >= 0 and (pc +offset) < 2**AddrSize then 
+            pc := pc + offset;                                    
+        else 
+            pc := pc + 4;
+            assert false
+            report "Branch exceeds address range - offset:" & integer'image(offset)
+            severity error;
+        end if;                                                      
     end procedure;
     
     procedure BNE_exec  (rs1, rs2 : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is --erstellt von Severin Hanf    
-    variable offset : PcType;
+    variable offset : PcType;     
     begin
         if(reg(rs1) /= reg(rs2)) then 
-            offset := to_integer(signed(imm(12 downto 1))); --branch, because not equal
+            --offset := to_integer(signed(imm(15 downto 0))); --branch, because not equal
+            offset := to_integer(signed(imm));
         else 
             offset := 4;                                    --no branch, because equal
         end if; 
-        pc := pc + offset;                                                      
+        if (pc + offset) >= 0 and (pc +offset) < 2**AddrSize then 
+            pc := pc + offset;                                    
+        else 
+            pc := pc + 4;
+            assert false
+            report "Branch exceeds address range - offset: " & integer'image(offset)
+            severity error;
+        end if;                   
     end procedure;
     
     procedure BLT_exec  (rs1, rs2 : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is --erstellt von Severin Hanf    
     variable offset : PcType;
     begin
         if(signed(reg(rs1)) < signed(reg(rs2))) then 
-            offset := to_integer(signed(imm(12 downto 1))); --branch, because rs1 < rs2
+            offset := to_integer(signed(imm)); --branch, because rs1 < rs2
         else 
             offset := 4;                                    --no branch
         end if; 
-        pc := pc + offset;                                                      
+        if (pc + offset) >= 0 and (pc +offset) < 2**AddrSize then 
+            pc := pc + offset;                                    
+        else 
+            pc := pc + 4;
+            assert false
+            report "Branch exceeds address range - offset:" & integer'image(offset)
+            severity error;
+        end if;                                                      
     end procedure;
     
     procedure BGE_exec  (rs1, rs2 : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is --erstellt von Severin Hanf    
@@ -233,7 +269,14 @@ package body exec_procedures_pack is
         else 
             offset := 4;                                    --no branch
         end if; 
-        pc := pc + offset;                                                      
+        if (pc + offset) >= 0 and (pc +offset) < 2**AddrSize then 
+            pc := pc + offset;                                    
+        else 
+            pc := pc + 4;
+            assert false
+            report "Bracnch exceeds address range - offset: " & integer'image(offset)
+            severity error;
+        end if;                                                      
     end procedure;
     
     procedure BLTU_exec (rs1, rs2 : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is --erstellt von Severin Hanf    
@@ -244,7 +287,14 @@ package body exec_procedures_pack is
         else 
             offset := 4;                                   --no branch
         end if; 
-        pc := pc + offset;                                                      
+        if (pc + offset) >= 0 and (pc +offset) < 2**AddrSize then 
+            pc := pc + offset;                                    
+        else 
+            pc := pc + 4;
+            assert false
+            report "Branch exceeds address range - offset: " & integer'image(offset)
+            severity error;
+        end if;                                                      
     end procedure;
     
     procedure BGEU_exec (rs1, rs2 : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is --erstellt von Severin Hanf    
@@ -255,7 +305,14 @@ package body exec_procedures_pack is
         else 
             offset := 4;                                    --no branch
         end if; 
-        pc := pc + offset;
+        if (pc + offset) >= 0 and (pc +offset) < 2**AddrSize then 
+            pc := pc + offset;                                    
+        else 
+            pc := pc + 4;
+            assert false
+            report "Branch exceeds address range - offset: " & integer'image(offset)
+            severity error;
+        end if;
     end procedure;
 
      procedure LUI_exec(rd : RegAddrType; imm : ImmType; mem : inout MemType; Reg : inout RegType; pc : inout PCType) is    --erstellt von Max Biricz

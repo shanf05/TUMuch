@@ -103,6 +103,7 @@ package body mem_pack is
             assert false
             report "Invalid Operation -- Memory address range: 0 - 16383"
             severity error;
+            return 0;
         end if;
 
     end function to_MemAddrType;
@@ -122,6 +123,7 @@ package body mem_pack is
             assert false
             report "Invalid Operation -- Register address range: x00 - x31"
             severity error;
+            return 0;
         end if;
 
     end function to_RegAddrType;
@@ -397,10 +399,10 @@ package body mem_pack is
         writeline(DataDumpFile, l);
 
         for i in 0 to 2**MemAddrSize-1 loop
-            write( l , string'("0x") );
-            write( l , hex_image(bit_vector(to_unsigned(i*4, 16)), 4) );
+            write( l , string'("0x") );            
+            write( l , hex_image_5(bit_vector(to_unsigned(i*4, 32))) );
             write( l , string'(" | ") );
-            write( l , hex_image(mem(i), 8), left, 8);
+            write( l , hex_image_8(mem(i)), left, 8);
             write( l , string'(" | ") );
             write( l , to_string(mem(i)) );
 

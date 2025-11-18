@@ -102,7 +102,7 @@ begin
                 rs1 := to_integer(unsigned(Instr(19 downto 15)));
                 rs2 := 0;   --not best solution right now -> make it similar to no_param!
                 imm(11 downto 0) := Instr(31 downto 20);
-                imm(31 downto 12) := (others => imm(11));  
+                imm(31 downto 12) := (others => Instr(31));
                 write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd);
                 write_registers(l => l, reg => reg, imm => imm, hasImm => true);              
                 case func3 is
@@ -224,15 +224,19 @@ begin
             -----------------------------------------------------------------------
             -- B-Type Instructions
             when OP_Branch =>
-                func3 := Instr(14 downto 12);
+                func3 := Instr(14 downto 12);                
                 rs1 := to_integer(unsigned(Instr(19 downto 15)));
                 rs2 := to_integer(unsigned(Instr(24 downto 20)));
                 rd := 0; 
                 imm(0) := '0';
                 imm(4 downto 1) := Instr(11 downto 8);
                 imm(10 downto 5) := Instr(30 downto 25);
-                imm(11) := Instr(7);
-                imm(31 downto 12) := (others => Instr(31));         
+                imm(11) := Instr(7);        --12 Bit signed !
+                imm(31 downto 12) := (others => Instr(31));    
+                -- wird hier unterschieden zwischen 0xfffffffff801 und 0x1000000801 ? -> wie groß wird das signed interpretiert? 
+                --add :  ll branch instructions use the B-type instruction format. The 12-bit B-immediate encodes signed 
+                --offsets in multiples of 2 bytes. The offset is sign-extended and added to the address of the branch
+                --instruction to give the target address. The conditional branch range is ±4 KiB.  
                 write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd);
                 write_registers(l => l, reg => reg, imm => imm, hasImm => true);        
                 case func3 is

@@ -12,7 +12,8 @@ package trace_pack is
     procedure write_instr_info(l: inout line; instr : InstrType; pc : PCType; rs1, rs2, rd : RegAddrType);
     procedure write_registers(l: inout line; reg : RegType; imm : ImmType; hasImm : boolean);
     function  cmd_image(instr : InstrType) return string;
-    function  hex_image(data : bit_vector(31 downto 0); size : integer) return string;  
+    function  hex_image_8(data : bit_vector(31 downto 0)) return string;
+    function  hex_image_5(data : bit_vector(31 downto 0)) return string;  
 end package trace_pack; 
 
 package body trace_pack is
@@ -188,25 +189,50 @@ package body trace_pack is
         end case;
     end function; 
     
-    function hex_image(data : bit_vector(31 downto 0); size : integer) return string is
+    function hex_image_8(data : bit_vector(31 downto 0)) return string is
         constant hex_table : string := "0123456789ABCDEF";
-        variable result    : string(1 to size);
+        variable result    : string(1 to 8);
         variable sector    : unsigned(3 downto 0);       
     begin        
-        for i in 0 to size-1 loop
+        for i in 0 to 7 loop
             -- select 4-bit sector
             sector := unsigned(data(31 - i*4 downto 28 - i*4));
             -- map sector (0-15) to hex char
             result(i+1) := hex_table(to_integer(sector) + 1);
+            
+            --sector := unsigned(data(3 + i*4 downto i*4));
+            -- map sector (0-15) to hex char
+            --result(size - i) := hex_table(to_integer(sector) + 1);
+            
+        end loop;
+        return result;        
+    end function; 
+    
+    function hex_image_5(data : bit_vector(31 downto 0)) return string is
+        constant hex_table : string := "0123456789ABCDEF";
+        variable result    : string(1 to 5);
+        variable sector    : unsigned(3 downto 0);       
+    begin        
+        for i in 0 to 4 loop
+            -- select 4-bit sector
+            sector := unsigned(data(19 - i*4 downto 16 - i*4));
+            -- map sector (0-15) to hex char
+            result(i+1) := hex_table(to_integer(sector) + 1);
+            
+            --sector := unsigned(data(3 + i*4 downto i*4));
+            -- map sector (0-15) to hex char
+            --result(size - i) := hex_table(to_integer(sector) + 1);
+            
         end loop;
         return result;        
     end function; 
     
     
     procedure write_instr_info(l: inout line; instr : InstrType; pc : PCType; rs1, rs2, rd : RegAddrType) is
+        variable temp : string(1 to 5);
     begin 
-        --write program counter
-        write( l , hex_image(bit_vector(to_unsigned(pc, 16)),4), left, 3);
+        --write program counter        
+        write( l , hex_image_5(bit_vector(to_unsigned(pc, 32))), left);
         write( l , string'(" | ") );
         
         --write instruction mnemonic
@@ -224,10 +250,13 @@ package body trace_pack is
     end procedure;
     
     procedure write_registers(l: inout line; reg : RegType; imm : ImmType; hasImm : boolean) is
+        variable temp : string(1 to 5);
     begin
         --write immediate
         if hasImm then 
-            write( l , hex_image(imm,5) );
+            --temp := hex_image_5(imm,8)(3 to 8);
+            --write( l , temp);          --achtung! das hier klappt nicht !!
+            write( l ,  hex_image_5(imm));
         else 
             write( l , string'(" --- ") );
         end if;
@@ -235,7 +264,7 @@ package body trace_pack is
         --write registers
         for i in 0 to 31 loop 
             write( l , string'(" | ") );
-            write( l , hex_image(reg(i),8) , left, 8);            
+            write( l , hex_image_8(reg(i)) , left, 8);            
         end loop; 
     end procedure;
     
