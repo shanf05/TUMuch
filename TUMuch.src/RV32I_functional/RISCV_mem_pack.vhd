@@ -322,11 +322,11 @@ package body mem_pack is
                 elsif mnemonic = LBU_mnemonic then instr := LBU_Code(rs1 => rs1, rd => rd, imm => imm);
 
                 --store instructions
-                elsif mnemonic = SW_mnemonic then instr := SW_Code(rs1 => rs1, rs2 => rd, imm => imm);
+                elsif mnemonic = SW_mnemonic then instr := SW_Code(rs1 => rd, rs2 => rs1, imm => imm);
 
-                elsif mnemonic = SH_mnemonic then instr := SH_Code(rs1 => rs1, rs2 => rd, imm => imm);
+                elsif mnemonic = SH_mnemonic then instr := SH_Code(rs1 => rd, rs2 => rs1, imm => imm);
 
-                elsif mnemonic = SB_mnemonic then instr := SB_Code(rs1 => rs1, rs2 => rd, imm => imm);
+                elsif mnemonic = SB_mnemonic then instr := SB_Code(rs1 => rd, rs2 => rs1, imm => imm);
 
 
                 --store data (constants) at specific memory address range @0xF000
@@ -391,12 +391,13 @@ package body mem_pack is
     procedure memory_data_dump (mem : MemType; file DataDumpFile : text) is         --evtl adresse und gr��e des dumps ausw�hlba machen
         variable l : line;
     begin
-        write( l , string'("ADDR | HEX      | BIN"));
+        write( l , string'("ADDR   | HEX      | BIN"));
         writeline(DataDumpFile, l);
-        write( l , string'("---------------------------------------------------"));
+        write( l , string'("-----------------------------------------------------"));
         writeline(DataDumpFile, l);
 
         for i in 0 to 2**MemAddrSize-1 loop
+            write( l , string'("0x") );
             write( l , hex_image(bit_vector(to_unsigned(i*4, 16)), 4) );
             write( l , string'(" | ") );
             write( l , hex_image(mem(i), 8), left, 8);
