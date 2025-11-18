@@ -39,7 +39,7 @@ begin
         mem := init_memory_asm(AsmFile);
         --mem := init_memory_bin(BinFile); --alternative
         
-        memory_data_dump(mem, DataDumpFile);
+        --memory_data_dump(mem, DataDumpFile);
         
         loop
         -- fetch instruction
@@ -171,8 +171,8 @@ begin
                 rs1 := to_integer(unsigned(Instr(19 downto 15)));
                 rs2 := to_integer(unsigned(Instr(24 downto 20)));
                 imm(4 downto 0) := Instr(11 downto 7);
-                imm(10 downto 5) := Instr(30 downto 25);
-                imm(31 downto 11) := (others => Instr(31));   
+                imm(11 downto 5) := Instr(31 downto 25);
+                imm(31 downto 12) := (others => imm(11));   
                 write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd);
                 write_registers(l => l, reg => reg, imm => imm, hasImm => true);              
                 case func3 is
@@ -281,7 +281,11 @@ begin
         end case;
         writeline(TraceFile, l);
         end loop;
-        print_tail(Tracefile);      
+        print_tail(Tracefile);    
+        
+        
+        memory_data_dump(mem, DataDumpFile);
+          
         wait;
     end process;    
 end functional;
