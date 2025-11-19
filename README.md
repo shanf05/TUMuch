@@ -20,4 +20,6 @@ Josip Pepić
 
 # Alternative Speicher initialisierung über Bit-Code
 
-- coming soon...
+- auskommentieren von "mem := init_memory_bin(BinFile);" in RISCV.vhd
+- binary Inputs in bin_input.txt (eine Zeile mit 32 Bits füllen, kein Leerzeichen danach)
+- kommentieren von "mem := init_memory_asm(AsmFile);"
