@@ -388,10 +388,9 @@ package body exec_procedures_pack is
     end procedure SRAI_exec;
     
     procedure SLTI_exec(rs1, rd : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is   --erstellt von Max Biricz
-        variable rs1_buff : RegDataType := reg(rs1);
         variable temp : RegDataType;
     begin
-        if to_integer(signed(rs1_buff)) < to_integer(signed(imm)) then
+        if (signed(reg(rs1)) < signed(imm)) then
             temp := bit_vector(to_unsigned(1, 32));
         else
             temp := bit_vector(to_unsigned(0, 32));
@@ -401,10 +400,9 @@ package body exec_procedures_pack is
     end procedure SLTI_exec;
     
     procedure SLTIU_exec(rs1, rd : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is   --erstellt von Max Biricz
-        variable rs1_buff : RegDataType := reg(rs1);
         variable temp : RegDataType;
     begin
-        if to_integer(unsigned(rs1_buff)) < to_integer(unsigned(imm)) then
+        if (unsigned(reg(rs1)) < unsigned(imm)) then
             temp := bit_vector(to_unsigned(1, 32));
         else
             temp := bit_vector(to_unsigned(0, 32));
