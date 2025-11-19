@@ -276,7 +276,7 @@ package body trace_pack is
     begin
         --write immediate
         if hasImm then     
-            if op = OP_LUI then      
+            if op = OP_LUI or op = OP_AUIPC then      
                 temp(19 downto 0) := imm(31 downto 12);   --in this case the Imm is the upper part of Imm -> shift it for display
                 write( l ,  hex_image_5(temp));     
             else 
@@ -292,8 +292,6 @@ package body trace_pack is
             write( l , hex_image_8(reg(i)) , left, 8);            
         end loop; 
     end procedure;
-    
-    
-    
+        
 
 end package body trace_pack; 
