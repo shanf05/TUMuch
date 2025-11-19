@@ -59,7 +59,7 @@ begin
                 rs2 := to_integer(unsigned(Instr(24 downto 20)));
                 funct7 := Instr(31 downto 25);           
                 imm := (others=>'0');   
-                write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd);
+                write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd, hasRd => true, hasRs1 => true, hasRs2 => true);
                 write_registers(l => l, reg => reg, imm => imm , hasImm => false);
                 
                 case func3 is
@@ -103,7 +103,7 @@ begin
                 rs2 := 0;   --not best solution right now -> make it similar to no_param!
                 imm(11 downto 0) := Instr(31 downto 20);
                 imm(31 downto 12) := (others => Instr(31));
-                write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd);
+                write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd, hasRd => true, hasRs1 => true, hasRs2 => false);
                 write_registers(l => l, reg => reg, imm => imm, hasImm => true);              
                 case func3 is
                     -- basic I-Type
@@ -139,7 +139,7 @@ begin
                 rs2 := 0;               -- find better way of doing this
                 imm(11 downto 0) := Instr(31 downto 20);
                 imm(31 downto 12) := (others => imm(11));
-                write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd);
+                write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd, hasRd => true, hasRs1 => true, hasRs2 => false);
                 write_registers(l => l, reg => reg, imm => imm, hasImm => true);                 
                 case func3 is
                     when F3_LB      => LB_exec(rd => rd, rs1 => rs1, imm => imm, reg => reg, mem => mem, pc => pc);
@@ -159,7 +159,7 @@ begin
                 rs2 := 0;                
                 imm(10 downto 1) := Instr(30 downto 21);
                 imm(31 downto 11) := (others => Instr(31));
-                write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd);
+                write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd, hasRd => true, hasRs1 => true, hasRs2 => false);
                 write_registers(l => l, reg => reg, imm => imm, hasImm => true); 
                 JALR_exec(rs1=>rs1, rd=>rd, imm=>imm, mem=>mem, reg=>reg, pc=>pc);
                 -- end I-Type Instructions
@@ -172,7 +172,7 @@ begin
                 imm(4 downto 0) := Instr(11 downto 7);
                 imm(11 downto 5) := Instr(31 downto 25);
                 imm(31 downto 12) := (others => imm(11));   
-                write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd);
+                write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd, hasRd => false, hasRs1 => true, hasRs2 => true);
                 write_registers(l => l, reg => reg, imm => imm, hasImm => true);              
                 case func3 is
                     when F3_SB  => SB_exec(rs1 => rs1, rs2 => rs2, imm => imm, reg => reg, mem => mem, pc => pc);
@@ -192,7 +192,7 @@ begin
                 rs2 := 0; 
                 imm(31 downto 12) := Instr(31 downto 12);
                 imm(11 downto 0) := (others => '0');               
-                write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd);
+                write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd, hasRd => true, hasRs1 => false, hasRs2 => false);
                 write_registers(l => l, reg => reg, imm => imm, hasImm => true); 
                 LUI_exec(rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
             when OP_AUIPC   => 
@@ -201,7 +201,7 @@ begin
                 rs2 := 0;
                 imm(31 downto 12) := Instr(31 downto 12);
                 imm(11 downto 0) := (others => '0');        
-                write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd);
+                write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd, hasRd => true, hasRs1 => false, hasRs2 => false);
                 write_registers(l => l, reg => reg, imm => imm, hasImm => true);         
                 AUIPC_exec(rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
             -- end U-Type Instructions
@@ -216,7 +216,7 @@ begin
                 imm(11)             := Instr(20);
                 imm(19 downto 12)   := Instr(19 downto 12);
                 imm(31 downto 20)   := (others => Instr(31));    
-                write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd);
+                write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd, hasRd => true, hasRs1 => false, hasRs2 => false);
                 write_registers(l => l, reg => reg, imm => imm, hasImm => true);             
                 JAL_exec(rd=>rd, imm=>imm, mem=>mem, reg=>reg, pc=>pc);
             -- end J-Type Instructions
@@ -236,7 +236,7 @@ begin
                 --add :  ll branch instructions use the B-type instruction format. The 12-bit B-immediate encodes signed 
                 --offsets in multiples of 2 bytes. The offset is sign-extended and added to the address of the branch
                 --instruction to give the target address. The conditional branch range is ±4 KiB.  
-                write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd);
+                write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd, hasRd => false, hasRs1 => true, hasRs2 => true);
                 write_registers(l => l, reg => reg, imm => imm, hasImm => true);        
                 case func3 is
                     when F3_BEQ  => BEQ_exec (rs1=>rs1, rs2=>rs2, imm=>imm, mem=>mem, reg=>reg, pc=>pc);               
@@ -260,7 +260,7 @@ begin
                     rs2 := 0; 
                     rd := 0;
                     imm := (others =>'0');
-                    write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd);
+                    write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd, hasRd => false, hasRs1 => false, hasRs2 => false);
                     write_registers(l => l, reg => reg, imm => imm, hasImm => false); 
                     writeline(TraceFile, l);    --has to be done, because loop is exited right after
                     STOP_exec;
@@ -276,7 +276,7 @@ begin
                 rs2 := 0; 
                 rd := 0; 
                 imm := (others =>'0');
-                write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd);
+                write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd, hasRd => false, hasRs1 => false, hasRs2 => false);
                 write_registers(l => l, reg => reg, imm => imm, hasImm => false);                           
                 assert FALSE
                 report "Illegal Operation -- no OP_CODE"

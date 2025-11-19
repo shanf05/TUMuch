@@ -9,7 +9,7 @@ use IEEE.numeric_bit.all;
 package trace_pack is
     procedure print_header(file TraceFile : Text);
     procedure print_tail(file TraceFile : Text);
-    procedure write_instr_info(l: inout line; instr : InstrType; pc : PCType; rs1, rs2, rd : RegAddrType);
+    procedure write_instr_info(l: inout line; instr : InstrType; pc : PCType; rs1, rs2, rd : RegAddrType; hasRs1, hasRs2, hasRd : boolean);
     procedure write_registers(l: inout line; reg : RegType; imm : ImmType; hasImm : boolean);
     function  cmd_image(instr : InstrType) return string;
     function  hex_image_8(data : bit_vector(31 downto 0)) return string;
@@ -248,7 +248,7 @@ package body trace_pack is
     end function; 
     
     
-    procedure write_instr_info(l: inout line; instr : InstrType; pc : PCType; rs1, rs2, rd : RegAddrType) is
+    procedure write_instr_info(l: inout line; instr : InstrType; pc : PCType; rs1, rs2, rd : RegAddrType; hasRs1, hasRs2, hasRd : boolean) is
         variable temp : string(1 to 5);
     begin 
         --write program counter        
@@ -260,11 +260,23 @@ package body trace_pack is
         write( l , string'(" | ") );
         
         --write used registers
-        write( l , rd, left, 2 );
+        if(hasRd) then 
+            write( l , rd, left, 2 );
+        else 
+            write( l , string'("--") );
+        end if;        
         write( l , string'(" ") );
-        write( l , rs1, left, 2 );
+        if(hasRs1) then 
+            write( l , rs1, left, 2 );
+        else 
+            write( l , string'("--") );
+        end if;        
         write( l , string'(" ") );
-        write( l , rs2, left, 2 );
+        if(hasRs2) then 
+            write( l , rs2, left, 2 );
+        else 
+            write( l , string'("--") );
+        end if;
         write( l , string'(" | ") );
         
     end procedure;
