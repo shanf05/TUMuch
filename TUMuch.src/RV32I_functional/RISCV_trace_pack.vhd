@@ -86,7 +86,6 @@ package body trace_pack is
                 when F3_SRL | F3_SRA  => 
                     if    (Instr(31 downto 25) = F7_SRL) then return SRLI_mnemonic;
                     elsif (Instr(31 downto 25) = F7_SRA) then return SRAI_mnemonic;
-                    elsif (Instr(31 downto 25) = F7_SLL) then return SLLI_mnemonic;
                     else                                     
                         assert FALSE;
                         return "ERROR";
@@ -140,18 +139,13 @@ package body trace_pack is
                         assert FALSE;
                         return "ERROR"; 
                     end if; 
-                when F3_SRL  => 
+                when F3_SRL  =>                     -- ->F3_SRL = F3_SRA
                     if (Instr(31 downto 25) = F7_SRL) then return SRL_mnemonic;                    
+                    elsif (Instr(31 downto 25) = F7_SRA) then return SRA_mnemonic;
                     else                                   
                         assert FALSE;
                         return "ERROR"; 
                     end if; 
-                when F3_SRA  =>  
-                    if (Instr(31 downto 25) = F7_SRA) then return SRA_mnemonic;                    
-                    else                                   
-                        assert FALSE;
-                        return "ERROR"; 
-                    end if;                 
                 when others  => 
                     assert FALSE;
                     return "ERROR";

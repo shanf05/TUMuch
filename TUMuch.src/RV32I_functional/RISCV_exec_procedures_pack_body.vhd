@@ -81,7 +81,7 @@ package body exec_procedures_pack is
     end procedure;
         
     procedure LHU_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
-        variable memAddr: MemAddrType;
+        variable memAddr    : MemAddrType;
         variable temp       : RegDataType := Reg(rd);
     begin
         memAddr := to_integer(signed(Reg(rs1)) + signed(imm))/4; -- word address
@@ -162,7 +162,7 @@ package body exec_procedures_pack is
         IncrementPc(pc);
     end procedure;
     
-    procedure ADD_exec (rd, rs1, rs2 : RegAddrType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
+    procedure ADD_exec (rd, rs1, rs2 : RegAddrType; Reg : inout RegType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
         variable temp : signed(RegDataSize-1 downto 0);
     begin
         temp := signed(Reg(rs1)) + signed(Reg(rs2));
@@ -170,7 +170,7 @@ package body exec_procedures_pack is
         IncrementPc(pc);
     end procedure;
     
-    procedure SUB_exec (rd, rs1, rs2 : RegAddrType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
+    procedure SUB_exec (rd, rs1, rs2 : RegAddrType; Reg : inout RegType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
         variable temp : signed(RegDataSize-1 downto 0);
     begin
         temp := signed(Reg(rs1)) - signed(Reg(rs2));
@@ -178,7 +178,7 @@ package body exec_procedures_pack is
         IncrementPc(pc);
     end procedure;
     
-    procedure ADDI_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
+    procedure ADDI_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
         variable temp : signed(RegDataSize-1 downto 0);
     begin
         temp := signed(Reg(rs1)) + signed(imm);
@@ -186,7 +186,7 @@ package body exec_procedures_pack is
         IncrementPc(pc);
     end procedure;    
     
-    procedure JAL_exec  (rd : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is --erstellt von Severin Hanf 
+    procedure JAL_exec  (rd : RegAddrType; imm : RegDataType; reg : inout RegType; pc : inout PCType) is --erstellt von Severin Hanf 
         variable offset : PcType; 
     begin    
         write_val_to_reg(reg => reg, rd => rd, val => bit_vector(to_unsigned((pc + 4),32)));            --store the return address in rd
@@ -200,7 +200,7 @@ package body exec_procedures_pack is
         end if;                  
     end procedure;              
     
-    procedure JALR_exec (rs1, rd : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is --erstellt von Severin Hanf
+    procedure JALR_exec (rs1, rd : RegAddrType; imm : RegDataType; reg : inout RegType; pc : inout PCType) is --erstellt von Severin Hanf
         variable jumpAddress : PcType;    
     begin
         write_val_to_reg(reg => reg, rd => rd, val => bit_vector(to_unsigned((pc+4),32)));                           --store the return address        
@@ -215,7 +215,7 @@ package body exec_procedures_pack is
         end if;                                                               
     end procedure; 
     
-    procedure BEQ_exec (rs1, rs2 : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is --erstellt von Severin Hanf    
+    procedure BEQ_exec (rs1, rs2 : RegAddrType; imm : RegDataType; reg : inout RegType; pc : inout PCType) is --erstellt von Severin Hanf    
         variable offset : PcType;
     begin
         if(reg(rs1) = reg(rs2)) then 
@@ -233,7 +233,7 @@ package body exec_procedures_pack is
         end if;                                                      
     end procedure;
     
-    procedure BNE_exec  (rs1, rs2 : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is --erstellt von Severin Hanf    
+    procedure BNE_exec  (rs1, rs2 : RegAddrType; imm : RegDataType; reg : inout RegType; pc : inout PCType) is --erstellt von Severin Hanf    
         variable offset : PcType;     
     begin
         if(reg(rs1) /= reg(rs2)) then 
@@ -252,7 +252,7 @@ package body exec_procedures_pack is
         end if;                   
     end procedure;
     
-    procedure BLT_exec  (rs1, rs2 : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is --erstellt von Severin Hanf    
+    procedure BLT_exec  (rs1, rs2 : RegAddrType; imm : RegDataType; reg : inout RegType; pc : inout PCType) is --erstellt von Severin Hanf    
         variable offset : PcType;
     begin
         if(signed(reg(rs1)) < signed(reg(rs2))) then 
@@ -270,7 +270,7 @@ package body exec_procedures_pack is
         end if;                                                      
     end procedure;
     
-    procedure BGE_exec  (rs1, rs2 : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is --erstellt von Severin Hanf    
+    procedure BGE_exec  (rs1, rs2 : RegAddrType; imm : RegDataType; reg : inout RegType; pc : inout PCType) is --erstellt von Severin Hanf    
         variable offset : PcType;
     begin
         if(signed(reg(rs1)) >= signed(reg(rs2))) then 
@@ -288,7 +288,7 @@ package body exec_procedures_pack is
         end if;                                                      
     end procedure;
     
-    procedure BLTU_exec (rs1, rs2 : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is --erstellt von Severin Hanf    
+    procedure BLTU_exec (rs1, rs2 : RegAddrType; imm : RegDataType; reg : inout RegType; pc : inout PCType) is --erstellt von Severin Hanf    
         variable offset : PcType;
     begin
         if(unsigned(reg(rs1)) < unsigned(reg(rs2))) then
@@ -306,7 +306,7 @@ package body exec_procedures_pack is
         end if;                                                      
     end procedure;
     
-    procedure BGEU_exec (rs1, rs2 : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is --erstellt von Severin Hanf    
+    procedure BGEU_exec (rs1, rs2 : RegAddrType; imm : RegDataType; reg : inout RegType; pc : inout PCType) is --erstellt von Severin Hanf    
         variable offset : PcType;
     begin
         if(unsigned(reg(rs1)) >= unsigned(reg(rs2))) then 
@@ -324,19 +324,19 @@ package body exec_procedures_pack is
         end if;
     end procedure;
 
-    procedure LUI_exec(rd : RegAddrType; imm : ImmType; mem : inout MemType; Reg : inout RegType; pc : inout PCType) is    --erstellt von Max Biricz
+    procedure LUI_exec(rd : RegAddrType; imm : ImmType; Reg : inout RegType; pc : inout PCType) is    --erstellt von Max Biricz
     begin
         write_val_to_reg(reg => reg, rd => rd, val => imm);             --no concatenation with X"000" -> already implemented in RISCV.vhd execute case
         IncrementPc(pc);
     end procedure LUI_exec;
     
-    procedure AUIPC_exec(rd : RegAddrType; imm : ImmType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is    --erstellt von Max Biricz
+    procedure AUIPC_exec(rd : RegAddrType; imm : ImmType; reg : inout RegType; pc : inout PCType) is    --erstellt von Max Biricz
     begin
         write_val_to_reg(reg => reg, rd => rd, val => bit_vector(to_unsigned(pc + to_integer(signed(imm)), 32)));
         IncrementPc(pc);
     end procedure AUIPC_exec;    
     
-    procedure XORI_exec(rs1, rd : RegAddrType; imm : ImmType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is   --erstellt von Max Biricz
+    procedure XORI_exec(rs1, rd : RegAddrType; imm : ImmType; reg : inout RegType; pc : inout PCType) is   --erstellt von Max Biricz
         variable temp : RegDatatype;
     begin
         temp := Reg(rs1) xor imm;       --no concatenation with X"000" -> already implemented in RISCV.vhd execute case
@@ -344,7 +344,7 @@ package body exec_procedures_pack is
         IncrementPc(pc);
     end procedure XORI_exec;
     
-    procedure ORI_exec(rs1, rd : RegAddrType; imm : Immtype; mem : inout MemType; reg : inout RegType; pc : inout PCType) is    --erstellt von Max Biricz
+    procedure ORI_exec(rs1, rd : RegAddrType; imm : Immtype; reg : inout RegType; pc : inout PCType) is    --erstellt von Max Biricz
         variable temp : RegDataType;
     begin
         temp := Reg(rs1) or imm;
@@ -352,7 +352,7 @@ package body exec_procedures_pack is
         IncrementPc(pc);
     end procedure ORI_exec;    
     
-    procedure ANDI_exec(rs1, rd : RegAddrType; imm : ImmType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is    --erstellt von Max Biricz
+    procedure ANDI_exec(rs1, rd : RegAddrType; imm : ImmType; reg : inout RegType; pc : inout PCType) is    --erstellt von Max Biricz
         variable temp : RegDatatype;
     begin
         temp := Reg(rs1) and imm;
@@ -360,7 +360,7 @@ package body exec_procedures_pack is
         IncrementPc(pc);
     end procedure ANDI_exec;
     
-    procedure SLLI_exec(rs1, rd : RegAddrType; imm : ImmType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is    --erstellt von Max Biricz
+    procedure SLLI_exec(rs1, rd : RegAddrType; imm : ImmType; reg : inout RegType; pc : inout PCType) is    --erstellt von Max Biricz
         variable temp : RegDataType;
         variable shamt : ShamtType := imm(4 downto 0);
     begin
@@ -369,7 +369,7 @@ package body exec_procedures_pack is
         IncrementPc(pc);
     end procedure SLLI_exec;
     
-    procedure SRLI_exec(rs1, rd : RegAddrType; imm : Immtype; mem : inout MemType; reg : inout RegType; pc : inout PCType) is    --erstellt von Max Biricz
+    procedure SRLI_exec(rs1, rd : RegAddrType; imm : Immtype; reg : inout RegType; pc : inout PCType) is    --erstellt von Max Biricz
         variable temp : RegDataType;
         variable shamt : ShamtType := imm(4 downto 0);
     begin
@@ -379,7 +379,7 @@ package body exec_procedures_pack is
     end procedure SRLI_exec;
     
     
-    procedure SRAI_exec(rs1, rd : RegAddrType; imm : ImmType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is   --erstellt von Max Biricz
+    procedure SRAI_exec(rs1, rd : RegAddrType; imm : ImmType; reg : inout RegType; pc : inout PCType) is   --erstellt von Max Biricz
         variable shamt : ShamtType := imm(4 downto 0);
         variable shift_index : integer := to_integer(unsigned(shamt));
     begin
@@ -387,7 +387,7 @@ package body exec_procedures_pack is
         IncrementPc(pc);
     end procedure SRAI_exec;
     
-    procedure SLTI_exec(rs1, rd : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is   --erstellt von Max Biricz
+    procedure SLTI_exec(rs1, rd : RegAddrType; imm : RegDataType; reg : inout RegType; pc : inout PCType) is   --erstellt von Max Biricz
         variable temp : RegDataType;
     begin
         if (signed(reg(rs1)) < signed(imm)) then
@@ -399,7 +399,7 @@ package body exec_procedures_pack is
         IncrementPc(pc);
     end procedure SLTI_exec;
     
-    procedure SLTIU_exec(rs1, rd : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is   --erstellt von Max Biricz
+    procedure SLTIU_exec(rs1, rd : RegAddrType; imm : RegDataType; reg : inout RegType; pc : inout PCType) is   --erstellt von Max Biricz
         variable temp : RegDataType;
     begin
         if (unsigned(reg(rs1)) < unsigned(imm)) then

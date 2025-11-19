@@ -15,7 +15,7 @@ end RISCV;
 
 architecture functional of RISCV is
     file TraceFile : Text open write_mode is "../../../../TUMuch.rsc/trace.txt"; 
-    file AsmFile : Text open read_mode is "../../../../TUMuch.rsc/asm_input.txt";
+    file AsmFile : Text open read_mode is "../../../../TUMuch.rsc/asm_input_SLT_SLTU.txt";
     file DataDumpFile : Text open write_mode is "../../../../TUMuch.rsc/data_dump.txt"; 
     file BinFile : Text open read_mode is "../../../../TUMuch.rsc/bin_input.txt";
 begin       
@@ -58,8 +58,8 @@ begin
                 
                 case func3 is
                     when F3_ADD =>      -- F3_ADD and F3_SUB have the same value "000"                        
-                        if funct7 = F7_ADD then      ADD_exec(rd=>rd, rs1=>rs1, rs2=>rs2, reg=>reg, mem=>mem, pc=>pc);
-                        elsif funct7 = F7_SUB then   SUB_exec(rd=>rd, rs1=>rs1, rs2=>rs2, reg=>reg, mem=>mem, pc=>pc);
+                        if funct7 = F7_ADD then      ADD_exec(rd=>rd, rs1=>rs1, rs2=>rs2, reg=>reg, pc=>pc);
+                        elsif funct7 = F7_SUB then   SUB_exec(rd=>rd, rs1=>rs1, rs2=>rs2, reg=>reg, pc=>pc);
                         else                                -- cover invalid cases
                             assert FALSE
                             report "Illegal Operation -- OP_OP -> ADD | SUB"
@@ -107,18 +107,18 @@ begin
                               
                 case func3 is
                     -- basic I-Type
-                    when F3_ADDI   => ADDI_exec(rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);                
-                    when F3_XOR    => XORI_exec(rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
-                    when F3_OR     => ORI_exec (rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
-                    when F3_AND    => ANDI_exec(rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
-                    when F3_SLT    => SLTI_exec(rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
-                    when F3_SLTU   => SLTIU_exec(rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
+                    when F3_ADDI   => ADDI_exec(rs1 => rs1, rd => rd, imm => imm, reg => reg, pc => pc);                
+                    when F3_XOR    => XORI_exec(rs1 => rs1, rd => rd, imm => imm, reg => reg, pc => pc);
+                    when F3_OR     => ORI_exec (rs1 => rs1, rd => rd, imm => imm, reg => reg, pc => pc);
+                    when F3_AND    => ANDI_exec(rs1 => rs1, rd => rd, imm => imm, reg => reg, pc => pc);
+                    when F3_SLT    => SLTI_exec(rs1 => rs1, rd => rd, imm => imm, reg => reg, pc => pc);
+                    when F3_SLTU   => SLTIU_exec(rs1 => rs1, rd => rd, imm => imm, reg => reg, pc => pc);
                     -- I-Type Instructions modified
                     when F3_SLL | F3_SRL => -- F3_SRL and F3_SRA have the same value "101"
                         funct7 := Instr(31 downto 25);
-                        if func3 = F3_SLL and funct7 = F7_SRL then SLLI_exec(rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
-                        elsif func3 = F3_SRL and funct7 = F7_SRL then SRLI_exec(rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
-                        elsif func3 = F3_SRA and funct7 = F7_SRA then SRAI_exec(rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
+                        if func3 = F3_SLL and funct7 = F7_SRL then SLLI_exec(rs1 => rs1, rd => rd, imm => imm, reg => reg, pc => pc);
+                        elsif func3 = F3_SRL and funct7 = F7_SRL then SRLI_exec(rs1 => rs1, rd => rd, imm => imm, reg => reg, pc => pc);
+                        elsif func3 = F3_SRA and funct7 = F7_SRA then SRAI_exec(rs1 => rs1, rd => rd, imm => imm, reg => reg, pc => pc);
                         else                                                    -- cover invalid cases
                             assert FALSE
                             report "Illegal Operation -- OP_IMM -> SRL | SRA"
@@ -160,7 +160,7 @@ begin
                 imm(31 downto 11) := (others => Instr(31));
                 write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd, hasRd => true, hasRs1 => true, hasRs2 => false);
                 write_registers(l => l, reg => reg, op=>op_code, imm => imm, hasImm => true); 
-                JALR_exec(rs1=>rs1, rd=>rd, imm=>imm, mem=>mem, reg=>reg, pc=>pc);
+                JALR_exec(rs1=>rs1, rd=>rd, imm=>imm, reg=>reg, pc=>pc);
                 -- end I-Type Instructions
             -----------------------------------------------------------------------
             -- S-Type Instructions
@@ -193,7 +193,7 @@ begin
                 imm(11 downto 0) := (others => '0');               
                 write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd, hasRd => true, hasRs1 => false, hasRs2 => false);
                 write_registers(l => l, reg => reg, op=>op_code, imm => imm, hasImm => true); 
-                LUI_exec(rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
+                LUI_exec(rd => rd, imm => imm, reg => reg, pc => pc);
             when OP_AUIPC   => 
                 rd := to_integer(unsigned(Instr(11 downto 7)));
                 rs1 := 0; 
@@ -202,7 +202,7 @@ begin
                 imm(11 downto 0) := (others => '0');        
                 write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd, hasRd => true, hasRs1 => false, hasRs2 => false);
                 write_registers(l => l, reg => reg, op=>op_code, imm => imm, hasImm => true);         
-                AUIPC_exec(rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
+                AUIPC_exec(rd => rd, imm => imm, reg => reg, pc => pc);
             -- end U-Type Instructions
             -----------------------------------------------------------------------
             -- J-Type Instructions
@@ -217,7 +217,7 @@ begin
                 imm(31 downto 20)   := (others => Instr(31));    
                 write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd, hasRd => true, hasRs1 => false, hasRs2 => false);
                 write_registers(l => l, reg => reg, op=>op_code, imm => imm, hasImm => true);             
-                JAL_exec(rd=>rd, imm=>imm, mem=>mem, reg=>reg, pc=>pc);
+                JAL_exec(rd=>rd, imm=>imm, reg=>reg, pc=>pc);
             -- end J-Type Instructions
             -----------------------------------------------------------------------
             -- B-Type Instructions
@@ -234,12 +234,12 @@ begin
                 write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd, hasRd => false, hasRs1 => true, hasRs2 => true);
                 write_registers(l => l, reg => reg, op=>op_code, imm => imm, hasImm => true);        
                 case func3 is
-                    when F3_BEQ  => BEQ_exec (rs1=>rs1, rs2=>rs2, imm=>imm, mem=>mem, reg=>reg, pc=>pc);               
-                    when F3_BNE  => BNE_exec (rs1=>rs1, rs2=>rs2, imm=>imm, mem=>mem, reg=>reg, pc=>pc);               
-                    when F3_BLT  => BLT_exec (rs1=>rs1, rs2=>rs2, imm=>imm, mem=>mem, reg=>reg, pc=>pc);
-                    when F3_BGE  => BGE_exec (rs1=>rs1, rs2=>rs2, imm=>imm, mem=>mem, reg=>reg, pc=>pc);
-                    when F3_BLTU => BLTU_exec (rs1=>rs1, rs2=>rs2, imm=>imm, mem=>mem, reg=>reg, pc=>pc);
-                    when F3_BGEU => BGEU_exec (rs1=>rs1, rs2=>rs2, imm=>imm, mem=>mem, reg=>reg, pc=>pc);
+                    when F3_BEQ  => BEQ_exec (rs1=>rs1, rs2=>rs2, imm=>imm, reg=>reg, pc=>pc);               
+                    when F3_BNE  => BNE_exec (rs1=>rs1, rs2=>rs2, imm=>imm, reg=>reg, pc=>pc);               
+                    when F3_BLT  => BLT_exec (rs1=>rs1, rs2=>rs2, imm=>imm, reg=>reg, pc=>pc);
+                    when F3_BGE  => BGE_exec (rs1=>rs1, rs2=>rs2, imm=>imm, reg=>reg, pc=>pc);
+                    when F3_BLTU => BLTU_exec (rs1=>rs1, rs2=>rs2, imm=>imm, reg=>reg, pc=>pc);
+                    when F3_BGEU => BGEU_exec (rs1=>rs1, rs2=>rs2, imm=>imm, reg=>reg, pc=>pc);
                     when others =>                      -- covers invalid cases
                         assert FALSE 
                         report "Illegal Operation -- OP_BRANCH" 
