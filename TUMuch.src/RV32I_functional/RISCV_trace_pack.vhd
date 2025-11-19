@@ -200,11 +200,6 @@ package body trace_pack is
             sector := unsigned(data(31 - i*4 downto 28 - i*4));
             -- map sector (0-15) to hex char
             result(i+1) := hex_table(to_integer(sector) + 1);
-            
-            --sector := unsigned(data(3 + i*4 downto i*4));
-            -- map sector (0-15) to hex char
-            --result(size - i) := hex_table(to_integer(sector) + 1);
-            
         end loop;
         return result;        
     end function; 
@@ -219,11 +214,6 @@ package body trace_pack is
             sector := unsigned(data(19 - i*4 downto 16 - i*4));
             -- map sector (0-15) to hex char
             result(i+1) := hex_table(to_integer(sector) + 1);
-            
-            --sector := unsigned(data(3 + i*4 downto i*4));
-            -- map sector (0-15) to hex char
-            --result(size - i) := hex_table(to_integer(sector) + 1);
-            
         end loop;
         return result;        
     end function; 
@@ -237,12 +227,7 @@ package body trace_pack is
             -- select 4-bit sector
             sector := unsigned(data(15 - i*4 downto 12 - i*4));
             -- map sector (0-15) to hex char
-            result(i+1) := hex_table(to_integer(sector) + 1);
-            
-            --sector := unsigned(data(3 + i*4 downto i*4));
-            -- map sector (0-15) to hex char
-            --result(size - i) := hex_table(to_integer(sector) + 1);
-            
+            result(i+1) := hex_table(to_integer(sector) + 1);            
         end loop;
         return result;        
     end function; 
@@ -285,9 +270,7 @@ package body trace_pack is
         variable temp : string(1 to 5);
     begin
         --write immediate
-        if hasImm then 
-            --temp := hex_image_5(imm,8)(3 to 8);
-            --write( l , temp);          --achtung! das hier klappt nicht !!
+        if hasImm then            
             write( l ,  hex_image_5(imm));
         else 
             write( l , string'(" --- ") );
