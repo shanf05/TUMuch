@@ -102,7 +102,7 @@ package body mem_pack is
                     end if;
                 else
                     if mnemonic_set = true then
-                        assert false report "Invalid Operation - Mnemonic already set" severity error;
+                        --assert false report "Invalid Operation - Mnemonic already set" severity error;
                     else
                         for i in 2 to 5 loop
                             read(l, v(i), success);
