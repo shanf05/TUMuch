@@ -30,7 +30,6 @@ begin
         variable rs1     : RegAddrType;
         variable rs2     : RegAddrType;
         variable funct7  : Funct7;
-        variable shamt   : ShamtType;                   -- only used for modified I-Type Instruction
         variable imm     : ImmType := (others => '0');     
         variable l       : line;
     begin 
@@ -119,7 +118,6 @@ begin
                     -- I-Type Instructions modified
                     when F3_SLL | F3_SRL => -- F3_SRL and F3_SRA have the same value "101"
                         funct7 := Instr(31 downto 25);
-                        shamt := Instr(24 downto 20);
                         if func3 = F3_SLL and funct7 = F7_SRL then SLLI_exec(rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
                         elsif func3 = F3_SRL and funct7 = F7_SRL then SRLI_exec(rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
                         elsif func3 = F3_SRA and funct7 = F7_SRA then SRAI_exec(rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
