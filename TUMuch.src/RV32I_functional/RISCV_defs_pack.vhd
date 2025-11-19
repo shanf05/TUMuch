@@ -25,14 +25,4 @@ package defs_pack is
     subtype  ImmType   is bit_vector (RegDataSize-1 downto 0);
     subtype  PcType    is integer range 2**AddrSize-1 downto 0;
     
-    procedure IncrementPC(pc : inout PcType);
-end;
-
-package body defs_pack is
-    procedure IncrementPC(pc : inout PcType) is
-    begin
-        pc := pc + 4;    
-    end procedure;
-
-
-end package body; 
+end; 

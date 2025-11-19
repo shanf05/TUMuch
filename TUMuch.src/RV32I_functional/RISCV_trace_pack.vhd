@@ -10,7 +10,7 @@ package trace_pack is
     procedure print_header(file TraceFile : Text);
     procedure print_tail(file TraceFile : Text);
     procedure write_instr_info(l: inout line; instr : InstrType; pc : PCType; rs1, rs2, rd : RegAddrType; hasRs1, hasRs2, hasRd : boolean);
-    procedure write_registers(l: inout line; reg : RegType; imm : ImmType; hasImm : boolean);
+    procedure write_registers(l: inout line; reg : RegType; op : OpCode; imm : ImmType; hasImm : boolean);
     function  cmd_image(instr : InstrType) return string;
     function  hex_image_8(data : bit_vector(31 downto 0)) return string;
     function  hex_image_5(data : bit_vector(31 downto 0)) return string;
@@ -238,7 +238,7 @@ package body trace_pack is
     end function; 
     
     
-    procedure write_instr_info(l: inout line; instr : InstrType; pc : PCType; rs1, rs2, rd : RegAddrType; hasRs1, hasRs2, hasRd : boolean) is
+    procedure write_instr_info(l: inout line; instr : instrType; pc : PCType; rs1, rs2, rd : RegAddrType; hasRs1, hasRs2, hasRd : boolean) is
         variable temp : string(1 to 5);
     begin 
         --write program counter        
@@ -271,12 +271,17 @@ package body trace_pack is
         
     end procedure;
     
-    procedure write_registers(l: inout line; reg : RegType; imm : ImmType; hasImm : boolean) is
-        variable temp : string(1 to 5);
+    procedure write_registers(l: inout line; reg : RegType; op : OpCode; imm : ImmType; hasImm : boolean) is
+        variable temp : ImmType := (others=>'0');
     begin
         --write immediate
-        if hasImm then            
-            write( l ,  hex_image_5(imm));
+        if hasImm then     
+            if op = OP_LUI then      
+                temp(19 downto 0) := imm(31 downto 12);   --in this case the Imm is the upper part of Imm -> shift it for display
+                write( l ,  hex_image_5(temp));     
+            else 
+                write( l ,  hex_image_5(imm));
+            end if; 
         else 
             write( l , string'(" --- ") );
         end if;

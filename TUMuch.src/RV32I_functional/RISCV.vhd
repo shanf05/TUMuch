@@ -56,7 +56,7 @@ begin
                 funct7 := Instr(31 downto 25);           
                 imm := (others=>'0');   
                 write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd, hasRd => true, hasRs1 => true, hasRs2 => true);
-                write_registers(l => l, reg => reg, imm => imm , hasImm => false);
+                write_registers(l => l, reg => reg, op=>op_code, imm => imm , hasImm => false);
                 
                 case func3 is
                     when F3_ADD =>      -- F3_ADD and F3_SUB have the same value "000"                        
@@ -101,10 +101,10 @@ begin
                 imm(31 downto 12) := (others => Instr(31));
                 if(Instr = NOP_instr) then                
                     write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd, hasRd => false, hasRs1 => false, hasRs2 => false);
-                    write_registers(l => l, reg => reg, imm => imm, hasImm => false);
+                    write_registers(l => l, reg => reg, op=>op_code, imm => imm, hasImm => false);
                 else 
                     write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd, hasRd => true, hasRs1 => true, hasRs2 => false);
-                    write_registers(l => l, reg => reg, imm => imm, hasImm => true);
+                    write_registers(l => l, reg => reg, op=>op_code, imm => imm, hasImm => true);
                 end if;  
                               
                 case func3 is
@@ -141,7 +141,7 @@ begin
                 imm(11 downto 0) := Instr(31 downto 20);
                 imm(31 downto 12) := (others => imm(11));
                 write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd, hasRd => true, hasRs1 => true, hasRs2 => false);
-                write_registers(l => l, reg => reg, imm => imm, hasImm => true);                 
+                write_registers(l => l, reg => reg, op=>op_code, imm => imm, hasImm => true);                 
                 case func3 is
                     when F3_LB      => LB_exec(rd => rd, rs1 => rs1, imm => imm, reg => reg, mem => mem, pc => pc);
                     when F3_LH      => LH_exec(rd => rd, rs1 => rs1, imm => imm, reg => reg, mem => mem, pc => pc);
@@ -161,7 +161,7 @@ begin
                 imm(10 downto 1) := Instr(30 downto 21);
                 imm(31 downto 11) := (others => Instr(31));
                 write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd, hasRd => true, hasRs1 => true, hasRs2 => false);
-                write_registers(l => l, reg => reg, imm => imm, hasImm => true); 
+                write_registers(l => l, reg => reg, op=>op_code, imm => imm, hasImm => true); 
                 JALR_exec(rs1=>rs1, rd=>rd, imm=>imm, mem=>mem, reg=>reg, pc=>pc);
                 -- end I-Type Instructions
             -----------------------------------------------------------------------
@@ -174,7 +174,7 @@ begin
                 imm(11 downto 5) := Instr(31 downto 25);
                 imm(31 downto 12) := (others => imm(11));   
                 write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd, hasRd => false, hasRs1 => true, hasRs2 => true);
-                write_registers(l => l, reg => reg, imm => imm, hasImm => true);              
+                write_registers(l => l, reg => reg, op=>op_code, imm => imm, hasImm => true);              
                 case func3 is
                     when F3_SB  => SB_exec(rs1 => rs1, rs2 => rs2, imm => imm, reg => reg, mem => mem, pc => pc);
                     when F3_SH  => SH_exec(rs1 => rs1, rs2 => rs2, imm => imm, reg => reg, mem => mem, pc => pc);
@@ -194,7 +194,7 @@ begin
                 imm(31 downto 12) := Instr(31 downto 12);
                 imm(11 downto 0) := (others => '0');               
                 write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd, hasRd => true, hasRs1 => false, hasRs2 => false);
-                write_registers(l => l, reg => reg, imm => imm, hasImm => true); 
+                write_registers(l => l, reg => reg, op=>op_code, imm => imm, hasImm => true); 
                 LUI_exec(rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
             when OP_AUIPC   => 
                 rd := to_integer(unsigned(Instr(11 downto 7)));
@@ -203,7 +203,7 @@ begin
                 imm(31 downto 12) := Instr(31 downto 12);
                 imm(11 downto 0) := (others => '0');        
                 write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd, hasRd => true, hasRs1 => false, hasRs2 => false);
-                write_registers(l => l, reg => reg, imm => imm, hasImm => true);         
+                write_registers(l => l, reg => reg, op=>op_code, imm => imm, hasImm => true);         
                 AUIPC_exec(rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);
             -- end U-Type Instructions
             -----------------------------------------------------------------------
@@ -218,7 +218,7 @@ begin
                 imm(19 downto 12)   := Instr(19 downto 12);
                 imm(31 downto 20)   := (others => Instr(31));    
                 write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd, hasRd => true, hasRs1 => false, hasRs2 => false);
-                write_registers(l => l, reg => reg, imm => imm, hasImm => true);             
+                write_registers(l => l, reg => reg, op=>op_code, imm => imm, hasImm => true);             
                 JAL_exec(rd=>rd, imm=>imm, mem=>mem, reg=>reg, pc=>pc);
             -- end J-Type Instructions
             -----------------------------------------------------------------------
@@ -234,7 +234,7 @@ begin
                 imm(11) := Instr(7);
                 imm(31 downto 12) := (others => Instr(31));                 
                 write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd, hasRd => false, hasRs1 => true, hasRs2 => true);
-                write_registers(l => l, reg => reg, imm => imm, hasImm => true);        
+                write_registers(l => l, reg => reg, op=>op_code, imm => imm, hasImm => true);        
                 case func3 is
                     when F3_BEQ  => BEQ_exec (rs1=>rs1, rs2=>rs2, imm=>imm, mem=>mem, reg=>reg, pc=>pc);               
                     when F3_BNE  => BNE_exec (rs1=>rs1, rs2=>rs2, imm=>imm, mem=>mem, reg=>reg, pc=>pc);               
@@ -258,7 +258,7 @@ begin
                     rd := 0;
                     imm := (others =>'0');
                     write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd, hasRd => false, hasRs1 => false, hasRs2 => false);
-                    write_registers(l => l, reg => reg, imm => imm, hasImm => false); 
+                    write_registers(l => l, reg => reg, op=>op_code, imm => imm, hasImm => false); 
                     writeline(TraceFile, l);    --has to be done, because loop is exited right after
                     STOP_exec;
                     exit; 
@@ -274,7 +274,7 @@ begin
                 rd := 0; 
                 imm := (others =>'0');
                 write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd, hasRd => false, hasRs1 => false, hasRs2 => false);
-                write_registers(l => l, reg => reg, imm => imm, hasImm => false);                           
+                write_registers(l => l, reg => reg, op=>op_code, imm => imm, hasImm => false);                           
                 assert FALSE
                 report "Illegal Operation -- no OP_CODE"
                 severity warning;                

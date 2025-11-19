@@ -6,6 +6,7 @@ use work.defs_pack.all;
 
 package helper_func is
     procedure write_val_to_reg(reg: inout RegType; rd: in RegAddrType; val: in RegDataType);
+    procedure IncrementPC(pc : inout PcType);
 end package;
 
 package body helper_func is 
@@ -15,7 +16,10 @@ package body helper_func is
         end if;
     end procedure;
     
-    -- bundle all the helper functions in this package?
-    
+    procedure IncrementPC(pc : inout PcType) is
+    begin
+        pc := pc + 4;    
+    end procedure;
+        
 end package body; 
 
