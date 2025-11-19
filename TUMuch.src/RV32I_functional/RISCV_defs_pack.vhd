@@ -2,6 +2,7 @@
 -- Specifications: 32bit wide Memory, 16 bit Address
 
 package defs_pack is    
+
     -- memory  
     constant AddrSize       : integer := 16;
     constant ByteAddrSize   : integer := 2;
@@ -20,7 +21,7 @@ package defs_pack is
     subtype  ShamtType   is bit_vector (4 downto 0);
     
      -- instructions 
-    constant InstrSize  : integer := 32; -- Achtung: hier weicht von Folie ab! wahrscheinlich Schreibfehler
+    constant InstrSize  : integer := 32;
     subtype  InstrType is bit_vector (InstrSize-1 downto 0);
     subtype  ImmType   is bit_vector (RegDataSize-1 downto 0);
     subtype  PcType    is integer range 2**AddrSize-1 downto 0;

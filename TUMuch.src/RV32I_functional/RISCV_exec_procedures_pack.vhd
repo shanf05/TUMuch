@@ -47,7 +47,5 @@ package exec_procedures_pack is
     procedure SRA_exec  (rd, rs1, rs2   : RegAddrType; reg : inout RegType; pc : inout PCType);
     procedure SLT_exec  (rd, rs1, rs2   : RegAddrType; reg : inout RegType; pc : inout PCType);
     procedure SLTU_exec (rd, rs1, rs2   : RegAddrType; reg : inout RegType; pc : inout PCType);
-    
-
 end package exec_procedures_pack;
     

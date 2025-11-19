@@ -41,8 +41,6 @@ begin
         -- fetch instruction
         Instr := Mem(pc/4);
         op_code := Instr(6 downto 0);
-        --write_instruction_trace(l=>l, reg=>reg, instr=>instr, pc=>pc);  
-        --writeline(TraceFile, l);      
         -- decode and execute instruction
         case op_code is
             -----------------------------------------------------------------------
@@ -281,11 +279,8 @@ begin
         end case;
         writeline(TraceFile, l);
         end loop;
-        print_tail(Tracefile);    
-        
-        
-        memory_data_dump(mem, DataDumpFile);
-          
+        print_tail(Tracefile);
+        memory_data_dump(mem, DataDumpFile);          
         wait;
     end process;    
 end functional;

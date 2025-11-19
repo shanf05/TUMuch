@@ -17,16 +17,16 @@ package body exec_procedures_pack is
         case to_integer(signed(imm)) mod 4 is
             when 0 =>
                 temp(7 downto 0)  := Mem(memAddr)(7 downto 0);     
-                temp(31 downto 8) := (others =>  Mem(memAddr)(7)); --signed extension o upper 24 bits
+                temp(31 downto 8) := (others =>  Mem(memAddr)(7)); --signed extension to upper 24 bits
             when 1 => 
                 temp(7 downto 0)  := Mem(memAddr)(15 downto 8);     
-                temp(31 downto 8) := (others =>  Mem(memAddr)(15)); --signed extension o upper 24 bits
+                temp(31 downto 8) := (others =>  Mem(memAddr)(15)); --signed extension to upper 24 bits
             when 2 => 
                 temp(7 downto 0)  := Mem(memAddr)(23 downto 16);
-                temp(31 downto 8) := (others =>  Mem(memAddr)(23)); --signed extension o upper 24 bits
+                temp(31 downto 8) := (others =>  Mem(memAddr)(23)); --signed extension to upper 24 bits
             when 3 => 
                 temp(7 downto 0)  := Mem(memAddr)(31 downto 24);     
-                temp(31 downto 8) := (others =>  Mem(memAddr)(31)); --signed extension o upper 24 bits
+                temp(31 downto 8) := (others =>  Mem(memAddr)(31)); --signed extension to upper 24 bits
             when others => NULL;
         end case;
         write_val_to_reg(reg => reg, rd => rd, val => temp);
@@ -137,8 +137,8 @@ package body exec_procedures_pack is
         memAddr := to_integer(signed(Reg(rs1)) + signed(imm))/4; -- word address
         
     	case to_integer(signed(imm)) mod 4 is
-            when 0 => Mem(memAddr)(15 downto 0)     := Reg(rs2)(15 downto 0);        
-            when 2 => Mem(memAddr)(31 downto 16)    := Reg(rs2)(15 downto 0);        
+            when 0 => Mem(memAddr)(15 downto 0)  := Reg(rs2)(15 downto 0);        
+            when 2 => Mem(memAddr)(31 downto 16) := Reg(rs2)(15 downto 0);        
             when others => 
                 assert(false); 
                 report "Invalid offset -- SH_exec"
@@ -216,7 +216,7 @@ package body exec_procedures_pack is
     end procedure; 
     
     procedure BEQ_exec (rs1, rs2 : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is --erstellt von Severin Hanf    
-    variable offset : PcType;
+        variable offset : PcType;
     begin
         if(reg(rs1) = reg(rs2)) then 
             offset := to_integer(signed(imm)); --branch, because equal
@@ -234,7 +234,7 @@ package body exec_procedures_pack is
     end procedure;
     
     procedure BNE_exec  (rs1, rs2 : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is --erstellt von Severin Hanf    
-    variable offset : PcType;     
+        variable offset : PcType;     
     begin
         if(reg(rs1) /= reg(rs2)) then 
             --offset := to_integer(signed(imm(15 downto 0))); --branch, because not equal
@@ -253,7 +253,7 @@ package body exec_procedures_pack is
     end procedure;
     
     procedure BLT_exec  (rs1, rs2 : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is --erstellt von Severin Hanf    
-    variable offset : PcType;
+        variable offset : PcType;
     begin
         if(signed(reg(rs1)) < signed(reg(rs2))) then 
             offset := to_integer(signed(imm)); --branch, because rs1 < rs2
@@ -271,7 +271,7 @@ package body exec_procedures_pack is
     end procedure;
     
     procedure BGE_exec  (rs1, rs2 : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is --erstellt von Severin Hanf    
-    variable offset : PcType;
+        variable offset : PcType;
     begin
         if(signed(reg(rs1)) >= signed(reg(rs2))) then 
             offset := to_integer(signed(imm)); --branch, because rs1 >= rs2
@@ -289,7 +289,7 @@ package body exec_procedures_pack is
     end procedure;
     
     procedure BLTU_exec (rs1, rs2 : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is --erstellt von Severin Hanf    
-    variable offset : PcType;
+        variable offset : PcType;
     begin
         if(unsigned(reg(rs1)) < unsigned(reg(rs2))) then
             offset := to_integer(signed(imm)); --branch, because rs1 < rs2
@@ -307,7 +307,7 @@ package body exec_procedures_pack is
     end procedure;
     
     procedure BGEU_exec (rs1, rs2 : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is --erstellt von Severin Hanf    
-    variable offset : PcType;
+        variable offset : PcType;
     begin
         if(unsigned(reg(rs1)) >= unsigned(reg(rs2))) then 
             offset := to_integer(signed(imm)); --branch, because rs1 >= rs2
@@ -324,7 +324,7 @@ package body exec_procedures_pack is
         end if;
     end procedure;
 
-     procedure LUI_exec(rd : RegAddrType; imm : ImmType; mem : inout MemType; Reg : inout RegType; pc : inout PCType) is    --erstellt von Max Biricz
+    procedure LUI_exec(rd : RegAddrType; imm : ImmType; mem : inout MemType; Reg : inout RegType; pc : inout PCType) is    --erstellt von Max Biricz
     begin
         write_val_to_reg(reg => reg, rd => rd, val => imm);             --no concatenation with X"000" -> already implemented in RISCV.vhd execute case
         IncrementPc(pc);
@@ -337,7 +337,7 @@ package body exec_procedures_pack is
     end procedure AUIPC_exec;    
     
     procedure XORI_exec(rs1, rd : RegAddrType; imm : ImmType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is   --erstellt von Max Biricz
-    variable temp : RegDatatype;
+        variable temp : RegDatatype;
     begin
         temp := Reg(rs1) xor imm;       --no concatenation with X"000" -> already implemented in RISCV.vhd execute case
         write_val_to_reg(reg => reg, rd => rd, val => bit_vector(temp));
@@ -345,7 +345,7 @@ package body exec_procedures_pack is
     end procedure XORI_exec;
     
     procedure ORI_exec(rs1, rd : RegAddrType; imm : Immtype; mem : inout MemType; reg : inout RegType; pc : inout PCType) is    --erstellt von Max Biricz
-    variable temp : RegDataType;
+        variable temp : RegDataType;
     begin
         temp := Reg(rs1) or imm;
         write_val_to_reg(reg => reg, rd => rd, val => bit_vector(temp));
@@ -353,7 +353,7 @@ package body exec_procedures_pack is
     end procedure ORI_exec;    
     
     procedure ANDI_exec(rs1, rd : RegAddrType; imm : ImmType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is    --erstellt von Max Biricz
-    variable temp : RegDatatype;
+        variable temp : RegDatatype;
     begin
         temp := Reg(rs1) and imm;
         write_val_to_reg(reg => reg, rd => rd, val => bit_vector(temp));
@@ -361,8 +361,8 @@ package body exec_procedures_pack is
     end procedure ANDI_exec;
     
     procedure SLLI_exec(rs1, rd : RegAddrType; imm : ImmType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is    --erstellt von Max Biricz
-    variable temp : RegDataType;
-    variable shamt : ShamtType := imm(4 downto 0);
+        variable temp : RegDataType;
+        variable shamt : ShamtType := imm(4 downto 0);
     begin
         temp := reg(rs1) sll to_integer(unsigned(shamt));
         write_val_to_reg(reg => reg, rd => rd, val => temp);
@@ -370,8 +370,8 @@ package body exec_procedures_pack is
     end procedure SLLI_exec;
     
     procedure SRLI_exec(rs1, rd : RegAddrType; imm : Immtype; mem : inout MemType; reg : inout RegType; pc : inout PCType) is    --erstellt von Max Biricz
-    variable temp : RegDataType;
-    variable shamt : ShamtType := imm(4 downto 0);
+        variable temp : RegDataType;
+        variable shamt : ShamtType := imm(4 downto 0);
     begin
         temp := reg(rs1) srl to_integer(unsigned(shamt));
         write_val_to_reg(reg => reg, rd => rd, val => temp);
@@ -380,16 +380,16 @@ package body exec_procedures_pack is
     
     
     procedure SRAI_exec(rs1, rd : RegAddrType; imm : ImmType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is   --erstellt von Max Biricz
-    variable shamt : ShamtType := imm(4 downto 0);
-    variable shift_index : integer := to_integer(unsigned(shamt));
+        variable shamt : ShamtType := imm(4 downto 0);
+        variable shift_index : integer := to_integer(unsigned(shamt));
     begin
         write_val_to_reg(reg => reg, rd => rd, val => (reg(rs1) sra shift_index) );
         IncrementPc(pc);
     end procedure SRAI_exec;
     
     procedure SLTI_exec(rs1, rd : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is   --erstellt von Max Biricz
-    variable rs1_buff : RegDataType := reg(rs1);
-    variable temp : RegDataType;
+        variable rs1_buff : RegDataType := reg(rs1);
+        variable temp : RegDataType;
     begin
         if to_integer(signed(rs1_buff)) < to_integer(signed(imm)) then
             temp := bit_vector(to_unsigned(1, 32));
@@ -401,8 +401,8 @@ package body exec_procedures_pack is
     end procedure SLTI_exec;
     
     procedure SLTIU_exec(rs1, rd : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is   --erstellt von Max Biricz
-    variable rs1_buff : RegDataType := reg(rs1);
-    variable temp : RegDataType;
+        variable rs1_buff : RegDataType := reg(rs1);
+        variable temp : RegDataType;
     begin
         if to_integer(unsigned(rs1_buff)) < to_integer(unsigned(imm)) then
             temp := bit_vector(to_unsigned(1, 32));
@@ -461,7 +461,7 @@ package body exec_procedures_pack is
     end procedure; 
     
     procedure SLT_exec(rd, rs1, rs2 : RegAddrType; reg : inout RegType; pc : inout PCType) is -- ERSTELLT VON JOSIP PEPIC
-    variable temp : RegDataType;
+        variable temp : RegDataType;
     begin 
         if (signed(reg(rs1)) < signed(reg(rs2))) then 
             temp := bit_vector(to_signed(1, 32)); 
@@ -473,7 +473,7 @@ package body exec_procedures_pack is
     end procedure; 
     
     procedure SLTU_exec(rd, rs1, rs2 : RegAddrType; reg : inout RegType; pc : inout PCType) is -- ERSTELLT VON JOSIP PEPIC
-    variable temp : RegDataType;
+        variable temp : RegDataType;
     begin 
         if (unsigned(reg(rs1)) < unsigned(reg(rs2))) then 
             temp := bit_vector(to_signed(1, 32)); 

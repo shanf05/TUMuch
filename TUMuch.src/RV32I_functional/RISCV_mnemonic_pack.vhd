@@ -67,5 +67,4 @@ subtype MnemonicType is string(1 to 5);
     constant INDEX_mnemonic : MnemonicType := "INDEX";
     constant VAL_mnemonic   : MnemonicType := "VAL  ";
     
-    
 end package mnemonic_pack;

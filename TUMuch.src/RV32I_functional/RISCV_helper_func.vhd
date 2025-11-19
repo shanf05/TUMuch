@@ -24,6 +24,7 @@ package helper_func is
 end package;
 
 package body helper_func is 
+
     procedure write_val_to_reg(reg: inout RegType; rd: in RegAddrType; val: in RegDataType) is 
     begin
         if rd /= 0 then reg(rd) := val;
@@ -38,12 +39,10 @@ package body helper_func is
     begin
         pc := pc + 4;    
     end procedure;
-    
-    -------------------------------
-    
+        
     function to_MemAddrType (MemAddr : string (1 to 6)) return MemAddrType is
-    variable MemAddrString : string (1 to 4) := MemAddr(3 to 6);
-    variable MemAddr_dec : MemAddrtype;
+        variable MemAddrString : string (1 to 4) := MemAddr(3 to 6);
+        variable MemAddr_dec : MemAddrtype;
     begin
         MemAddr_dec := hexstr_to_int(MemAddrString, false) / 4;                --remove last 2 bits for 14 bit address space
         if (0 <= MemAddr_dec) and (MemAddr_dec <= 2**MemAddrSize-1) then
@@ -54,12 +53,11 @@ package body helper_func is
             severity error;
             return 0;
         end if;
-
     end function to_MemAddrType;
 
 
     function to_RegAddrType (Reg : string(1 to 2)) return RegAddrType is
-    variable RegAddr_dec : RegAddrType;
+        variable RegAddr_dec : RegAddrType;
     begin
         if Reg(2) = ' ' then    --account for case X1, X2... -> Problem: Whitespace causes runtime error
             RegAddr_dec := RegAddrType'value((1 to 1 => Reg(1)));
@@ -74,7 +72,6 @@ package body helper_func is
             severity error;
             return 0;
         end if;
-
     end function to_RegAddrType;
 
 
@@ -84,11 +81,9 @@ package body helper_func is
         Imm_dec := hexstr_to_int(s => ImmString, sign => sign );
         return bit_vector(to_signed(Imm_dec, RegDataSize));
     end function to_ImmType;
-    
-    -------------------------------
-    
+        
     function hexchar_to_int (char : character) return integer is
-    variable value : integer := 0;
+        variable value : integer := 0;
     begin
         case char is
             when '0' => value := 0;
@@ -108,14 +103,14 @@ package body helper_func is
             when 'E' | 'e' => value := 14;
             when 'F' | 'f' => value := 15;
             when others => assert false report "Invalid Operation -- Invalid Address" severity error;
-            end case;
+        end case;
         return value;
     end function hexchar_to_int;
 
     function hexstr_to_int (s : string; sign : boolean) return integer is
-    variable temp : integer := 0;
-    variable result : integer := 0;
-    variable bits : natural := 4 * s'length;
+        variable temp : integer := 0;
+        variable result : integer := 0;
+        variable bits : natural := 4 * s'length;
     begin
         for i in s'range loop
             temp := hexchar_to_int(s(i));
@@ -127,37 +122,34 @@ package body helper_func is
                 result := result - 2**bits;
             end if;
         end if;
-
-    return result;
-
+        return result;
     end function hexstr_to_int;
     
     function hexstr_to_bit_vector(s : string) return bit_vector is
-    variable length : integer := s'length;
-    variable result : bit_vector (4*length-1 downto 0);
-    variable temp : unsigned (3 downto 0);
-    begin
-    
-    for i in 0 to length-1 loop
-        temp := to_unsigned(hexchar_to_int(s(i+1)), 4);
-        for j in 0 to 3 loop
-        result(4*length- 1 - 4*i -j):= temp(3-j);
+        variable length : integer := s'length;
+        variable result : bit_vector (4*length-1 downto 0);
+        variable temp : unsigned (3 downto 0);
+    begin    
+        for i in 0 to length-1 loop
+            temp := to_unsigned(hexchar_to_int(s(i+1)), 4);
+            for j in 0 to 3 loop
+            result(4*length- 1 - 4*i -j):= temp(3-j);
+            end loop;
         end loop;
-    end loop;
-    return result;
+        return result;
     end function hexstr_to_bit_vector;
     
     function func_to_string (bv : bit_vector(31 downto 0)) return string is
-    variable result : string (1 to 32);
-    variable temp : character;
+        variable result : string (1 to 32);
+        variable temp : character;
     begin
-    for i in 1 to 32 loop
-        if bv(i-1) = '0' then temp := '0';
-        elsif bv(i-1) = '1' then temp := '1';
-        else assert False report "Invalid bitvector input"; 
-        end if;
-        result(33-i):= temp;
-    end loop;
+        for i in 1 to 32 loop
+            if bv(i-1) = '0' then temp := '0';
+            elsif bv(i-1) = '1' then temp := '1';
+            else assert False report "Invalid bitvector input"; 
+            end if;
+            result(33-i):= temp;
+        end loop;
          return result;
     end function func_to_string;
 
@@ -175,8 +167,6 @@ package body helper_func is
         end loop;
         return data;
     end function Binary_to_data;
-
-
-
+    
 end package body; 
 
