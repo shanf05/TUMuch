@@ -38,9 +38,6 @@ begin
         print_tail(TraceFile); 
         mem := init_memory_asm(AsmFile);
         --mem := init_memory_bin(BinFile); --alternative
-        
-        --memory_data_dump(mem, DataDumpFile);
-        
         loop
         -- fetch instruction
         Instr := Mem(pc/4);

@@ -35,8 +35,8 @@ package body trace_pack is
         write( l, string'("DE S1 S2"));
          write( l , string'(" | ") );
          
-        --write parameters
-        write( l, string'("  P  "));
+        --write Immediate Parameter       
+        write( l, string'(" IMM "));
                
         --write registers
         for i in 0 to 31 loop 
