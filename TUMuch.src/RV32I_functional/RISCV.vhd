@@ -15,7 +15,7 @@ end RISCV;
 
 architecture functional of RISCV is
     file TraceFile : Text open write_mode is "../../../../TUMuch.rsc/trace.txt"; 
-    file AsmFile : Text open read_mode is "../../../../TUMuch.rsc/asm_input.txt";
+    file AsmFile : Text open read_mode is "../../../../TUMuch.rsc/asm_input_XOR_OR_AND.txt";
     file DataDumpFile : Text open write_mode is "../../../../TUMuch.rsc/data_dump.txt"; 
     file BinFile : Text open read_mode is "../../../../TUMuch.rsc/bin_input.txt";
 begin       

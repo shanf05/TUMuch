@@ -4,88 +4,97 @@ use IEEE.NUMERIC_BIT.ALL;
 library work;
 use work.exec_procedures_pack.all; 
 use work.defs_pack.all; 
+use work.helper_func.all;
 
 package body exec_procedures_pack is   
 
     procedure LB_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
         variable memAddr: MemAddrType;
+        variable temp       : RegDataType := Reg(rd);
     begin
         memAddr := to_integer(signed(Reg(rs1)) + signed(imm))/4; -- word address
                 
         case to_integer(signed(imm)) mod 4 is
             when 0 =>
-                Reg(rd)(7 downto 0)  := Mem(memAddr)(7 downto 0);     
-                Reg(rd)(31 downto 8) := (others =>  Mem(memAddr)(7)); --signed extension o upper 24 bits
+                temp(7 downto 0)  := Mem(memAddr)(7 downto 0);     
+                temp(31 downto 8) := (others =>  Mem(memAddr)(7)); --signed extension o upper 24 bits
             when 1 => 
-                Reg(rd)(7 downto 0)  := Mem(memAddr)(15 downto 8);     
-                Reg(rd)(31 downto 8) := (others =>  Mem(memAddr)(15)); --signed extension o upper 24 bits
+                temp(7 downto 0)  := Mem(memAddr)(15 downto 8);     
+                temp(31 downto 8) := (others =>  Mem(memAddr)(15)); --signed extension o upper 24 bits
             when 2 => 
-                Reg(rd)(7 downto 0)  := Mem(memAddr)(23 downto 16);
-                Reg(rd)(31 downto 8) := (others =>  Mem(memAddr)(23)); --signed extension o upper 24 bits
+                temp(7 downto 0)  := Mem(memAddr)(23 downto 16);
+                temp(31 downto 8) := (others =>  Mem(memAddr)(23)); --signed extension o upper 24 bits
             when 3 => 
-                Reg(rd)(7 downto 0)  := Mem(memAddr)(31 downto 24);     
-                Reg(rd)(31 downto 8) := (others =>  Mem(memAddr)(31)); --signed extension o upper 24 bits
+                temp(7 downto 0)  := Mem(memAddr)(31 downto 24);     
+                temp(31 downto 8) := (others =>  Mem(memAddr)(31)); --signed extension o upper 24 bits
             when others => NULL;
         end case;
+        write_val_to_reg(reg => reg, rd => rd, val => temp);
         IncrementPc(pc);
     end procedure;
     
     procedure LBU_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
         variable memAddr: MemAddrType;
+        variable temp       : RegDataType := Reg(rd);
     begin
         memAddr := to_integer(signed(Reg(rs1)) + signed(imm))/4; -- word address
             
         case to_integer(signed(imm)) mod 4 is
             when 0 => 
-                Reg(rd)(7 downto 0)  := Mem(memAddr)(7 downto 0);     
-                Reg(rd)(31 downto 8) := (others =>  '0'); --unsigned extension o upper 24 bits
+                temp(7 downto 0)  := Mem(memAddr)(7 downto 0);     
+                temp(31 downto 8) := (others =>  '0'); --unsigned extension o upper 24 bits
             when 1 => 
-                Reg(rd)(7 downto 0)  := Mem(memAddr)(15 downto 8);     
-                Reg(rd)(31 downto 8) := (others =>  '0'); --unsigned extension o upper 24 bits        
+                temp(7 downto 0)  := Mem(memAddr)(15 downto 8);     
+                temp(31 downto 8) := (others =>  '0'); --unsigned extension o upper 24 bits        
             when 2 => 
-                Reg(rd)(7 downto 0)  := Mem(memAddr)(23 downto 16);
-                Reg(rd)(31 downto 8) := (others =>  '0'); --unsigned extension o upper 24 bits
+                temp(7 downto 0)  := Mem(memAddr)(23 downto 16);
+                temp(31 downto 8) := (others =>  '0'); --unsigned extension o upper 24 bits
             when 3 => 
-                Reg(rd)(7 downto 0)  := Mem(memAddr)(31 downto 24);     
-                Reg(rd)(31 downto 8) := (others =>  '0'); --unsigned extension o upper 24 bits
+                temp(7 downto 0)  := Mem(memAddr)(31 downto 24);     
+                temp(31 downto 8) := (others =>  '0'); --unsigned extension o upper 24 bits
             when others => NULL;
         end case;
+        write_val_to_reg(reg => reg, rd => rd, val => temp);
         IncrementPc(pc);
     end procedure;
     
     procedure LH_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
         variable memAddr: MemAddrType;
+        variable temp       : RegDataType := Reg(rd);
     begin
         memAddr := to_integer(signed(Reg(rs1)) + signed(imm))/4; -- word address
         
         case to_integer(signed(imm)) mod 4 is
             when 0 => 
-                Reg(rd)(15 downto 0)  := Mem(memAddr)(15 downto 0);     
-                Reg(rd)(31 downto 16) := (others=>Mem(memAddr)(15)); --signed extension o upper 16 bits
+                temp(15 downto 0)  := Mem(memAddr)(15 downto 0);     
+                temp(31 downto 16) := (others=>Mem(memAddr)(15)); --signed extension o upper 16 bits
             when 2 => 
-                Reg(rd)(15 downto 0)  := Mem(memAddr)(31 downto 16);
-                Reg(rd)(31 downto 16) := (others=>Mem(memAddr)(31)); --signed extension o upper 16 bits
+                temp(15 downto 0)  := Mem(memAddr)(31 downto 16);
+                temp(31 downto 16) := (others=>Mem(memAddr)(31)); --signed extension o upper 16 bits
             when others =>
                 assert(false);
                 report "Invalid offset -- LH_exec"
                 severity warning;            
         end case;
+        write_val_to_reg(reg => reg, rd => rd, val => temp);
         IncrementPc(pc);
     end procedure;
         
     procedure LHU_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType) is   --ERSTELLT VON JEONGJOO LIM
         variable memAddr: MemAddrType;
+        variable temp       : RegDataType := Reg(rd);
     begin
         memAddr := to_integer(signed(Reg(rs1)) + signed(imm))/4; -- word address
                  
         case to_integer(signed(imm)) mod 4 is
-            when 0 => Reg(rd) := "0000000000000000" & Mem(memAddr)(15 downto 0);    --unsigned extension o upper 16 bits    
-            when 2 => Reg(rd) := "0000000000000000" & Mem(memAddr)(31 downto 16);   --unsigned extension o upper 16 bits
+            when 0 => temp := "0000000000000000" & Mem(memAddr)(15 downto 0);    --unsigned extension o upper 16 bits    
+            when 2 => temp := "0000000000000000" & Mem(memAddr)(31 downto 16);   --unsigned extension o upper 16 bits
             when others =>
                 assert(false);
                 report "Invalid offset -- LHU_exec"
                 severity warning;            
         end case;
+        write_val_to_reg(reg => reg, rd => rd, val => temp);
         IncrementPc(pc);
     end procedure;
     
@@ -95,7 +104,7 @@ package body exec_procedures_pack is
         memAddr := to_integer(signed(Reg(rs1)) + signed(imm))/4; -- word address
         
     	case to_integer(signed(imm)) mod 4 is
-    	    when 0 => Reg(rd) := Mem(memAddr);
+    	    when 0 => write_val_to_reg(reg => reg,rd => rd, val => Mem(memAddr));
     	    when others =>
                 assert(false);
                 report "Invalid offset -- LW_exec"
@@ -157,7 +166,7 @@ package body exec_procedures_pack is
         variable temp : signed(RegDataSize-1 downto 0);
     begin
         temp := signed(Reg(rs1)) + signed(Reg(rs2));
-        Reg(rd) := bit_vector(temp);
+        write_val_to_reg(reg => reg, rd => rd, val => bit_vector(temp));
         IncrementPc(pc);
     end procedure;
     
@@ -165,7 +174,7 @@ package body exec_procedures_pack is
         variable temp : signed(RegDataSize-1 downto 0);
     begin
         temp := signed(Reg(rs1)) - signed(Reg(rs2));
-        Reg(rd) := bit_vector(temp);
+        write_val_to_reg(reg => reg, rd => rd, val => bit_vector(temp));
         IncrementPc(pc);
     end procedure;
     
@@ -173,14 +182,14 @@ package body exec_procedures_pack is
         variable temp : signed(RegDataSize-1 downto 0);
     begin
         temp := signed(Reg(rs1)) + signed(imm);
-        Reg(rd) := bit_vector(temp);
+        write_val_to_reg(reg => reg, rd => rd, val => bit_vector(temp));
         IncrementPc(pc);
     end procedure;    
     
     procedure JAL_exec  (rd : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is --erstellt von Severin Hanf 
         variable offset : PcType; 
     begin    
-        reg(rd) := bit_vector(to_unsigned((pc + 4),32));            --store the return address in rd
+        write_val_to_reg(reg => reg, rd => rd, val => bit_vector(to_unsigned((pc + 4),32)));            --store the return address in rd
         offset := to_integer(signed(imm));            
         if (pc +offset) >= 0 and (pc + offset) < 2**AddrSize -1 then 
             pc := pc + offset;                                      --jump to the new address                                  
@@ -194,7 +203,7 @@ package body exec_procedures_pack is
     procedure JALR_exec (rs1, rd : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is --erstellt von Severin Hanf
         variable jumpAddress : PcType;    
     begin
-        reg(rd) := bit_vector(to_unsigned((pc+4),32));                           --store the return address        
+        write_val_to_reg(reg => reg, rd => rd, val => bit_vector(to_unsigned((pc+4),32)));                           --store the return address        
         jumpAddress := to_integer(unsigned(reg(rs1))) + to_integer(signed(imm)); --get the jump address
         jumpAddress := (jumpAddress / 2) * 2;                                    --set lowest bit to zero
         if jumpAddress >= 0 and jumpAddress < 2**AddrSize -1 then 
@@ -317,13 +326,13 @@ package body exec_procedures_pack is
 
      procedure LUI_exec(rd : RegAddrType; imm : ImmType; mem : inout MemType; Reg : inout RegType; pc : inout PCType) is    --erstellt von Max Biricz
     begin
-        Reg(rd) := imm;             --no concatenation with X"000" -> already implemented in RISCV.vhd execute case
+        write_val_to_reg(reg => reg, rd => rd, val => imm);             --no concatenation with X"000" -> already implemented in RISCV.vhd execute case
         IncrementPc(pc);
     end procedure LUI_exec;
     
     procedure AUIPC_exec(rd : RegAddrType; imm : ImmType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is    --erstellt von Max Biricz
     begin
-        Reg(rd) := bit_vector(to_unsigned(pc + to_integer(signed(imm)), 32));
+        write_val_to_reg(reg => reg, rd => rd, val => bit_vector(to_unsigned(pc + to_integer(signed(imm)), 32)));
         IncrementPc(pc);
     end procedure AUIPC_exec;    
     
@@ -331,7 +340,7 @@ package body exec_procedures_pack is
     variable temp : RegDatatype;
     begin
         temp := Reg(rs1) xor imm;       --no concatenation with X"000" -> already implemented in RISCV.vhd execute case
-        Reg(rd) := bit_vector(temp);
+        write_val_to_reg(reg => reg, rd => rd, val => bit_vector(temp));
         IncrementPc(pc);
     end procedure XORI_exec;
     
@@ -339,7 +348,7 @@ package body exec_procedures_pack is
     variable temp : RegDataType;
     begin
         temp := Reg(rs1) or imm;
-        Reg(rd) := bit_vector(temp);
+        write_val_to_reg(reg => reg, rd => rd, val => bit_vector(temp));
         IncrementPc(pc);
     end procedure ORI_exec;    
     
@@ -347,7 +356,7 @@ package body exec_procedures_pack is
     variable temp : RegDatatype;
     begin
         temp := Reg(rs1) and imm;
-        Reg(rd) := bit_vector(temp);
+        write_val_to_reg(reg => reg, rd => rd, val => bit_vector(temp));
         IncrementPc(pc);
     end procedure ANDI_exec;
     
@@ -356,7 +365,7 @@ package body exec_procedures_pack is
     variable shamt : ShamtType := imm(4 downto 0);
     begin
         temp := reg(rs1) sll to_integer(unsigned(shamt));
-        reg(rd) := temp;
+        write_val_to_reg(reg => reg, rd => rd, val => temp);
         IncrementPc(pc);
     end procedure SLLI_exec;
     
@@ -365,7 +374,7 @@ package body exec_procedures_pack is
     variable shamt : ShamtType := imm(4 downto 0);
     begin
         temp := reg(rs1) srl to_integer(unsigned(shamt));
-        reg(rd) := temp;
+        write_val_to_reg(reg => reg, rd => rd, val => temp);
         IncrementPc(pc);
     end procedure SRLI_exec;
     
@@ -374,29 +383,33 @@ package body exec_procedures_pack is
     variable shamt : ShamtType := imm(4 downto 0);
     variable shift_index : integer := to_integer(unsigned(shamt));
     begin
-        reg(rd) := reg(rs1) sra shift_index;
+        write_val_to_reg(reg => reg, rd => rd, val => (reg(rs1) sra shift_index) );
         IncrementPc(pc);
     end procedure SRAI_exec;
     
     procedure SLTI_exec(rs1, rd : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is   --erstellt von Max Biricz
     variable rs1_buff : RegDataType := reg(rs1);
+    variable temp : RegDataType;
     begin
         if to_integer(signed(rs1_buff)) < to_integer(signed(imm)) then
-            reg(rd) := bit_vector(to_unsigned(1, 32));
+            temp := bit_vector(to_unsigned(1, 32));
         else
-            reg(rd) := bit_vector(to_unsigned(0, 32));
+            temp := bit_vector(to_unsigned(0, 32));
         end if;
+        write_val_to_reg(reg => reg, rd => rd, val => temp);
         IncrementPc(pc);
     end procedure SLTI_exec;
     
     procedure SLTIU_exec(rs1, rd : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType) is   --erstellt von Max Biricz
     variable rs1_buff : RegDataType := reg(rs1);
+    variable temp : RegDataType;
     begin
         if to_integer(unsigned(rs1_buff)) < to_integer(unsigned(imm)) then
-            reg(rd) := bit_vector(to_unsigned(1, 32));
+            temp := bit_vector(to_unsigned(1, 32));
         else
-            reg(rd) := bit_vector(to_unsigned(0, 32));
+            temp := bit_vector(to_unsigned(0, 32));
         end if;
+        write_val_to_reg(reg => reg, rd => rd, val => temp);
         IncrementPc(pc);
     end procedure SLTIU_exec;
     
@@ -407,19 +420,19 @@ package body exec_procedures_pack is
     
     procedure XOR_exec(rd, rs1, rs2 : RegAddrType; reg : inout RegType; pc : inout PCType) is -- ERSTELLT VON JOSIP PEPIC 
     begin 
-        reg(rd) := reg(rs1) xor reg(rs2);
+        write_val_to_reg(reg => reg, rd => rd, val => (reg(rs1) xor reg(rs2)) );
         IncrementPc(pc);
     end procedure; 
     
     procedure OR_exec(rd, rs1, rs2 : RegAddrType; reg : inout RegType; pc : inout PCType) is -- ERSTELLT VON JOSIP PEPIC
     begin 
-        reg(rd) := reg(rs1) or reg(rs2);
+        write_val_to_reg(reg => reg, rd => rd, val => (reg(rs1) or reg(rs2)) );
         IncrementPc(pc);
     end procedure; 
     
     procedure AND_exec(rd, rs1, rs2 : RegAddrType; reg : inout RegType; pc : inout PCType) is  -- ERSTELLT VON JOSIP PEPIC
     begin 
-        reg(rd) := reg(rs1) and reg(rs2);
+        write_val_to_reg(reg => reg, rd => rd, val => (reg(rs1) and reg(rs2)) );
         IncrementPc(pc);
     end procedure; 
     
@@ -427,7 +440,7 @@ package body exec_procedures_pack is
         variable shift_amount : integer; 
     begin 
         shift_amount := to_integer(unsigned(reg(rs2))); 
-        reg(rd) := reg(rs1) sll shift_amount;
+        write_val_to_reg(reg => reg, rd => rd, val => (reg(rs1) sll shift_amount) );
         IncrementPc(pc);
     end procedure; 
     
@@ -435,7 +448,7 @@ package body exec_procedures_pack is
         variable shift_amount : integer; 
     begin 
         shift_amount := to_integer(unsigned(reg(rs2))); 
-        reg(rd) := reg(rs1) srl shift_amount;
+        write_val_to_reg(reg => reg, rd => rd, val => (reg(rs1) srl shift_amount) );
         IncrementPc(pc);
     end procedure; 
     
@@ -443,27 +456,31 @@ package body exec_procedures_pack is
         variable shift_amount : integer; 
     begin 
         shift_amount := to_integer(unsigned(reg(rs2))); 
-        reg(rd) := reg(rs1) sra shift_amount;
+        write_val_to_reg(reg => reg, rd => rd, val => (reg(rs1) sra shift_amount) );
         IncrementPc(pc);
     end procedure; 
     
     procedure SLT_exec(rd, rs1, rs2 : RegAddrType; reg : inout RegType; pc : inout PCType) is -- ERSTELLT VON JOSIP PEPIC
+    variable temp : RegDataType;
     begin 
         if (signed(reg(rs1)) < signed(reg(rs2))) then 
-            reg(rd) := bit_vector(to_signed(1, 32)); 
+            temp := bit_vector(to_signed(1, 32)); 
         else 
-            reg(rd) := bit_vector(to_signed(0, 32)); 
+            temp := bit_vector(to_signed(0, 32)); 
         end if;
+        write_val_to_reg(reg => reg, rd => rd, val => temp);
         IncrementPc(pc);
     end procedure; 
     
     procedure SLTU_exec(rd, rs1, rs2 : RegAddrType; reg : inout RegType; pc : inout PCType) is -- ERSTELLT VON JOSIP PEPIC
+    variable temp : RegDataType;
     begin 
         if (unsigned(reg(rs1)) < unsigned(reg(rs2))) then 
-            reg(rd) := bit_vector(to_signed(1, 32)); 
+            temp := bit_vector(to_signed(1, 32)); 
         else 
-            reg(rd) := bit_vector(to_signed(0, 32));
+            temp := bit_vector(to_signed(0, 32));
         end if;        
+        write_val_to_reg(reg => reg, rd => rd, val => temp);
         IncrementPc(pc);
     end procedure;
     
