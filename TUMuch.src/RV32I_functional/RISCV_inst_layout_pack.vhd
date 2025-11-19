@@ -57,5 +57,7 @@ package inst_layout_pack is
     constant F7_OR  : Funct7 := "0000000";
     constant F7_XOR : Funct7 := "0000000";
     constant F7_SLL : Funct7 := "0000000";
+    
+    constant NOP_Instr : bit_vector (31 downto 0):=  "00000000000000000" & F3_ADD & "00000" & OP_IMM;
 
 end package inst_layout_pack; 

@@ -71,7 +71,12 @@ package body trace_pack is
             when OP_JALR  => return JALR_mnemonic;   
             when OP_IMM   => 
                 case instr(14 downto 12) is     
-                when F3_ADD  => return ADDI_mnemonic;
+                when F3_ADD  => 
+                    if Instr = NOP_Instr then
+                        return NOP_mnemonic;
+                    else 
+                        return ADDI_mnemonic;
+                    end if;
                 when F3_SLT  => return SLTI_mnemonic;
                 when F3_SLTU => return SLTIU_mnemonic;
                 when F3_AND  => return ANDI_mnemonic;

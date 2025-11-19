@@ -100,8 +100,14 @@ begin
                 rs2 := 0;   --not best solution right now -> make it similar to no_param!
                 imm(11 downto 0) := Instr(31 downto 20);
                 imm(31 downto 12) := (others => Instr(31));
-                write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd, hasRd => true, hasRs1 => true, hasRs2 => false);
-                write_registers(l => l, reg => reg, imm => imm, hasImm => true);              
+                if(Instr = NOP_instr) then                
+                    write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd, hasRd => false, hasRs1 => false, hasRs2 => false);
+                    write_registers(l => l, reg => reg, imm => imm, hasImm => false);
+                else 
+                    write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd, hasRd => true, hasRs1 => true, hasRs2 => false);
+                    write_registers(l => l, reg => reg, imm => imm, hasImm => true);
+                end if;  
+                              
                 case func3 is
                     -- basic I-Type
                     when F3_ADDI   => ADDI_exec(rs1 => rs1, rd => rd, imm => imm, mem => mem, reg => reg, pc => pc);                
