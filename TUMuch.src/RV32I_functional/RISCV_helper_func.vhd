@@ -27,6 +27,10 @@ package body helper_func is
     procedure write_val_to_reg(reg: inout RegType; rd: in RegAddrType; val: in RegDataType) is 
     begin
         if rd /= 0 then reg(rd) := val;
+        else
+            assert false
+            report "Invalid Access -- x0 is read only"
+            severity warning;
         end if;
     end procedure;
     
