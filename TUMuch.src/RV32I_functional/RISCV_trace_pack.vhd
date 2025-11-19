@@ -49,7 +49,7 @@ package body trace_pack is
     
     procedure print_tail(file TraceFile : Text) is
         variable l : line; 
-        variable tmp : string(1 to 385); 
+        variable tmp : string(1 to 383); 
     begin
         --write border
         tmp := "----------------------------------------------------------------------" &
@@ -57,7 +57,7 @@ package body trace_pack is
                "----------------------------------------------------------------------" &
                "----------------------------------------------------------------------" &
                "----------------------------------------------------------------------" &
-               "-----------------------------------";
+               "---------------------------------";
         write(l, tmp);
         writeline(TraceFile, l);
     end procedure; 

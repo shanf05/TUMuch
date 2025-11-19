@@ -16,8 +16,8 @@ package exec_procedures_pack is
     procedure ADDI_exec (rd, rs1 : RegAddrType; imm : ImmType; Reg : inout RegType; Mem : inout MemType; pc : inout PCType);
     
     --erstellt von Severin Hanf
-    procedure JAL_exec  (rd : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType);
-    procedure JALR_exec (rs1, rd : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType);
+    procedure JAL_exec  (rd       : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType);
+    procedure JALR_exec (rs1, rd  : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType);
     procedure BEQ_exec  (rs1, rs2 : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType);
     procedure BNE_exec  (rs1, rs2 : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType);
     procedure BLT_exec  (rs1, rs2 : RegAddrType; imm : RegDataType; mem : inout MemType; reg : inout RegType; pc : inout PCType);
