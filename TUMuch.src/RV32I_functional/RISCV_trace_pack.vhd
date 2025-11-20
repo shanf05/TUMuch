@@ -156,7 +156,7 @@ package body trace_pack is
                 when F3_BNE  => return BNE_mnemonic;
                 when F3_BLT  => return BLT_mnemonic;
                 when F3_BLTU => return BLTU_mnemonic;
-                when F3_BGE  => return BGEU_mnemonic;
+                when F3_BGE  => return BGE_mnemonic;
                 when F3_BGEU => return BGEU_mnemonic;
                 when others  => 
                     assert FALSE;
