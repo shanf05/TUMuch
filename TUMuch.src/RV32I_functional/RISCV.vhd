@@ -15,10 +15,15 @@ entity RISCV is
 end RISCV;
 
 architecture functional of RISCV is
-    file TraceFile : Text open write_mode is "../../../../TUMuch.rsc/test_traces/trace.txt";    --SPECIFY YOUR DESIRED OUTPUT TRACE FILE 
-    file AsmFile : Text open read_mode is "../../../../TUMuch.rsc/tests/asm_input.txt";     --SPECIFY YOUR DESIRED INPUT TEST FILE
+    file TraceFile : Text open write_mode is "../../../../TUMuch.rsc/trace.txt";    --SPECIFY YOUR DESIRED OUTPUT TRACE FILE 
+    file AsmFile : Text open read_mode is "../../../../TUMuch.rsc/asm_input.txt";     --SPECIFY YOUR DESIRED INPUT TEST FILE
     file DataDumpFile : Text open write_mode is "../../../../TUMuch.rsc/data_dump.txt";         --SPECIFY YOUR DESIRED OUTPUT MEMORY DUMP FILE
     file BinFile : Text open read_mode is "../../../../TUMuch.rsc/bin_input.txt";               --SPECIFY YOUR DESIRED INPUT TEST FILE
+    
+    signal PC_s    : PCType;
+    signal Instr_s : InstrType;
+    signal Reg_s   : RegType;
+    signal Mem_s   : MemType;
 begin       
     process
         variable PC    : PCType     := 0;
@@ -39,6 +44,12 @@ begin
         mem := init_memory_asm(AsmFile);
         --mem := init_memory_bin(BinFile); --alternative
         loop
+        
+        PC_s    <= PC;
+        Instr_s <= Instr;
+        Reg_s   <= Reg;
+        Mem_s   <= Mem;
+        
         -- fetch instruction
         Instr := Mem(pc/4);
         op_code := Instr(6 downto 0);
@@ -259,6 +270,12 @@ begin
                     write_instr_info(l => l, instr => instr, pc => pc, rs1 => rs1, rs2 => rs2, rd => rd, hasRd => false, hasRs1 => false, hasRs2 => false);
                     write_registers(l => l, reg => reg, op=>op_code, imm => imm, hasImm => false); 
                     writeline(TraceFile, l);    --has to be done, because loop is exited right after
+                    
+                    PC_s    <= PC;
+                    Instr_s <= Instr;
+                    Reg_s   <= Reg;
+                    Mem_s   <= Mem;
+                    
                     STOP_exec;
                     exit; 
                 else
@@ -279,7 +296,10 @@ begin
                 severity failure;                
         end case;
         writeline(TraceFile, l);
+        
+        wait for 10 ns;
         end loop;
+        
         print_tail(Tracefile);
         memory_data_dump(mem, DataDumpFile);          
         wait;
