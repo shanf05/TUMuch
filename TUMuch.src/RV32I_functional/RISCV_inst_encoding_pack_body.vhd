@@ -41,16 +41,34 @@ package body inst_encoding_pack is
     
     function SLLI_code  (rs1, rd : RegAddrType; imm : RegDataType) return InstrType is
     begin
+        if to_integer(unsigned(imm)) > 31 then
+            assert false
+            report "shamt out of range -- SLLI_code"
+            severity warning;
+        end if;
+        
         return F7_SLL & imm(4 downto 0) & bit_vector(to_unsigned(rs1,5)) & F3_SLL & bit_vector(to_unsigned(rd,5)) & OP_IMM;
     end function; --funct7[6:0] imm[4:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
     
     function SRLI_code  (rs1, rd : RegAddrType; imm : RegDataType) return InstrType is
     begin
+        if to_integer(unsigned(imm)) > 31 then
+            assert false
+            report "shamt out of range -- SRLI_code"
+            severity warning;
+        end if;
+        
         return F7_SRL & imm(4 downto 0) & bit_vector(to_unsigned(rs1,5)) & F3_SRL & bit_vector(to_unsigned(rd,5)) & OP_IMM;
     end function; --funct7[6:0] imm[4:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
     
     function SRAI_code  (rs1, rd : RegAddrType; imm : RegDataType) return InstrType is
     begin
+        if to_integer(unsigned(imm)) > 31 then
+            assert false
+            report "shamt out of range -- SRAI_code"
+            severity warning;
+        end if;
+        
         return F7_SRA & imm(4 downto 0) & bit_vector(to_unsigned(rs1,5)) & F3_SRA & bit_vector(to_unsigned(rd,5)) & OP_IMM;
     end function; --funct7[6:0] imm[4:0] rs1[4:0] funct3[2:0] rd[4:0] opcode[6:0]
     
