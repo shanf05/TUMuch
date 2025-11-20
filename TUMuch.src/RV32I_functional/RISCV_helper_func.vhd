@@ -37,7 +37,12 @@ package body helper_func is
     
     procedure IncrementPC(pc : inout PcType) is
     begin
-        pc := pc + 4;    
+        if pc = 2**MemAddrSize-1 then 
+            pc := 0;
+            report "PC was reset to zero";
+        else 
+            pc :=  pc + 4;
+        end if;
     end procedure;
         
     function to_MemAddrType (MemAddr : string (1 to 6)) return MemAddrType is

@@ -9,13 +9,14 @@ use work.exec_procedures_pack.all;
 use work.trace_pack.all; 
 use work.mem_pack.all;
 use std.textio.all; 
+use work.helper_func.all;
 
 entity RISCV is
 end RISCV;
 
 architecture functional of RISCV is
     file TraceFile : Text open write_mode is "../../../../TUMuch.rsc/trace.txt"; 
-    file AsmFile : Text open read_mode is "../../../../TUMuch.rsc/asm_input.txt";
+    file AsmFile : Text open read_mode is "../../../../TUMuch.rsc/asm_input_memory_overflow.txt";
     file DataDumpFile : Text open write_mode is "../../../../TUMuch.rsc/data_dump.txt"; 
     file BinFile : Text open read_mode is "../../../../TUMuch.rsc/bin_input.txt";
 begin       
@@ -63,7 +64,7 @@ begin
                         else                                -- cover invalid cases
                             assert FALSE
                             report "Illegal Operation -- OP_OP -> ADD | SUB"
-                            severity warning;                            
+                            severity failure;                            
                         end if;
                         
                     when F3_SLL     =>  SLL_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);   
@@ -74,7 +75,7 @@ begin
                         else                                -- cover invalid cases
                             assert FALSE
                             report "Illegal Operation -- OP_OP -> SRL | SRA"
-                            severity warning;
+                            severity failure;
                         end if;                        
                     when F3_XOR     =>  XOR_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc);
                     when F3_OR      =>  OR_exec(rd => rd, rs1 => rs1, rs2 => rs2, reg => reg, pc => pc); 
@@ -84,7 +85,7 @@ begin
                     when others =>                          -- cover invalid cases
                         assert FALSE
                         report "Illegal Operation -- OP_OP"
-                        severity warning;
+                        severity failure;
                 end case;
                 
             -- end R-Type Instructions
@@ -122,13 +123,13 @@ begin
                         else                                                    -- cover invalid cases
                             assert FALSE
                             report "Illegal Operation -- OP_IMM -> SRL | SRA"
-                            severity warning;
+                            severity failure;
                         end if;
                     -- end I-Type Instructions modified
                     when others =>                                  -- cover invalid cases
                             assert FALSE
                             report "Illegal Operation -- OP_IMM"
-                            severity warning;
+                            severity failure;
                 end case;                
                  
             when OP_LOAD =>
@@ -149,7 +150,7 @@ begin
                     when others =>                          -- cover invalid cases
                             assert FALSE
                             report "Illegal Operation -- OP_LOAD"
-                            severity warning;
+                            severity failure;
                 end case;
                 
             when OP_JALR =>                 
@@ -180,7 +181,7 @@ begin
                     when others =>                          -- covers invalid cases
                             assert FALSE
                             report "Illegal Operation -- OP_STORE"
-                            severity warning;
+                            severity failure;
                 end case;                
             -- end S-Type Instructions
             -----------------------------------------------------------------------
@@ -243,7 +244,7 @@ begin
                     when others =>                      -- covers invalid cases
                         assert FALSE 
                         report "Illegal Operation -- OP_BRANCH" 
-                        severity warning;
+                        severity failure;
                 end case;                
             -- end B-Type Instructions
             -----------------------------------------------------------------------
@@ -263,7 +264,7 @@ begin
                 else
                     assert False
                     report "Illegal Operation -- STOP command"
-                    severity warning;
+                    severity failure;
                 end if;
 
             when others =>          -- covers invalid cases       
@@ -275,7 +276,7 @@ begin
                 write_registers(l => l, reg => reg, op=>op_code, imm => imm, hasImm => false);                           
                 assert FALSE
                 report "Illegal Operation -- no OP_CODE"
-                severity warning;                
+                severity failure;                
         end case;
         writeline(TraceFile, l);
         end loop;
