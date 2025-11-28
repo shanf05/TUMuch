@@ -24,3 +24,11 @@ Josip Pepić
 - auskommentieren von "mem := init_memory_bin(BinFile);" in RISCV.vhd
 - binary Inputs in bin_input.txt (eine Zeile mit 32 Bits füllen, kein Leerzeichen danach)
 - kommentieren von "mem := init_memory_asm(AsmFile);"
+
+
+<img width="452" height="334" alt="image" src="https://github.com/user-attachments/assets/40656a80-4577-4565-a3fd-8648b6f8e80a" />
+<img width="473" height="331" alt="image" src="https://github.com/user-attachments/assets/8509a36e-1fd6-440e-8a44-35ec46e69e0e" />
+<img width="382" height="344" alt="image" src="https://github.com/user-attachments/assets/c3f58ab4-ea98-4fa0-b858-e5607e964367" />
+
+
+
