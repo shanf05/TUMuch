@@ -15,10 +15,12 @@ package defs_pack is
     -- registers
     constant RegDataSize  : integer := 32;    
     constant RegAddrSize  : integer := 5;
+    constant RegSize      : integer := 2**RegAddrSize;
     subtype  RegDataType is bit_vector (RegDataSize-1 downto 0);
-    subtype  RegAddrType is integer range 2**RegAddrSize-1 downto 0;     --5 Bits für Wortauswahl  
+    subtype  RegAddrType is integer range RegSize-1 downto 0;     --5 Bits für Wortauswahl  
     type     RegType     is array (RegAddrType) of RegDataType;
     subtype  ShamtType   is bit_vector (4 downto 0);
+    subtype  ENType      is bit_vector (RegSize - 1 downto 0);
     
     -- instructions 
     constant InstrSize  : integer := 32;
