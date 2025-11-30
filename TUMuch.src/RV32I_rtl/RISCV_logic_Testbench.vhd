@@ -55,18 +55,18 @@ architecture Behavioral of logic_Testbench_TLE is
 begin
 
     TB   : entity work.logic_Testbench(stimul)
-           port map (clk=>clk_sig, x1 => x1_sig, x2 => x2_sig);
+           port map (clk => clk_sig, x1 => x1_sig, x2 => x2_sig);
 
     UUT1 : entity work.or32(rtl)
-           port map (x1 => x1_sig, x2 => x2_sig, y => y_or_sig);
+           port map (clk => clk_sig, x1 => x1_sig, x2 => x2_sig, y => y_or_sig);
 
     UUT2 : entity work.xor32(rtl)
-           port map (x1 => x1_sig, x2 => x2_sig, y => y_xor_sig);
+           port map (clk => clk_sig, x1 => x1_sig, x2 => x2_sig, y => y_xor_sig);
 
     UUT3 : entity work.nor32(rtl)
-           port map (x1 => x1_sig, x2 => x2_sig, y => y_nor_sig);
+           port map (clk =>clk_sig, x1 => x1_sig, x2 => x2_sig, y => y_nor_sig);
            
     UUT4 : entity work.and32(rtl)
-           port map (clk=>clk_sig, x1 => x1_sig, x2 => x2_sig, y => y_and_sig);
+           port map (clk => clk_sig, x1 => x1_sig, x2 => x2_sig, y => y_and_sig);
 
 end Behavioral;
