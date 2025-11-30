@@ -27,7 +27,7 @@ begin
     process
         begin
             for i in 0 to data_lines - 1 loop
-                data_out((data_lines - i) * data_width - 1 downto (data_lines - i - 1) * data_width) <=  bit_vector(to_unsigned(i, 32));
+                data_out(i * data_width + data_width - 1 downto i * data_width) <=  bit_vector(to_unsigned(i, 32));
                 wait for 5 ns;
             end loop;
             
