@@ -8,7 +8,6 @@ use work.defs_pack.all;
 
 entity or32 is
     port(
-        clk    : in  bit;
         x1, x2 : in  BusDataType; 
         y      : out BusDataType
     );
@@ -16,11 +15,9 @@ end or32;
 
 architecture rtl of or32 is
 begin
-    process(clk)
+    process(x1, x2)
     begin
-        if clk'event and clk = '1' then 
-            y <= x1 or x2;
-        end if; 
+        y <= x1 or x2;         
     end process;  
 end rtl;
 
@@ -28,7 +25,6 @@ end rtl;
 use work.defs_pack.all;
 entity xor32 is
     port(
-        clk    : in  bit;
         x1, x2 : in  BusDataType; 
         y      : out BusDataType
     );
@@ -36,11 +32,9 @@ end xor32;
 
 architecture rtl of xor32 is
 begin
-    process(clk)
-    begin
-        if clk'event and clk = '1' then 
-            y <= x1 xor x2;
-        end if; 
+    process(x1, x2)
+    begin         
+        y <= x1 xor x2;            
     end process;  
 end rtl;
 
@@ -49,7 +43,6 @@ use work.defs_pack.all;
 
 entity nor32 is
     port(
-        clk    : in  bit;
         x1, x2 : in  BusDataType; 
         y      : out BusDataType
     );
@@ -57,11 +50,9 @@ end nor32;
 
 architecture rtl of nor32 is
 begin
-    process(clk)
-    begin
-        if clk'event and clk = '1' then 
-            y <= x1 nor x2;
-        end if; 
+    process(x1, x2)
+    begin        
+        y <= x1 nor x2; 
     end process;  
 end rtl;
 
@@ -71,17 +62,14 @@ use work.defs_pack.all;
 entity and32 is
     port(
         x1, x2 : in  BusDataType; 
-        y      : out BusDataType; 
-        clk    : in  bit
+        y      : out BusDataType
     );
 end and32; 
 
 architecture rtl of and32 is
 begin 
-    process(clk)
-    begin
-        if clk'event and clk = '1' then 
-            y <= x1 and x2;
-        end if; 
+    process(x1, x2)
+    begin         
+        y <= x1 and x2;
     end process;    
 end rtl; 
