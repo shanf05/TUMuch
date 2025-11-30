@@ -20,10 +20,17 @@ package defs_pack is
     type     RegType     is array (RegAddrType) of RegDataType;
     subtype  ShamtType   is bit_vector (4 downto 0);
     
-     -- instructions 
+    -- instructions 
     constant InstrSize  : integer := 32;
     subtype  InstrType is bit_vector (InstrSize-1 downto 0);
     subtype  ImmType   is bit_vector (RegDataSize-1 downto 0);
     subtype  PcType    is integer range 2**AddrSize-1 downto 0;
+    
+    -- busses
+    constant BusSize      : integer := 32; 
+    subtype  BusDataType is bit_vector (BusSize-1 downto 0);
+    
+    -- clk cycles
+    constant clkCycle     : time := 10ns; 
     
 end; 
