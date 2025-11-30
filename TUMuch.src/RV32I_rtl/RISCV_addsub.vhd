@@ -31,8 +31,8 @@ end addsub;
 
 
 architecture RTL of addsub is 
-    signal a_and_b, a_xor_b, abc, b_xor_o : bit_vector(DataSize-1 downto 0);
-    signal c : bit_vector(DataSize downto 0);
+    signal a_and_b, a_xor_b, abc, b_xor_o : bit_vector(DataSize-1 downto 0) := (others=>'0');
+    signal c : bit_vector(DataSize downto 0) := (others=>'0');
 begin 
     gen : for i in 0 to DataSize-1 generate
         b_xor_o(i) <= b(i) xor o_mode;    
