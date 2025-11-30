@@ -8,11 +8,9 @@ use work.defs_pack.all;
 
 entity or32 is
     port(
-        --x1, x2 : in  BusDataType; 
-        --y      : out BusDataType; 
-        x1, x2 : in  bit_vector(31 downto 0); 
-        y      : out bit_vector(31 downto 0); 
-        clk    : in  bit
+        clk    : in  bit;
+        x1, x2 : in  BusDataType; 
+        y      : out BusDataType
     );
 end or32;
 
@@ -27,14 +25,12 @@ begin
 end rtl;
 
 --- XOR ----
-
+use work.defs_pack.all;
 entity xor32 is
     port(
-        --x1, x2 : in  BusDataType; 
-        --y      : out BusDataType; 
-        x1, x2 : in  bit_vector(31 downto 0); 
-        y      : out bit_vector(31 downto 0); 
-        clk    : in  bit
+        clk    : in  bit;
+        x1, x2 : in  BusDataType; 
+        y      : out BusDataType
     );
 end xor32;
 
@@ -49,14 +45,13 @@ begin
 end rtl;
 
 --- NOR ----
+use work.defs_pack.all;
 
 entity nor32 is
     port(
-        --x1, x2 : in  BusDataType; 
-        --y      : out BusDataType; 
-        x1, x2 : in  bit_vector(31 downto 0); 
-        y      : out bit_vector(31 downto 0); 
-        clk    : in  bit
+        clk    : in  bit;
+        x1, x2 : in  BusDataType; 
+        y      : out BusDataType
     );
 end nor32;
 
@@ -70,13 +65,13 @@ begin
     end process;  
 end rtl;
 
+use work.defs_pack.all;
+
 --- AND ---
 entity and32 is
     port(
-        --x1, x2 : in  BusDataType; 
-        --y      : out BusDataType; 
-        x1, x2 : in  bit_vector(31 downto 0); 
-        y      : out bit_vector(31 downto 0); 
+        x1, x2 : in  BusDataType; 
+        y      : out BusDataType; 
         clk    : in  bit
     );
 end and32; 

@@ -27,8 +27,8 @@ package defs_pack is
     subtype  PcType    is integer range 2**AddrSize-1 downto 0;
     
     -- busses
-    constant BusSize      : integer := 32; 
-    subtype  BusDataType is bit_vector (BusSize-1 downto 0);
+    constant BusDataSize      : integer := 32; 
+    subtype  BusDataType is bit_vector (BusDataSize-1 downto 0);
     
     -- clk cycles
     constant clkCycle     : time := 10ns; 

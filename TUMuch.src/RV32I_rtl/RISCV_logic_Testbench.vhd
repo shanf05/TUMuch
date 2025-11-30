@@ -45,10 +45,10 @@ end stimul;
 ------------------------ testbench TLE ---------------------------
 
 
-entity logic_Testbench_TLE is
-end logic_Testbench_TLE;
+entity logic_TLE is
+end logic_TLE;
 
-architecture Behavioral of logic_Testbench_TLE is
+architecture Behavioral of logic_TLE is
     signal x1_sig, x2_sig     : bit_vector(31 downto 0);
     signal y_or_sig, y_xor_sig, y_nor_sig, y_and_sig : bit_vector(31 downto 0);
     signal clk_sig : bit := '0';

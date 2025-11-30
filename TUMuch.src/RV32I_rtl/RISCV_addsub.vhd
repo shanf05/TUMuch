@@ -4,7 +4,7 @@ use work.defs_pack.all;
 
 --Half adder with variable input length
 entity halfadd is
-    generic(Datasize : integer := RegDataSize);
+    generic(Datasize : integer := BusDataSize);
     port (x1 : in bit;
           x2 : in bit;
           x1_xor_x2 : out bit;
@@ -22,7 +22,7 @@ library work;
 use work.defs_pack.all;
 --Adder Subber with flexible bit inputs/outputs
 entity addsub is
-    generic ( datasize : integer := RegDataSize);
+    generic ( Datasize : integer := BusDataSize);
     port (o_mode : in bit;
           a, b : in bit_vector(DataSize-1 downto 0);         
           d_out : out bit_vector(DataSize-1 downto 0)
