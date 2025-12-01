@@ -18,11 +18,11 @@ entity reg_file is
         
         -- implemented now: two read ports
         
-        re_1        : in bit;
+        -- re_1        : in bit;        -> currently not used
         re_addr_1   : in RegAddrType;
         r_data_1    : out RegDataType;
   
-        re_2        : in bit;
+        -- re_2        : in bit;        -> currently not used
         re_addr_2   : in RegAddrType;
         r_data_2    : out RegDataType        
         );
