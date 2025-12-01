@@ -8,25 +8,33 @@ library work;
 use work.defs_pack.all; 
 
 entity RAM4096x32 is 
-port(
-    clk     : in  bit; 
-    w_en    : in  bit;
-    addr    : in  MemAddrType;
-    data_in : in  MemDataType;
-    data_out: out MemDataType
-);
+    generic(  -- look if this is necessary
+        tc : time := 0 ns; --delay to react on input change
+        th : time := 0 ns --time to hold signals stable
+    );  
+    port(
+        clk      : in bit; 
+        w_en     : in bit;
+        addr     : in MemAddrType; 
+        data_in  : in  MemDataType;
+        data_out : out MemDataType        
+    );
 end RAM4096x32;
 
-architecture Behavioral_Integer of RAM4096x32 is
+architecture behavioral of RAM4096x32 is
+    signal Mem : MemType;     --put flipflops right here
 begin
-    process(clk)        
-        variable Mem : MemType;     --put flipflops right here
+    synchronus_write : process
     begin        
-        if clk'event and clk = '1' then
-            if w_en = '1' then 
-                Mem(addr) := data_in;
-            end if; 
-            data_out<=Mem(addr);
-        end if;        
+        wait until clk = '1'; 
+        if w_en = '1' then 
+            Mem(addr) <= data_in after tc;      -- is the delay even necessary? 
+        end if;                    
     end process;
-end Behavioral_Integer;
+    
+    asynchronus_read : process(Mem, addr)
+    begin
+        data_out <= Mem(addr) after th;         -- is the delay even necessary? 
+    end process;
+    
+end behavioral;
