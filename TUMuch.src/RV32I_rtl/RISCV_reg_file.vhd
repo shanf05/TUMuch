@@ -35,15 +35,20 @@ begin
     decoder :   entity work.reg_decoder(RTL)
                     port map(we => we, w_addr => w_addr, en => en_vec);
 
-    regs    :   for i in 0 to RegSize - 1 generate
-            reg  :   entity work.reg(RTL)                 
-                            port map(
-                                en => en_vec(i), 
-                                clk => clk, 
-                                rst => rst, 
-                                d => w_data,
-                                q => mux_input(i*RegDataSize + RegDataSize - 1 downto i * RegDataSize) 
-                                );
+    regs    : for i in 0 to RegSize - 1 generate
+                reg_zero    :   if i = 0 generate
+                                    mux_input(RegDataSize - 1 downto 0) <= (others=>'0');
+                                end generate reg_zero;
+                reg_nat     :   if i > 0 generate                 
+                                    reg  :   entity work.reg(RTL)                 
+                                                    port map(
+                                                        en => en_vec(i), 
+                                                        clk => clk, 
+                                                        rst => rst, 
+                                                        d => w_data,
+                                                        q => mux_input(i*RegDataSize + RegDataSize - 1 downto i * RegDataSize) 
+                                                        );
+                                end generate reg_nat;
     end generate;
     
     mux_1       :   entity work.mux(RTL)
