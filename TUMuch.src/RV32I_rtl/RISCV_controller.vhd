@@ -34,7 +34,7 @@ entity controller is
         sel_out_a : out bit_vector(1 downto 0);     -- to register_file
         sel_out_b : out bit_vector(1 downto 0);     -- to register_file
         sel_out_c : out bit_vector(1 downto 0);     -- to register_file
-        operation : out bit_vector(4 downto 0);     -- to alu, see alu implementation -> 5 bits for 32 instructions
+        operation : out bit_vector(2 downto 0);     -- to alu, see alu implementation -> 5 bits for 32 instructions
         data_out  : out BusDataType;                -- to flow controller
         
         --- memory and other external interface
