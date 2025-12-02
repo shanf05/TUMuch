@@ -70,7 +70,7 @@ architecture rtl of controller is
     signal a_out_mux_sig : bit_vector (1 downto 0) := "00"; -- fsm to muc32x4
     
     -- instruction decoder:
-    signal ctrl_sig : bit := '0';                        -- id to fsm -> how many bits is this wide? 
+    signal ctrl_sig : bit_vector(9 downto 0) := (others=>'0');   -- id to fsm -> how many bits is this wide? 
     
     -- inc: 
     signal inc_out_sig : MemAddrType := 0;              -- from inc to mux32x2_b
@@ -82,7 +82,7 @@ begin
     instr     : entity work.ctrl_instr     port map(data_in=>data_in, instr_en=>instr_en_sig, data_out=>instr_sig); -- done wiring    
     pc        : entity work.ctrl_pc        port map(pc=>pc_sig, pc_in=>pc_in_sig, pc_en=>pc_en_sig);                -- done wiring    
     addr      : entity work.ctrl_addr      port map(data_in=>data_in, addr_en=>addr_en_sig, addr=>addr_sig);        -- done wiring    
-    ctrl_fsm  : entity work.ctrl_fsm       port map(fc_sel=>fc_sel, reg_en=>reg_en, d_in_mux=>d_in_mux, d_out_mux=>d_out_mux_sig, instr_en=>instr_en_sig, pc_mux=>pc_mux_sig, pc_en=>pc_en_sig, addr_en=>addr_en_sig, dev_rdy=>device_ready, w_en=>w_en, ctrl=>ctrl_sig); -- done wiring    
+    ctrl_fsm  : entity work.ctrl_fsm       port map(clk=>clk, rst=>rst, fc_sel=>fc_sel, reg_en=>reg_en, d_in_mux=>d_in_mux, d_out_mux=>d_out_mux_sig, instr_en=>instr_en_sig, pc_mux=>pc_mux_sig, pc_en=>pc_en_sig, addr_en=>addr_en_sig, dev_rdy=>device_ready, w_en=>w_en, ctrl=>ctrl_sig); -- done wiring    
     --instr_dec : entity work.ctrl_instr_dec port map(sel_in=>sel_in, sel_out_a=>sel_out_a, sel_out_b=>sel_out_b, sel_out_c=>sel_out_c, ctrl=>ctrl_sig, instr=>instr_sig, op=>operation); -- done wiring    
     inc       : entity work.ctrl_inc       port map(addr_in=>addr_out_sig, inc_out=>inc_out_sig);     
     --mux32x2_a : entity work.mux            port map(in_1=>data_in, in_2=>pc_sig, out=>data_out); -- this is the one on the top     
@@ -91,8 +91,3 @@ begin
     
     mem_addr_out <= addr_out_sig;   -- because input and output this needs to be buffered
 end rtl;
-
-
-
-
-
