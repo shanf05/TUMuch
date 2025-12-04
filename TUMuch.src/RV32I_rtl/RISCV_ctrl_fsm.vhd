@@ -15,14 +15,14 @@ entity ctrl_fsm is
        -- outputs:  
         fc_sel    : out bit; 
         reg_en    : out bit; 
-        d_in_mux  : out bit; 
-        d_out_mux : out bit;
+        d_in_mux  : out integer range 0 to 1; 
+        d_out_mux : out integer range 0 to 1;
         io_type   : out bit; 
         io_en     : out bit;
         w_en      : out bit;
-        a_out_mux : out bit_vector(1 downto 0); 
+        a_out_mux : out integer range 0 to 3; 
         instr_en  : out bit;
-        pc_mux    : out bit;
+        pc_mux    : out integer range 0 to 1;
         pc_en     : out bit; 
         addr_en   : out bit; 
         active    : out bit
@@ -82,30 +82,30 @@ begin
     
     output_gen : process (state, cmd_calc, cmd_const, cmd_dir, cmd_reg, cmd_io, cmd_pc, cmd_jmp, cmd_stop, take_jmp, store, dev_rdy)
     begin 
-        a_out_mux <= "00"; 
+        a_out_mux <= 0; 
         instr_en  <= '0'; 
         addr_en   <= '0'; 
         pc_en     <= '0'; 
-        pc_mux    <= '0'; 
+        pc_mux    <= 0; 
         reg_en    <= '0'; 
-        d_in_mux  <= '0'; 
+        d_in_mux  <= 0; 
         w_en      <= '0'; 
         io_type   <= '0'; 
         io_en     <= '0'; 
         active    <= '1'; 
         fc_sel    <= not cmd_calc; 
-        d_out_mux <= cmd_pc;    
+        d_out_mux <= 0 when cmd_pc = '0' else 1;    
     
         case state is 
         when s_if =>
             if take_jmp = '1' then 
-                a_out_mux <= "01"; 
+                a_out_mux <= 1; 
             end if; 
             instr_en <= '1'; 
             pc_en    <= '1';
         when s_pfex =>
             if cmd_reg = '1' then 
-                a_out_mux <= "10"; 
+                a_out_mux <= 2; 
             end if; 
             if cmd_dir = '1' or cmd_jmp = '1' then
                 addr_en <= '1';
@@ -114,7 +114,7 @@ begin
                 pc_en <= '1';
             end if;
             if cmd_pc = '1' then
-                pc_mux <= '1'; 
+                pc_mux <= 1; 
             end if;
             if cmd_calc = '1' or cmd_const = '1' or ((cmd_reg = '1' or cmd_pc = '1') and store = '0') then
                 reg_en <= '1';
@@ -129,7 +129,7 @@ begin
             if (store = '0' and dev_rdy = '1') then
                 reg_en <= '1';
             end if;
-            d_in_mux <= '1';
+            d_in_mux <= 1;
             if store = '1' then 
                 io_type <= '1'; 
             end if;
@@ -137,7 +137,7 @@ begin
                 io_en <= '1'; 
             end if;
         when s_mem =>
-            a_out_mux <= "01";
+            a_out_mux <= 1;
             if store = '0' then 
                 reg_en <= '1';
             else 
