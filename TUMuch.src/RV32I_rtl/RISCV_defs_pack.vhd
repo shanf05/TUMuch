@@ -35,4 +35,8 @@ package defs_pack is
     -- clk cycles
     constant clkCycle     : time := 10ns; 
     
+    -- instruction decoding shared types (Implementation using a bit_vector)
+    subtype ctrl_bv_type is bit_vector(9 downto 0);    
+    type    decode_table_type_bv is array(integer range 9 downto 0) of ctrl_bv_type;
+    
 end; 

@@ -16,6 +16,11 @@ architecture rtl of ctrl_pc is
 begin
     process(pc_in, pc_en)         
     begin
-        pc <= pc_in when pc_en = '1' else (others=>'0');    -- was ist es wenn nicht aktiv?
+        --pc <= pc_in when pc_en = '1' else (others=>'0');    -- was ist es wenn nicht aktiv?
+        if pc_en = '1' then 
+            pc <= pc_in;
+        else 
+            pc <= (others=>'0'); 
+        end if; 
     end process;
 end rtl;

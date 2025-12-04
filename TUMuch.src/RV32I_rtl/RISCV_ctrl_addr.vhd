@@ -16,6 +16,11 @@ architecture rtl of ctrl_addr is
 begin
     process(data_in, addr_en)
     begin
-        addr <= to_integer(unsigned(data_in)) when addr_en = '1' else 0;
+        --addr <= to_integer(unsigned(data_in)) when addr_en = '1' else 0;
+        if addr_en = '1' then 
+            addr <= to_integer(unsigned(data_in)); 
+        else 
+            addr <= 0; 
+        end if; 
     end process;
 end rtl;

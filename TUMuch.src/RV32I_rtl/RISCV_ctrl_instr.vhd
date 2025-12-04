@@ -14,6 +14,11 @@ architecture rtl of ctrl_instr is
 begin
     process(data_in, instr_en)
     begin
-        data_out <= data_in when instr_en = '1' else (others=>'0');
+        --data_out <= data_in when instr_en = '1' else (others=>'0');
+        if instr_en = '1' then 
+            data_out <= data_in; 
+        else 
+            data_out <= (others=>'0');
+        end if; 
     end process;
 end rtl;

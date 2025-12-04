@@ -4,6 +4,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.numeric_bit.all;
 library work;
 use work.inst_layout_pack.all;
+use work.defs_pack.all; 
 
 package instr_dec_pack is
     
@@ -39,7 +40,7 @@ package instr_dec_pack is
 
     type decode_table_type is array (integer range 10 downto 0) of ctrl_record_type;
     
-    constant decode_table : decode_table_type (0 to 10) := (
+    constant decode_table : decode_table_type := (
     --            STOP, JMP,  PC,  IO, REG, DIR, CONST, CALC, STORE, TAKE_JMP
     ctrl_LOAD   =>('0', '0', '1', '0', '1', '0',   '1',  '1',   '0', '0'),
     ctrl_STORE  =>('0', '0', '1', '0', '0', '0',   '1',  '1',   '1', '0'),
@@ -50,16 +51,11 @@ package instr_dec_pack is
     ctrl_LUI    =>('0', '0', '1', '0', '1', '0',   '1',  '0',   '0', '0'),
     ctrl_AUIPC  =>('0', '0', '1', '0', '1', '0',   '1',  '1',   '0', '0'),
     ctrl_NOP    =>('0', '0', '0', '0', '0', '0',   '0',  '0',   '0', '0'),
-    ctrl_STOP   =>('1', '0', '0', '0', '0', '0',   '0',  '0',   '0', '0'),
-    others      =>('0', '0', '0', '0', '0', '0',   '0',  '0',   '0', '0')
+    ctrl_STOP   =>('1', '0', '0', '0', '0', '0',   '0',  '0',   '0', '0')    
     );
     
-    --Implementation using a bit_vector
-    subtype ctrl_bv_type is bit_vector(9 downto 0);
     
-    type decode_table_type_bv is array(integer range 10 downto 0) of ctrl_bv_type;
-    
-    constant decode_table_bv : decode_table_type_bv (0 to 10) := (
+    constant decode_table_bv : decode_table_type_bv  := (
     --            STOP,  JMP   PC    IO    REG   DIR    CONST  CALC   STORE  TAKE_JMP
     ctrl_LOAD   =>('0' & '0' & '1' & '0' & '1' & '0' &   '1' &  '1' &  '0' &  '0'),
     ctrl_STORE  =>('0' & '0' & '1' & '0' & '0' & '0' &   '1' &  '1' &  '1' &  '0'),
@@ -70,8 +66,7 @@ package instr_dec_pack is
     ctrl_LUI    =>('0' & '0' & '1' & '0' & '1' & '0' &   '1' &  '0' &  '0' &  '0'),
     ctrl_AUIPC  =>('0' & '0' & '1' & '0' & '1' & '0' &   '1' &  '1' &  '0' &  '0'),
     ctrl_NOP    =>('0' & '0' & '0' & '0' & '0' & '0' &   '0' &  '0' &  '0' &  '0'),
-    ctrl_STOP   =>('1' & '0' & '0' & '0' & '0' & '0' &   '0' &  '0' &  '0' &  '0'),
-    others      =>('0' & '0' & '0' & '0' & '0' & '0' &   '0' &  '0' &  '0' &  '0')
+    ctrl_STOP   =>('1' & '0' & '0' & '0' & '0' & '0' &   '0' &  '0' &  '0' &  '0')    
     );
     
     

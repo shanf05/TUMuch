@@ -94,8 +94,13 @@ begin
         io_en     <= '0'; 
         active    <= '1'; 
         fc_sel    <= not cmd_calc; 
-        d_out_mux <= 0 when cmd_pc = '0' else 1;    
-    
+        --d_out_mux <= 0 when cmd_pc = '0' else 1;
+        if cmd_pc = '0' then
+            d_out_mux <= 0;
+        else 
+            d_out_mux <= 1;  
+        end if;
+        
         case state is 
         when s_if =>
             if take_jmp = '1' then 
