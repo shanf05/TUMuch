@@ -1,6 +1,7 @@
 -- created by severin hanf
 library work; 
 use work.defs_pack.all;
+use work.instr_dec_pack.all;
 
 entity ctrl_fsm is
     Port(   

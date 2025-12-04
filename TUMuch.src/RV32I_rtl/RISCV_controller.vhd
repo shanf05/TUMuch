@@ -1,6 +1,7 @@
 --created by severin hanf
 library work; 
-use work.defs_pack.all; 
+use work.defs_pack.all;
+use work.instr_dec_pack.all; 
 
 -- • The Controller is no pure FSM but an FSM embedded in other units.
 --    - The instruction decoder (ID) as look-up table
@@ -30,10 +31,9 @@ entity controller is
         --- datapath signals
         fc_sel    : out bit;                        -- to flow controller, flow control select, 
         reg_en    : out bit;                        -- to register_file
-        sel_in    : out bit_vector(1 downto 0);     -- to register_file
-        sel_out_a : out bit_vector(1 downto 0);     -- to register_file
-        sel_out_b : out bit_vector(1 downto 0);     -- to register_file
-        sel_out_c : out bit_vector(1 downto 0);     -- to register_file
+        sel_in    : out bit_vector(4 downto 0);     -- to register_file
+        sel_out_a : out bit_vector(4 downto 0);     -- to register_file
+        sel_out_b : out bit_vector(4 downto 0);     -- to register_file
         operation : out bit_vector(2 downto 0);     -- to alu, see alu implementation -> 5 bits for 32 instructions
         data_out  : out BusDataType;                -- to flow controller
         
