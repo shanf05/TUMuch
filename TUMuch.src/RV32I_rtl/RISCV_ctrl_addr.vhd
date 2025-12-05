@@ -8,7 +8,7 @@ entity ctrl_addr is
     Port(
         data_in : in  BusDataType; 
         addr_en : in  bit;
-        addr    : out MemAddrType  
+        addr    : out bit_vector(AddrSize-1 downto 0)
      );
 end ctrl_addr;
 
@@ -18,9 +18,7 @@ begin
     begin
         --addr <= to_integer(unsigned(data_in)) when addr_en = '1' else 0;
         if addr_en = '1' then 
-            addr <= to_integer(unsigned(data_in)); 
-        else 
-            addr <= 0; 
-        end if; 
+            addr <= data_in(AddrSize-1 downto 0); 
+        end if; -- otherwise it should hold its value -> does this generate latches?         
     end process;
 end rtl;
