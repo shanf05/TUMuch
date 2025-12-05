@@ -11,7 +11,6 @@ entity FC is
         D_IN:       in BusDataType;
         FC_SEL :    in bit; 
         
-        FLAG_IN :   out bit_vector(3 downto 0);
         RF_IN :     out BusDataType
     );
 end FC;
