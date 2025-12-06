@@ -27,7 +27,7 @@ architecture mealy of ctrl_fsm is
     signal cmd_take_jmp : bit := ctrl(0);  -- after jump instructions
     signal cmd_store    : bit := ctrl(1);  -- store instructions
     signal cmd_calc     : bit := ctrl(2);  -- every instruction that goes into alu
-    signal cmd_const    : bit := ctrl(3);  -- every instruction with 
+    signal cmd_const    : bit := ctrl(3);  -- every instruction with immediate, that has to go to alu
     signal cmd_load     : bit := ctrl(4);  -- every load instruction
     signal cmd_reg      : bit := ctrl(5);  -- every instruction that uses regs
     signal cmd_pc       : bit := ctrl(6);  -- only used for AUPIC (pc needs to go to data_in)
@@ -63,7 +63,7 @@ begin
         -- only change values that differ from the default: 
         case state is 
         when s_if =>
-            next_state <= s_pfex;
+            next_state <= s_pfex;                                   -- always next state
             if cmd_take_jmp = '1' then a_out_mux <= "01"; end if;   -- when jumping, use address calculated by alu
             instr_en <= '1';                                        -- fetch instruction
             pc_en    <= '1';                                        -- @ the current programm counter
