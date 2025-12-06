@@ -14,7 +14,7 @@ entity Datapath is
         data_out  : out BusDataType; -- requires buffer, to Memory
         
         -- from datapath:        
-        addr_in   : out BusDataType;
+        addr_in   : out BusDataType; -- requires buffer
         sel_mux_1 : in  bit;
         sel_mux_2 : in  bit;
         sel_mux_3 : in  bit; 
@@ -72,7 +72,7 @@ begin
     
     in_mux3 <= alu_result & const_2;
     MUX3 : entity work.mux generic map (ports => 2) port map (
-        input => in_mux_3,
+        input => in_mux3,
         sel => sel_mux_3,            -- should be fixed when mux sel is bit_vector
         output => out_mux3
     );
@@ -92,4 +92,5 @@ begin
     );
     
     data_out <= rs_1;
+    addr_in <= alu_result;
 end RTL;
