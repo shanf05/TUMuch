@@ -25,4 +25,7 @@ Josip Pepić
 - binary Inputs in bin_input.txt (eine Zeile mit 32 Bits füllen, kein Leerzeichen danach)
 - kommentieren von "mem := init_memory_asm(AsmFile);"
 
+# RTL Model (Controller Based): 
+- Top Down Partitioning zwischen Contoller und Datapath
+- grobe Skizze:
 ![IMG_2369](https://github.com/user-attachments/assets/1222cb71-d396-4cd6-9248-df02e602bb96)
