@@ -8,13 +8,13 @@ use work.instr_dec_pack.all;
 
 --decoder
     --signals to ALU: OP
-    --signals to RegFile: sel_out_a, sel_out_b, sel_out_c, sel_in 
-    --signal  to FSM: ctrl (cmd_stop, cmd_jmp, cmd_pc, cmd_reg, cmd_load, cmd_const, cmd_calc, store, take_jmp)
+    --signals to RegFile: sel_in, sel_out_a, sel_out_b
+    --signal  to FSM: ctrl (cmd_stop, cmd_jmp, cmd_auipc, cmd_lui, cmd_load, cmd_const, cmd_calc, cmd_store, cmd_take_jmp)
 
 entity ctrl_instr_dec is
     Port (instr : in bit_vector(BusDataSize-1 downto 0);
           sel_in, sel_out_a, sel_out_b : out bit_vector(4 downto 0); --sel_out_a = rd, sel_out_b = rs1, sel_out_c = rs2
-          ctrl : out ctrl_bv_type;
+          ctrl : out CtrlType;
           op : out bit_vector(2 downto 0);
           imm : out Immtype                                             
           );
@@ -24,15 +24,16 @@ architecture RTL of ctrl_instr_dec is
 signal op_code : bit_vector(6 downto 0) := (others => '0');         --prevent Latch
 signal func3 : bit_vector(2 downto 0) := (others => '0');           --prevent Latch
 signal func7 : bit_vector(6 downto 0) := (others => '0');           --prevent Latch
-signal cmd_take_jmp, cmd_store, cmd_calc, cmd_const, cmd_load, cmd_reg, cmd_pc, cmd_jmp, cmd_stop : bit;
+signal cmd_take_jmp, cmd_store, cmd_calc, cmd_imm, cmd_load, cmd_lui, cmd_auipc, cmd_jmp, cmd_stop : bit;
 begin
     op_code <= instr(6 downto 0);
     
     process
     begin
     -- default assignment of ctrl signals
-    cmd_take_jmp <='0'; cmd_store <='0'; cmd_calc <='0'; cmd_const <='0'; cmd_load <= '0';
-    cmd_reg <='0'; cmd_pc <='0'; cmd_jmp <='0'; cmd_stop <= '0';
+    cmd_take_jmp <='0'; cmd_store <='0'; cmd_calc <='0'; cmd_imm <='0'; cmd_load <='0';
+    cmd_lui <= '0'; cmd_auipc <='0'; cmd_jmp <='0'; cmd_stop <= '0';
+    func3 <= (others => '0'); func7 <= (others => '0'); op <= (others => '0');
     case op_code is
         -- R-Type Instructions
         when OP_OP =>
@@ -42,10 +43,10 @@ begin
             sel_out_a <= instr(19 downto 15);
             sel_out_b <= instr(24 downto 20);
             --ctrl table
-            --STOP, JMP,  PC, REG, LOAD, CONST, CALC, STORE, TAKE_JMP
-            -- '0', '0', '1', '1',  '0',   '0',  '1',   '0', '0'
-            cmd_pc <='1'; cmd_reg <='1'; cmd_calc <='1';
-            ctrl <= cmd_stop & cmd_jmp & cmd_pc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store & cmd_take_jmp;
+            --STOP, JMP, AUIPC, LUI, LOAD, IMM, CALC, STORE, TAKE_JMP
+            -- '0', '0',   '0', '0',  '0', '0',  '1',   '0',   '0'
+            cmd_calc <= '1';
+            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_lui & cmd_load & cmd_imm & cmd_calc & cmd_store & cmd_take_jmp;
             imm <= (others => '0');
             
             case func3 is
@@ -55,6 +56,7 @@ begin
                                 op <= ALU_ADD;
                             when F7_SUB =>
                                 op <= ALU_SUB;
+                            when others =>
                         end case; 
                 when F3_SLL  =>    --this is also F3_SRA
                     case func7 is 
@@ -62,6 +64,7 @@ begin
                             op <= ALU_SLL;
                         when F7_SRA =>
                             op <= ALU_SRA;
+                        when others =>
                     end case;                
                 when F3_XOR  =>
                     op <= ALU_XOR;
@@ -80,6 +83,7 @@ begin
                             op <= ALU_SRL;
                         when F7_SRA =>
                             op <= ALU_SRA;
+                        when others =>
                     end case;                        
             end case;
         -- end R-Type        
@@ -90,10 +94,10 @@ begin
             sel_in <= instr(11 downto 7);
             sel_out_a <= instr(19 downto 15);
             sel_out_b <= (others => '0');
-            --STOP, JMP,  PC, REG, LOAD, CONST, CALC, STORE, TAKE_JMP
-            -- '0', '0', '1', '1', '0',   '1',  '1',   '0', '0'
-            cmd_pc <='1'; cmd_reg <='1'; cmd_const<='1'; cmd_calc <='1';
-            ctrl <= cmd_stop & cmd_jmp & cmd_pc & cmd_reg & cmd_LOAD & cmd_const & cmd_calc & cmd_store & cmd_take_jmp;
+            --STOP, JMP, AUIPC, LUI, LOAD, IMM, CALC, STORE, TAKE_JMP
+            -- '0', '0',   '0', '0',  '0', '1',  '1',   '0',   '0'
+            cmd_imm <= '1'; cmd_calc <= '1';
+            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_lui & cmd_load & cmd_imm & cmd_calc & cmd_store & cmd_take_jmp;
             imm(11 downto 0) <= instr(31 downto 20);
             imm(31 downto 12) <= (others => instr(31));
             
@@ -119,6 +123,7 @@ begin
                             op <= ALU_SRL;
                         when F7_SRA =>
                             op <= ALU_SRA;
+                        when others =>
                     end case;
         
             end case;
@@ -131,10 +136,10 @@ begin
             sel_out_a <= instr(19 downto 15);
             sel_out_b <= (others => '0');
             op <= (others => '0');      --no ALU Operation needed
-            --STOP, JMP,  PC, REG, LOAD, CONST, CALC, STORE, TAKE_JMP
-            -- '0', '0', '1', '1',  '0',   '1',  '1',   '0', '0'
-            cmd_pc <='1'; cmd_reg <='1'; cmd_const <='1'; cmd_calc <='1';
-            ctrl <= cmd_stop & cmd_jmp & cmd_pc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store & cmd_take_jmp;
+            --STOP, JMP, AUIPC, LUI, LOAD, IMM, CALC, STORE, TAKE_JMP
+            -- '0', '0',   '0', '0',  '1', '0',  '0',   '0',   '0'
+            cmd_load <= '1';
+            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_lui & cmd_load & cmd_imm & cmd_calc & cmd_store & cmd_take_jmp;
             imm(11 downto 0) <= instr(31 downto 20);
             imm(31 downto 0) <= (others => instr(31));
             
@@ -144,6 +149,7 @@ begin
                 when F3_LW =>
                 when F3_LBU =>
                 when F3_LHU =>
+                when others =>
             end case;
         
         --end I-Type
@@ -154,10 +160,10 @@ begin
             sel_in <= (others => '0');
             sel_out_a <= instr(19 downto 15);
             sel_out_b <= instr(24 downto 20);
-            --STOP, JMP,  PC, REG, LOAD, CONST, CALC, STORE, TAKE_JMP
-            -- '0', '0', '1', '0',  '0',   '1',  '1',   '1', '0'
-            cmd_pc <='1'; cmd_const <='1'; cmd_calc <= '1'; cmd_store <='1';
-            ctrl <= cmd_stop & cmd_jmp & cmd_pc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store & cmd_take_jmp;
+            --STOP, JMP, AUIPC, LUI, LOAD, IMM, CALC, STORE, TAKE_JMP
+            -- '0', '0',   '0', '0',  '0', '0',  '0',   '1',   '0'
+            cmd_store <= '1';
+            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_lui & cmd_load & cmd_imm & cmd_calc & cmd_store & cmd_take_jmp;
             op <= (others => '0');                         --no ALU Operation needed
             imm(4 downto 0) <= instr(11 downto 7);
             imm(11 downto 5) <= instr(31 downto 25);
@@ -166,6 +172,7 @@ begin
                 when F3_SB  =>
                 when F3_SH  => 
                 when F3_SW  => 
+                when others =>
              end case;
             
         -- end S-Type
@@ -177,10 +184,10 @@ begin
             sel_out_b <= instr(24 downto 20);
             sel_in <= (others => '0');
             op <= (others => '0');                         --no ALU Operation needed
-            --STOP, JMP,  PC, REG, LOAD, CONST, CALC, STORE, TAKE_JMP
-            -- '0', '1', '1', '0',  '0',   '1',  '1',   '0', '0'
-            cmd_jmp <='1'; cmd_pc <='1'; cmd_const <='1'; cmd_calc <='1';
-            ctrl <= cmd_stop & cmd_jmp & cmd_pc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store & cmd_take_jmp;
+            --STOP, JMP, AUIPC, LUI, LOAD, IMM, CALC, STORE, TAKE_JMP
+            -- '0', '1',   '0', '0',  '0', '0',  '1',   '0',   '1'
+            cmd_jmp <= '1'; cmd_calc <= '1'; cmd_take_jmp <= '1';
+            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_lui & cmd_load & cmd_imm & cmd_calc & cmd_store & cmd_take_jmp;
             imm(3 downto 0) <= instr(11 downto 8);
             imm(9 downto 4) <= instr(30 downto 25);
             imm(10) <= instr(7);
@@ -193,6 +200,7 @@ begin
                 when F3_BGE  => 
                 when F3_BLTU => 
                 when F3_BGEU =>
+                when others =>
             end case;
             
         -- end B-Type
@@ -204,10 +212,10 @@ begin
             sel_out_a <= (others => '0');
             sel_out_b <= (others => '0');
             op <= (others => '0');                                          --no ALU Operation needed
-            --STOP, JMP,  PC, REG, LOAD, CONST, CALC, STORE, TAKE_JMP
-            -- '0', '0', '1', '1',  '0',   '1',  '0',   '0', '0'         
-            cmd_pc <= '1'; cmd_reg <='1'; cmd_const <='1';
-            ctrl <= cmd_stop & cmd_jmp & cmd_pc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store & cmd_take_jmp;
+            --STOP, JMP, AUIPC, LUI, LOAD, IMM, CALC, STORE, TAKE_JMP
+            -- '0', '0',   '0', '1',  '0', '0',  '0',   '0',   '0'   
+            cmd_lui <= '1';
+            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_lui & cmd_load & cmd_imm & cmd_calc & cmd_store & cmd_take_jmp;
             imm(31 downto 12) <= instr(31 downto 12);
             imm(11 downto 0) <= (others => '0');
             --AUIPC instruction
@@ -216,9 +224,10 @@ begin
             sel_out_a <= (others => '0');
             sel_out_b <= (others => '0');
             op <= (others => '0');                                          --no ALU Operation needed
-            --STOP, JMP,  PC, REG, LOAD, CONST, CALC, STORE, TAKE_JMP
-            -- '0', '0', '1', '1',  '0',   '1',  '1',   '0', '0'   
-            cmd_pc <='1'; cmd_reg <='1'; cmd_const <='1'; cmd_calc <='1';
+            --STOP, JMP, AUIPC, LUI, LOAD, IMM, CALC, STORE, TAKE_JMP
+            -- '0', '0',   '1', '0',  '0', '0',  '0',   '0',   '0'  
+            cmd_auipc <= '1';
+            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_lui & cmd_load & cmd_imm & cmd_calc & cmd_store & cmd_take_jmp;
             imm(31 downto 12) <= instr(31 downto 12);
             imm(11 downto 0) <= (others => '0');
         
@@ -229,10 +238,10 @@ begin
             sel_out_a <= (others => '0');
             sel_out_b <= (others => '0');
             op <= (others => '0');                                        --no ALU Operation needed            
-            --STOP, JMP,  PC, REG, LOAD, CONST, CALC, STORE, TAKE_JMP
-            -- '0', '1', '1', '1',  '0',   '1',  '1',   '0', '1'   
-            cmd_jmp <='1'; cmd_pc <='1'; cmd_reg <='1'; cmd_const<='1'; cmd_calc<= '1'; cmd_take_jmp<='1';
-            ctrl <= cmd_stop & cmd_jmp & cmd_pc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store & cmd_take_jmp;
+            --STOP, JMP, AUIPC, LUI, LOAD, IMM, CALC, STORE, TAKE_JMP
+            -- '0', '1',   '0', '0',  '0', '0',  '0',   '0',   '1'
+            cmd_jmp <='1'; cmd_take_jmp<='1';
+            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_lui & cmd_load & cmd_imm & cmd_calc & cmd_store & cmd_take_jmp;
             imm(0) <= '0';
             imm(10 downto 1)    <= instr(30 downto 21);
             imm(11)             <= instr(20);
@@ -245,10 +254,10 @@ begin
             sel_out_a <= instr(19 downto 15);
             sel_out_b <= (others => '0');            
             op <= (others => '0');
-            --STOP, JMP,  PC, REG, LOAD, CONST, CALC, STORE, TAKE_JMP
-            -- '0', '1', '1', '1',  '0',   '1',  '1',   '0', '1'   
-            cmd_jmp <='1'; cmd_pc <='1'; cmd_reg <='1'; cmd_const<='1'; cmd_calc<= '1'; cmd_take_jmp<='1';
-            ctrl <= cmd_stop & cmd_jmp & cmd_pc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store & cmd_take_jmp; 
+            --STOP, JMP, AUIPC, LUI, LOAD, IMM, CALC, STORE, TAKE_JMP
+            -- '0', '1',   '0', '0',  '0', '0',  '0',   '0',   '1'  
+            cmd_jmp <='1'; cmd_take_jmp <='1';
+            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_lui & cmd_load & cmd_imm & cmd_calc & cmd_store & cmd_take_jmp;
             imm(11 downto 0) <= instr(31 downto 20);
             imm(31 downto 12) <= (others => instr(31));            
          
@@ -259,10 +268,10 @@ begin
             sel_in <= (others => '0');
             sel_out_a <= (others => '0');
             sel_out_b <= (others => '0');
-            --STOP, JMP,  PC, REG, LOAD, CONST, CALC, STORE, TAKE_JMP
-            -- '1', '0', '0', '0',  '0',   '0',  '0',   '0', '0' 
+            --STOP, JMP, AUIPC, LUI, LOAD, IMM, CALC, STORE, TAKE_JMP
+            -- '1', '0',   '0', '0',  '0', '0',  '0',   '0',   '0'
             cmd_stop <='1';
-            ctrl <= cmd_stop & cmd_jmp & cmd_pc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store & cmd_take_jmp;
+            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_lui & cmd_load & cmd_imm & cmd_calc & cmd_store & cmd_take_jmp;
             imm <= (others => '0');
             
         when others =>
