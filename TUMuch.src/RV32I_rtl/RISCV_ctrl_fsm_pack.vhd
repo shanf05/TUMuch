@@ -8,15 +8,16 @@ package ctrl_fsm_pack is
     constant s_stop : StateType := "00001";         -- fullstop (and fallback to stop)
     
     -- MUX selects: 
-    constant pc_mux_sel_inc    : bit  := '0'; 
-    constant pc_mux_sel_a_in_2 : bit  := '1'; 
+    constant sel_mux_1_rs_1    : bit  := '0'; 
+    constant sel_mux_1_const_1 : bit  := '1'; 
     
-    constant a_out_mux_sel_a_in_1 : bit_vector(1 downto 0) := "00";
-    constant a_out_mux_sel_addr   : bit_vector(1 downto 0) := "01"; 
-    constant a_out_mux_sel_pc     : bit_vector(1 downto 0) := "10"; 
+    constant sel_mux_2_rs_2    : bit  := '0'; 
+    constant sel_mux_2_const_2 : bit  := '1'; 
     
-    constant d_out_mux_sel_d_in : bit_vector(1 downto 0) := "00"; 
-    constant d_out_mux_sel_pc   : bit_vector(1 downto 0) := "01";
-    constant d_out_muc_sel_imm  : bit_vector(1 downto 0) := "10"; 
+    constant sel_mux_3_alu_res : bit  := '0'; 
+    constant sel_mux_3_const_2 : bit  := '1'; 
     
+    constant sel_mux_4_alu_res : bit  := '0'; 
+    constant sel_mux_4_pc      : bit  := '1';
+        
 end package;

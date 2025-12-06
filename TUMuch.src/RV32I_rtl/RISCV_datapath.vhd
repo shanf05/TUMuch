@@ -50,14 +50,14 @@ begin
     in_mux1 <= rs_1 & const_1;
     MUX1 : entity work.mux generic map (ports => 2) port map (
         input => in_mux1,
-        sel => sel_mux1,            -- should be fixed when mux sel is bit_vector
+        sel => sel_mux_1,            -- should be fixed when mux sel is bit_vector
         output => out_mux1
     );
     
     in_mux2 <= rs_2 & const_2;
     MUX2 : entity work.mux generic map (ports => 2) port map (
         input => in_mux2,
-        sel => sel_mux2,            -- should be fixed when mux sel is bit_vector
+        sel => sel_mux_2,            -- should be fixed when mux sel is bit_vector
         output => out_mux2
     );
     
@@ -72,8 +72,8 @@ begin
     
     in_mux3 <= alu_result & const_2;
     MUX3 : entity work.mux generic map (ports => 2) port map (
-        input => in_mux3,
-        sel => sel_mux3,            -- should be fixed when mux sel is bit_vector
+        input => in_mux_3,
+        sel => sel_mux_3,            -- should be fixed when mux sel is bit_vector
         output => out_mux3
     );
     

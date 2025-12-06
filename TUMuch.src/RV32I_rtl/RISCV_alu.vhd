@@ -5,7 +5,7 @@ use work.defs_pack.all;
 entity alu32 is
     Port( 
         operand_a, operand_b : in  BusDataType; 
-        operation            : in  integer range 0 to 5; 
+        operation            : in  bit_vector(2 downto 0); 
         result               : out BusDataType    
     );
 end alu32;
@@ -42,41 +42,41 @@ begin
     and32     : entity work.and32     port map(x1=>operand_a, x2=>operand_b, y=>res_and_sig); 
     or32      : entity work.or32      port map(x1=>operand_a, x2=>operand_b, y=>res_or_sig); 
     xor32     : entity work.xor32     port map(x1=>operand_a, x2=>operand_b, y=>res_xor_sig);    
-    mux32x5   : entity work.mux       generic map(ports=>5) port map(input=>inputs, output=>result, sel=>operation) ;
+    --mux32x5   : entity work.mux       generic map(ports=>5) port map(input=>inputs, output=>result, sel=>operation) ;
     inputs <= (res_addsub_sig & res_shifter_sig & res_and_sig & res_or_sig & res_xor_sig);
     
     process(operation, operand_a, operand_b)
     begin
         case operation is    
-        when 0 =>   --xor(i)
+        when "000" =>   --xor(i)
             o_mode_sig <= '0';  -- prevent latches 
             dir_sig    <= '0';  -- prevent latches
             arith_sig  <= '0';  -- prevent latches                
-        when 1 =>   --or(i)
+        when "001" =>   --or(i)
             o_mode_sig <= '0';  -- prevent latches 
             dir_sig    <= '0';  -- prevent latches
             arith_sig  <= '0';  -- prevent latches        
-        when 2 =>   --and(i)
+        when "010" =>   --and(i)
             o_mode_sig <= '0';  -- prevent latches 
             dir_sig    <= '0';  -- prevent latches
             arith_sig  <= '0';  -- prevent latches                
-        when 3 =>   --add(i)
+        when "011" =>   --add(i)
             o_mode_sig <= '0';
             dir_sig    <= '0';  -- prevent latches
             arith_sig  <= '0';  -- prevent latches        
-        when 4 =>   --sub
+        when "100" =>   --sub
             o_mode_sig <= '1';
             dir_sig    <= '0';  -- prevent latches
             arith_sig  <= '0';  -- prevent latches        
-        when 5 =>   --sll(i)
+        when "101" =>   --sll(i)
             o_mode_sig <= '0';  -- prevent latches
             dir_sig    <= '0'; 
             arith_sig  <= '0';        
-        when 6 =>   --srl(i)
+        when "110" =>   --srl(i)
             o_mode_sig <= '0';  -- prevent latches
             dir_sig    <= '1';
             arith_sig  <= '0';         
-        when 7 =>   --sra(i)
+        when "111" =>   --sra(i)
             o_mode_sig <= '0';  -- prevent latches
             dir_sig    <= '1';
             arith_sig  <= '1';
