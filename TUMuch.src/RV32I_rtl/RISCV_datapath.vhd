@@ -11,8 +11,7 @@ entity Datapath is
         rst : in bit;
         
         -- data output
-        data_out_1  : out BusDataType; 
-        data_out_2  : out BusDataType; -- requires buffer
+        data_out  : out BusDataType; -- requires buffer
         
         -- from controller
         d_in_mux  : in bit;
@@ -35,14 +34,14 @@ architecture RTL of Datapath is
     
     signal rf_in   : BusDataType; 
     
-    signal data_out_2_sig : BusDataType;
+    signal data_out_sig : BusDataType;
     
 begin
     alu : entity work.alu32 port map(
-        operand_a => alu_in,
-        operand_b => data_out_2_sig,
+        operand_a => alu_in,        --rs1
+        operand_b => data_out_sig,  --rs2
         
-        operation => operation,                 -- should be fixed when mux sel is bit_vector
+        operation => operation,     -- should be fixed when mux sel is bit_vector
         
         result => alu_res
     );
@@ -56,7 +55,7 @@ begin
         rf_in => rf_in
     );
     
-    rf : entity work.reg_file port map(             -- rf missing 3rd output, data_out_1 ? 
+    rf : entity work.reg_file port map(
         clk => clk,
         rst => rst,
         
@@ -65,10 +64,10 @@ begin
         w_data => rf_in,
         
         re_addr_1 => sel_out_a,
-        r_data_1 => alu_in,
+        r_data_1 => alu_in,         --rs1
         re_addr_2 => sel_out_b,
-        r_data_2 => data_out_2_sig 
+        r_data_2 => data_out_sig    --rs2 
     );
     
-    data_out_2 <= data_out_2_sig;
+    data_out <= data_out_sig;
 end RTL;
