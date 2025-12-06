@@ -56,7 +56,7 @@ begin
         rf_in => rf_in
     );
     
-    rf : entity work.reg_file port map(             -- rf missing 3rd output
+    rf : entity work.reg_file port map(             -- rf missing 3rd output, data_out_1 ? 
         clk => clk,
         rst => rst,
         
@@ -65,7 +65,7 @@ begin
         w_data => rf_in,
         
         re_addr_1 => sel_out_a,
-        r_data_1 => data_out_1,
+        r_data_1 => alu_in,
         re_addr_2 => sel_out_b,
         r_data_2 => data_out_2_sig 
     );
