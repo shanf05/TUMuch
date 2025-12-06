@@ -8,17 +8,20 @@ entity ctrl_fsm is
     Port(        
         clk       : in  bit;                        -- clk
         rst       : in  bit;                        -- asynchronus rese
-        ctrl      : in  bit_vector(8 downto 0);     -- controll signals from instruction decoder
+        
+        ctrl      : in  bit_vector(8 downto 0);     -- from instruction decoder
+        
         reg_en    : out bit;                        -- enables register    
-        w_en      : out bit;                        -- enables write in memory  
         instr_en  : out bit;                        -- enables forwarding instruction in instruction decoder
-        pc_en     : out bit;                        -- enables forwarding pc as address
-        addr_en   : out bit;                        -- enables forwarding data_in as address 
-        active    : out bit;                        -- system status
-        a_out_mux : out bit_vector (1 downto 0);    -- selects which address u want to send to memory/pc (from register / data_in / pc)
-        d_out_mux : out bit;                        -- selects which data u want to send to alu
-        pc_mux    : out bit;                        -- selects if u want to use +4 incremented pc or a pc from data_in  
-        fc_sel    : out bit                         -- selects if u want to use data_in or alu_res for register input
+        w_en      : out bit;                        -- enables write in memory        
+        pc_en     : out bit;                        -- enables forwarding pc as address        
+        
+        sel_mux_1 : out bit;                        -- to datapath 
+        sel_mux_2 : out bit;                        -- to datapath 
+        sel_mux_3 : out bit;                        -- to datapath 
+        sel_mux_4 : out bit;                        -- to mux_4
+        
+        active    : out bit                        -- system status
     );    
 end ctrl_fsm;
 
@@ -51,20 +54,23 @@ begin
     begin 
         -- set default values:        
         instr_en  <= '0';       -- default: not enabled
-        addr_en   <= '0';       -- default: not enabled
         pc_en     <= '0';       -- default: not enabled        
         reg_en    <= '0';       -- default: not enabled
         w_en      <= '0';       -- default: not enabled
         active    <= '1';       -- default: active
-        pc_mux    <= '0';       -- default: use +4 incremented addr
-        a_out_mux <= "00";      -- default: use pc !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! anpassen !
-        d_out_mux <= cmd_pc;    -- default: use pc for data_out when AUIPC instr
+        sel_mux_1 <= '0';       -- default: use ..                     
+        sel_mux_2 <= '0';       -- default: use ...                 
+        sel_mux_3 <= '0';       -- default: use ...              
+        sel_mux_4 <= '0';       -- default: use ...
+        
+        --note : hier oben bei den defaults schon die constants benutzen                 
+        
         
         -- only change values that differ from the default: 
         case state is 
         when s_if =>
             next_state <= s_pfex;                                   -- always next state
-            if cmd_take_jmp = '1' then a_out_mux <= "01"; end if;   -- when jumping, use address calculated by alu
+            if cmd_take_jmp = '1' then sel_mux_4 <= '0'; end if;   -- when jumping, use address calculated by alu
             instr_en <= '1';                                        -- fetch instruction
             pc_en    <= '1';                                        -- @ the current programm counter
         when s_pfex =>
@@ -72,10 +78,7 @@ begin
             elsif   cmd_stop = '1' then next_state <= s_stop; 
             else    next_state <= s_if; 
             end if;            
-            if cmd_reg = '1' then a_out_mux <= "10"; end if;        -- ?
-            addr_en <= cmd_load or cmd_jmp; 
             pc_en   <= cmd_const or cmd_load or cmd_pc or cmd_jmp; 
-            pc_mux  <= cmd_pc; 
             reg_en  <= cmd_calc or cmd_const or ((cmd_reg and cmd_pc) and cmd_store); 
             w_en    <= cmd_reg and cmd_store;            
         when s_mem =>            
@@ -83,7 +86,6 @@ begin
             --else    next_state <= s_if;
             --end if; 
                          
-            --a_out_mux <= 1;
             --if store = '0' then 
             --    reg_en <= '1';
             --else 

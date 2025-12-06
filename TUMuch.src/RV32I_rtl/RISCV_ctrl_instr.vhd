@@ -4,21 +4,18 @@ use work.defs_pack.all;
 
 entity ctrl_instr is
     Port(
-        data_in  : in  BusDataType; 
-        instr_en : in  bit; 
-        data_out : out BusDataType
+        data_in  : in  BusDataType;         
+        data_out : out BusDataType;
+        enable   : in  bit
     );
 end ctrl_instr;
 
 architecture rtl of ctrl_instr is
 begin
-    process(data_in, instr_en)
+    process(data_in, enable)
     begin
-        --data_out <= data_in when instr_en = '1' else (others=>'0');
-        if instr_en = '1' then 
-            data_out <= data_in; 
-        else 
-            data_out <= (others=>'0');
+        if enable = '1' then 
+            data_out <= data_in;        
         end if; 
     end process;
 end rtl;

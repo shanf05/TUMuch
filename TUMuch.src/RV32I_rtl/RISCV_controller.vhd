@@ -54,54 +54,36 @@ end controller;
 
 architecture rtl of controller is
     -- pc:
-    --signal pc_sig    : bit_vector(AddrSize-1 downto 0) := (others=>'0');  -- from pc to mux32x4
-    --signal pc_in_sig : bit_vector(AddrSize-1 downto 0) := (others=>'0');  -- from mux32x2_b to pc
-    --signal pc_en_sig : bit := '0';                       -- fsm to pc    
-    
-    -- addr: 
-    --signal addr_en_sig : bit := '0';                     -- from fsm to addr
-    --signal addr_sig    : bit_vector(AddrSize-1 downto 0) := (others=>'0');                    -- addr to mux32x4
-    
+    signal pc_sig        : bit_vector(AddrSize-1 downto 0) := (others=>'0');    -- from pc to mux and to id    
     -- instr: 
-    --signal instr_en_sig : bit := '0';                    -- from fsm to instr
-    --signal instr_sig    : BusDataType := (others=>'0');  -- instr to instruction decoder
-    
+    signal instr_en_sig  : bit := '0';                                          -- from fsm to instr
+    signal instr_sig     : BusDataType := (others=>'0');                        -- from instr to id    
     -- fsm: 
-    --signal d_out_mux_sig : bit := '0';                   -- fsm to mux32x2_a
-    --signal pc_mux_sig    : bit := '0';                   -- fsm to mux32x2_b
-    --signal a_out_mux_sig : bit_vector(1 downto 0) := "00";-- fsm to muc32x4
-    
-    -- instruction decoder:
-    --signal ctrl_sig : ctrl_bv_type := (others=>'0');   -- id to fsm -> how many bits is this wide? 
-    
+    signal sel_mux_4_sig : bit := '0';                                          -- from fsm to mux
+    signal pc_en_sig     : bit := '0';                                          -- from fsm to pc 
+  --signal inc_en_sig    : bit := '0';                                          -- from fsm to inc -> do i need this -> test !    
+    -- id:
+    signal ctrl_sig      : ctrl_bv_type := (others=>'0');                       -- id to fsm    
     -- inc: 
-    --signal inc_out_sig :  bit_vector(AddrSize-1 downto 0) := (others=>'0');              -- from inc to mux32x2_b
-    
-    -- mux32x2_a:
-    --signal mux_inputs_a : bit_vector(2*BusDataSize-1 downto 0) := (others=>'0');
-    
-    -- mux32x2_b:
-    --signal mux_inputs_b : bit_vector(2*BusDataSize-1 downto 0) := (others=>'0'); 
-    
-    -- mux32x4: 
-    --signal addr_out_sig : bit_vector(AddrSize-1 downto 0);     -- from mux32x4 to port, needs to be buffered    
-    --signal mux_inputs_c : bit_vector(4*BusDataSize-1 downto 0) := (others=>'0');    
-    
+    signal inc_out_sig   : bit_vector(AddrSize-1 downto 0) := (others=>'0');    -- from inc to pc
+       
+    -- mux: 
+    signal addr_out_sig : bit_vector(AddrSize-1 downto 0) := (others=>'0');     -- from mux to port and to inc    
 begin    
-    --instr     : entity work.ctrl_instr     port map(data_in=>data_in, instr_en=>instr_en_sig, data_out=>instr_sig); -- done wiring    
-    --pc        : entity work.ctrl_pc        port map(pc=>pc_sig, pc_in=>pc_in_sig, pc_en=>pc_en_sig);                -- done wiring    
-    --addr      : entity work.ctrl_addr      port map(data_in=>data_in, addr_en=>addr_en_sig, addr=>addr_sig);        -- done wiring    
-    --ctrl_fsm  : entity work.ctrl_fsm       port map(fc_sel=>fc_sel, clk=>clk, rst=>rst, reg_en=>reg_en, d_out_mux=>d_out_mux_sig, instr_en=>instr_en_sig, pc_mux=>pc_mux_sig, pc_en=>pc_en_sig, addr_en=>addr_en_sig, w_en=>w_en, ctrl=>ctrl_sig); -- done wiring    
+    instr     : entity work.ctrl_instr     port map(data_in=>data_in, enable=>instr_en_sig, data_out=>instr_sig); -- done wiring    
+    pc        : entity work.ctrl_pc        port map(data_in=>inc_out_sig, data_out=>pc_sig, enable=>pc_en_sig);                -- done wiring    
+    ctrl_fsm  : entity work.ctrl_fsm       port map(clk=>clk, rst=>rst, ctrl=>ctrl_sig, reg_en=>reg_en, instr_en=>instr_en_sig, w_en=>w_en, pc_en=>pc_en_sig, sel_mux_1=>sel_mux_1, sel_mux_2=>sel_mux_2, sel_mux_3=>sel_mux_3, sel_mux_4=>sel_mux_4_sig); -- done wiring    
     --instr_dec : entity work.ctrl_instr_dec port map(sel_in=>sel_in, sel_out_a=>sel_out_a, sel_out_b=>sel_out_b, ctrl=>ctrl_sig, instr=>instr_sig, op=>operation); -- done wiring    
-    --inc       : entity work.ctrl_inc       port map(addr_in=>addr_out_sig, inc_out=>inc_out_sig);     
-    --mux32x3_a : entity work.mux            generic map(ports=>2) port map(input=>mux_inputs_a, output=>data_out, sel=>d_out_mux_sig); -- this is the one on the top     
-    --mux32x2_b : entity work.mux            generic map(ports=>2, data_width=>AddrSize) port map(input=>mux_inputs_b, output=>pc_in_sig, sel=>pc_mux_sig);  -- this is the one on the bottom    
-    --mux32x3_C : entity work.mux            generic map(ports=>3, data_width=>AddrSize) port map(input=>mux_inputs_c, output=>addr_out_sig, sel=>a_out_mux_sig);    
+    inc       : entity work.ctrl_inc       port map(data_in=>addr_out_sig, data_out=>inc_out_sig);     
+    --mux_4     : entity work.mux            generic map(ports=>2) port map(input=>mux_inputs_a, output=>data_out, sel=>d_out_mux_sig); -- this is the one on the top     
      
-    --addr_out <= addr_out_sig;   -- because input and output this needs to be buffered    
-    --mux_inputs_a <= data_in & pc_sig; 
-    --mux_inputs_b <= bit_vector(to_unsigned(addr_in_2, 16)) & inc_out_sig; 
-    --mux_inputs_c <= bit_vector(to_unsigned(addr_in_1, 16)) & bit_vector(to_unsigned(addr_sig, 16)) & pc_sig; 
-    
-    
+    addr_out <= addr_out_sig;   -- because input and output this needs to be buffered    
 end rtl;
+
+
+
+
+
+
+
+

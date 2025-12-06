@@ -2,25 +2,20 @@
 library work; 
 use work.defs_pack.all;
 
-
-
 entity ctrl_pc is
     Port(
-        pc    : out bit_vector (AddrSize-1 downto 0);
-        pc_in : in  bit_vector (AddrSize-1 downto 0); 
-        pc_en : in  bit
+        data_out : out bit_vector (AddrSize-1 downto 0);
+        data_in  : in  bit_vector (AddrSize-1 downto 0); 
+        enable   : in  bit
     );
 end ctrl_pc;
 
 architecture rtl of ctrl_pc is
 begin
-    process(pc_in, pc_en)         
+    process(data_in, enable)         
     begin
-        --pc <= pc_in when pc_en = '1' else (others=>'0');    -- was ist es wenn nicht aktiv?
-        if pc_en = '1' then 
-            pc <= pc_in;
-        else 
-            pc <= (others=>'0'); 
+        if enable = '1' then 
+            data_out <= data_in;
         end if; 
     end process;
 end rtl;
