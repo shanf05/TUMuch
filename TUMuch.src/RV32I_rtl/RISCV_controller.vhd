@@ -28,7 +28,7 @@ entity controller is
         rst : in bit;
         
         -- interface to datapath:        
-        addr_in   : in  BusDataType;    -- this is longer than it needs to be -> adjustment in addr_mux
+        addr_in   : in  bit_vector(AddrSize-1 downto 0);
         sel_mux_1 : out bit;
         sel_mux_2 : out bit;
         sel_mux_3 : out bit; 

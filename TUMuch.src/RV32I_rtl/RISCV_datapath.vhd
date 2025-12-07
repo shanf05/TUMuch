@@ -14,7 +14,7 @@ entity Datapath is
         data_out  : out BusDataType; -- requires buffer, to Memory
         
         -- from datapath:        
-        addr_in   : out BusDataType; -- requires buffer
+        addr_in   : out bit_vector(AddrSize downto 0); -- requires buffer
         sel_mux_1 : in  bit;
         sel_mux_2 : in  bit;
         sel_mux_3 : in  bit; 
@@ -88,5 +88,5 @@ begin
     );
     
     data_out <= rs_1;
-    addr_in <= alu_result;
+    addr_in <= alu_result(AddrSize-1 downto 0);
 end RTL;

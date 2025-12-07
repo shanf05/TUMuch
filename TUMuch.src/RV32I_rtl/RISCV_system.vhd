@@ -11,7 +11,7 @@ end;
 
 architecture rtl of system is
     signal addr_out_sig    : bit_vector(AddrSize-1 downto 0);
-    signal addr_in_sig     : BusDataType; 
+    signal addr_in_sig     : bit_vector(AddrSize-1 downto 0);
     signal data_in_sig     : BusDataType;
     signal data_out_sig    : BusDataType;
     signal data_out_signal : BusDataType; 
