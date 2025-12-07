@@ -63,7 +63,6 @@ begin
         sel_mux_2 <= sel_mux_2_rs_2;    -- default: use rs_2 as second input for alu                
         sel_mux_3 <= sel_mux_3_alu_res; -- default: use alu's result for regs            
         sel_mux_4 <= sel_mux_4_pc;      -- default: use the pc as address      
-        sel_mux_5 <= sel_mux_5_reg;     -- default: use the value provided from register
         
         -- only change values that differ from the default: 
         case state is 
