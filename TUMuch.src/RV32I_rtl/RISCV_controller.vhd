@@ -76,7 +76,7 @@ begin
     ctrl_fsm  : entity work.ctrl_fsm       port map(clk=>clk, rst=>rst, ctrl=>ctrl_sig, reg_en=>reg_en, instr_en=>instr_en_sig, w_en=>w_en, pc_en=>pc_en_sig, sel_mux_1=>sel_mux_1, sel_mux_2=>sel_mux_2, sel_mux_3=>sel_mux_3, sel_mux_4=>sel_mux_4_sig, sel_mux_5=>sel_mux_5);   
     instr_dec : entity work.ctrl_instr_dec port map(sel_in=>sel_in, sel_out_a=>sel_out_a, sel_out_b=>sel_out_b, ctrl=>ctrl_sig, instr=>instr_sig, op=>operation);  
     inc       : entity work.ctrl_inc       port map(data_in=>addr_out_sig, data_out=>inc_out_sig);     
-    --mux_4     : entity work.mux            generic map(ports=>2) port map(input=>mux_inputs_a, output=>data_out, sel=>d_out_mux_sig);   
+    mux_4     : entity work.mux2x1         generic map(data_width=>16) port map(in_0=>addr_in(AddrSize-1 downto 0), in_1=>pc_sig, sel=>sel_mux_4_sig, output=>addr_out_sig);   
      
     addr_out <= addr_out_sig;   -- because input and output this needs to be buffered    
 end rtl;
