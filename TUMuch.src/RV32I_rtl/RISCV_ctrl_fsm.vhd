@@ -33,7 +33,7 @@ architecture mealy of ctrl_fsm is
     signal cmd_calc     : bit := ctrl(2);  -- every instruction that goes into alu
     signal cmd_const    : bit := ctrl(3);  -- every instruction with immediate, that has to go to alu
     signal cmd_load     : bit := ctrl(4);  -- every load instruction
-    signal cmd_lui      : bit := ctrl(5);  -- only used for LUI
+    signal cmd_reg      : bit := ctrl(5);  -- only used for LUI
     signal cmd_auipc    : bit := ctrl(6);  -- only used for AUPIC (pc needs to go to data_in)
     signal cmd_jmp      : bit := ctrl(7);  -- fump instructions
     signal cmd_stop     : bit := ctrl(8);  -- stop all execution -> needs reset
@@ -51,7 +51,7 @@ begin
         end if;    
     end process;    
     
-    mixed_changes : process (state, cmd_calc, cmd_const, cmd_load, cmd_lui, cmd_auipc, cmd_jmp, cmd_stop, cmd_take_jmp, cmd_store)
+    mixed_changes : process (state, cmd_calc, cmd_const, cmd_load, cmd_reg, cmd_auipc, cmd_jmp, cmd_stop, cmd_take_jmp, cmd_store)
     begin 
         -- set default values:        
         instr_en  <= '0';               -- default: not enabled
@@ -96,7 +96,7 @@ begin
                 if cmd_const = '1' then sel_mux_2 <= sel_mux_2_const_2; end if; -- use immediate as second operand (otherwise rs_2 is default)
                 reg_en <= '1';                                                  -- enable writing the result to registers
                                                                                 -- the other defaults are already right for non immediate calculations     
-            elsif cmd_lui = '1' then 
+            elsif cmd_reg = '1' and cmd_jmp = '0' then                          -- this is only the LUI instruction
                 next_state <= s_if;                                             -- lui can be done in one cycle 
                 reg_en <= '1';                                                  -- enable writing the immediate to registers
                 sel_mux_3 <= sel_mux_3_const_2;                                 -- use the immediate as write data for registers
@@ -110,7 +110,11 @@ begin
             elsif cmd_jmp = '1' and cmd_calc = '0' then                         -- unconditional jumps        
                 next_state <= s_if;                                             -- jumps can be done in one cycle (address is getting used in next one)           
                 pc_en     <= '1';                                               -- update pc, because return address has to be stored   !!!!!!!!!!!!!!!!!!!!!!!!!! problem !!
-                sel_mux_1 <= sel_mux_1_const_1;                                 -- use pc as first summand
+                if cmd_reg = '0' then                                          -- JAL instruction
+                    sel_mux_1 <= sel_mux_1_const_1;                             -- use pc as first summand
+                else                                                            -- JALR instruction 
+                    sel_mux_1 <= sel_mux_1_rs_1;                                -- use rs1 as first summand
+                end if;
                 sel_mux_2 <= sel_mux_2_const_2;                                 -- use imm as second summand  
                 sel_mux_3 <= sel_mux_3_const_2;                                 -- use pc + 4 as data input for register write !!!!!!!!!!!!!!!!!!!!!!!! this is a problem !!
                                                                                 -- unconditional jump: in the next cycle the address coming from alu is taken
