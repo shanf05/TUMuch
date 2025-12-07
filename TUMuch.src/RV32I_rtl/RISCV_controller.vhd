@@ -32,6 +32,7 @@ entity controller is
         sel_mux_1 : out bit;
         sel_mux_2 : out bit;
         sel_mux_3 : out bit; 
+        sel_mux_5 : out bit; 
         
         reg_en    : out bit;
         sel_in    : out bit_vector(4 downto 0);
@@ -72,7 +73,7 @@ architecture rtl of controller is
 begin    
     instr     : entity work.ctrl_instr     port map(data_in=>data_in, enable=>instr_en_sig, data_out=>instr_sig);  
     pc        : entity work.ctrl_pc        port map(data_in=>inc_out_sig, data_out=>pc_sig, enable=>pc_en_sig);  
-    ctrl_fsm  : entity work.ctrl_fsm       port map(clk=>clk, rst=>rst, ctrl=>ctrl_sig, reg_en=>reg_en, instr_en=>instr_en_sig, w_en=>w_en, pc_en=>pc_en_sig, sel_mux_1=>sel_mux_1, sel_mux_2=>sel_mux_2, sel_mux_3=>sel_mux_3, sel_mux_4=>sel_mux_4_sig);   
+    ctrl_fsm  : entity work.ctrl_fsm       port map(clk=>clk, rst=>rst, ctrl=>ctrl_sig, reg_en=>reg_en, instr_en=>instr_en_sig, w_en=>w_en, pc_en=>pc_en_sig, sel_mux_1=>sel_mux_1, sel_mux_2=>sel_mux_2, sel_mux_3=>sel_mux_3, sel_mux_4=>sel_mux_4_sig, sel_mux_5=>sel_mux_5);   
     instr_dec : entity work.ctrl_instr_dec port map(sel_in=>sel_in, sel_out_a=>sel_out_a, sel_out_b=>sel_out_b, ctrl=>ctrl_sig, instr=>instr_sig, op=>operation);  
     inc       : entity work.ctrl_inc       port map(data_in=>addr_out_sig, data_out=>inc_out_sig);     
     --mux_4     : entity work.mux            generic map(ports=>2) port map(input=>mux_inputs_a, output=>data_out, sel=>d_out_mux_sig);   
