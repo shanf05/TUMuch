@@ -108,7 +108,9 @@ begin
             elsif cmd_store = '1' then 
                 next_state <= s_if;                                             -- fallback to istr fetch
                 w_en   <= '1';                                                  -- enable write for memory
-                sel_mux_5 <= sel_mux_5_const_2;                                 -- use the imm as write data for memory
+                seL_mux_1 <= sel_mux_1_const_1;                                 -- use imm as first summand
+                sel_mux_2 <= sel_mux_2_rs_2;                                    -- use rs_2 as second summand (actually this is rs_1, it is getting swapped in instr dec, so no mux after reg_file is needed)
+                sel_mux_3 <= sel_mux_3_alu_res;                                 -- use the alu result as write data for memory
             else 
                 next_state <= s_if;                                             -- always restart with instr fetch when faulty input;
                 assert false; 
