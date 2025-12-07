@@ -35,29 +35,25 @@ architecture RTL of Datapath is
     signal rs_1 : BusDataType;
     signal rs_2 : BusDataType;
     
-    signal in_mux1  : bit_vector(2*BusDataSize-1 downto 0);
     signal out_mux1 : BusDataType;
-    
-    signal in_mux2  : bit_vector(2*BusDataSize-1 downto 0);
     signal out_mux2 : BusDataType;
     
     signal alu_result : BusDataType;
     
-    signal in_mux3  : bit_vector(2*BusDataSize-1 downto 0);
     signal out_mux3 : BusDataType;
     
 begin
-    in_mux1 <= rs_1 & const_1;
-    MUX1 : entity work.mux generic map (ports => 2) port map (
-        input => in_mux1,
-        sel => sel_mux_1,            -- should be fixed when mux sel is bit_vector
+    MUX1 : entity work.mux2x1 port map (
+        in_0 => rs_1,
+        in_1 => const_1,
+        sel => sel_mux_1,
         output => out_mux1
     );
     
-    in_mux2 <= rs_2 & const_2;
-    MUX2 : entity work.mux generic map (ports => 2) port map (
-        input => in_mux2,
-        sel => sel_mux_2,            -- should be fixed when mux sel is bit_vector
+    MUX2 : entity work.mux2x1 port map (
+        in_0 => rs_2,
+        in_1 => const_2,
+        sel => sel_mux_2,
         output => out_mux2
     );
     
@@ -65,15 +61,15 @@ begin
         operand_a => out_mux1,      -- rs1/const1
         operand_b => out_mux2,      -- rs2/const2
         
-        operation => operation,     -- should be fixed when mux sel is bit_vector
+        operation => operation,
         
         result => alu_result
     );
     
-    in_mux3 <= alu_result & const_2;
-    MUX3 : entity work.mux generic map (ports => 2) port map (
-        input => in_mux3,
-        sel => sel_mux_3,            -- should be fixed when mux sel is bit_vector
+    MUX3 : entity work.mux2x1 port map (
+        in_0 => alu_result,
+        in_1 => const_2,
+        sel => sel_mux_3,
         output => out_mux3
     );
     
