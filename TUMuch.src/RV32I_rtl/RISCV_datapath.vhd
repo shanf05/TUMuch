@@ -43,14 +43,14 @@ architecture RTL of Datapath is
     signal out_mux3 : BusDataType;
     
 begin
-    MUX1 : entity work.mux2x1 port map (
+    MUX_1 : entity work.mux2x1 port map (
         in_0 => rs_1,
         in_1 => const_1,
         sel => sel_mux_1,
         output => out_mux1
     );
     
-    MUX2 : entity work.mux2x1 port map (
+    MUX_2 : entity work.mux2x1 port map (
         in_0 => rs_2,
         in_1 => const_2,
         sel => sel_mux_2,
@@ -66,7 +66,7 @@ begin
         result => alu_result
     );
     
-    MUX3 : entity work.mux2x1 port map (
+    MUX_3 : entity work.mux2x1 port map (
         in_0 => alu_result,
         in_1 => const_2,
         sel => sel_mux_3,
