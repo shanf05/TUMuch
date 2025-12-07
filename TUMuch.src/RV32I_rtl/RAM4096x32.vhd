@@ -14,9 +14,9 @@ entity RAM4096x32 is
     port(
         clk      : in bit; 
         w_en     : in bit;
-        addr     : in MemAddrType; 
-        data_in  : in  MemDataType;
-        data_out : out MemDataType        
+        addr     : in bit_vector(AddrSize-1 downto 0); 
+        data_in  : in  BusDataType;
+        data_out : out BusDataType        
     );
 end RAM4096x32;
 
@@ -27,13 +27,13 @@ begin
     begin        
         wait until clk = '1'; 
         if w_en = '1' then 
-            Mem(addr) <= data_in after tc;      -- is the delay even necessary? 
+            Mem(to_integer(unsigned(addr))) <= data_in after tc;      -- is the delay even necessary? 
         end if;                    
     end process;
     
     asynchronus_read : process(Mem, addr)
     begin
-        data_out <= Mem(addr) after th;         -- is the delay even necessary? 
+        data_out <= Mem(to_integer(unsigned(addr))) after th;         -- is the delay even necessary? 
     end process;
     
 end behavioral;
