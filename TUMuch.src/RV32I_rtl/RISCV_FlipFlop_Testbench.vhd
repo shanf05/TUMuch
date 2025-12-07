@@ -5,37 +5,15 @@ use IEEE.numeric_bit.all;
 library work;
 use work.defs_pack.all;
 
--- clock signal generator
-entity clk_gen is
-    generic(init_value : bit := '1';
-            init_delay : time := 1 ns;
-            T_high, T_low : time := 1 ns;
-            T_active : time := 2000 ns
-                                    );
-     port (clk : buffer bit := init_value);                               
-end clk_gen;
-
-architecture dataflow of clk_gen is
-begin
-    clk <= not init_value, init_value after init_delay
-           when now = 0 ns else
-       '1' after T_low
-           when clk = '0' and now > 0 ns and now < T_active else
-       '0' after T_high
-           when clk = '1' and now > 0 ns and now < T_active else
-           clk;
-   
-end architecture dataflow;
-
 -- reset signal generator
-entity rst_gen is 
+entity rst_gen_1 is 
     generic(rst_level : bit := '1';
             init_delay : time := 1 ns;
             T_rst : time := 1 ns );
     port(rst : out bit);
-end rst_gen;
+end rst_gen_1;
 
-architecture dataflow of rst_gen is
+architecture dataflow of rst_gen_1 is
 begin
     rst <= not rst_level,
            rst_level after init_delay,
@@ -116,6 +94,7 @@ begin
          port map(en => EN_sig, D => D_sig);
          
     CLK : entity work.clk_gen(dataflow)
+          generic map(T_high =>  1ns, T_low => 1 ns, T_active => 2000 ns)
           port map(clk => clk_sig);
           
     RST : entity work.rst_gen(dataflow)

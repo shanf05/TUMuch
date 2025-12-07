@@ -1,4 +1,4 @@
---created by Max Biricz
+--created by Max Biricz and Josip Pepic
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 library work;

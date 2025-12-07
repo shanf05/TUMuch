@@ -10,7 +10,7 @@ end RAM4096x32_Testbench;
 architecture stimul of RAM4096x32_Testbench is
    signal clk      : bit := '0';
    signal w_en     : bit := '0'; 
-   signal addr     : MemAddrType := 0; 
+   signal addr     : bit_vector(AddrSize-1 downto 0); 
    signal data_in  : MemDataType := (others=>'0'); 
    signal data_out : MemDataType := (others=>'0'); 
 begin    
@@ -29,7 +29,7 @@ begin
         w_en <= '1';
         for i in 0 to 4095 loop
             --Write Data to Memory            
-            addr <= i;
+            addr <= bit_vector(to_unsigned(i, 16));
             data_in <= bit_vector(to_unsigned(i, 32));
             wait for clkCycle;            
         end loop;
@@ -38,7 +38,7 @@ begin
         data_in <= (others=>'0'); 
         for i in 0 to 4095 loop
             --Assert Read Data
-            addr <= i;
+            addr <= bit_vector(to_unsigned(i, 16));
             wait for 0ns;    --force delty cycles for update
             wait for 0ns; 
             assert (data_out = bit_vector(to_unsigned(i, 32)))
