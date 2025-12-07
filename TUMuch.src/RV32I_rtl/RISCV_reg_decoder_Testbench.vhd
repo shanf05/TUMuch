@@ -7,7 +7,7 @@ use work.defs_pack.all;
 entity reg_decoder_Testbench is
     port (
          we     : out bit;
-         w_addr : out RegAddrType;
+         w_addr : out bit_vector(31 downto 0);
          en     : in ENType
          );
 end reg_decoder_Testbench;
@@ -20,7 +20,7 @@ begin
         
     begin
         we <= '1';
-        w_addr <= 0;
+        w_addr <= (others=>'0');
         
         for i in 0 to 31 loop
             if i = 16 then
@@ -28,7 +28,7 @@ begin
                 wait for 0 ns;
             end  if;
             
-            w_addr <= i;
+            w_addr <= bit_vector(to_unsigned(i, 32));
             expected_en := (others=>'0');
             if i < 16 then
                 expected_en(i) := '1';
@@ -55,7 +55,7 @@ end entity;
 
 architecture Behavioral of reg_decoder_TLE is
     signal we_s       : bit;
-    signal w_addr_s   : RegAddrType;
+    signal w_addr_s   : bit_vector(31 downto 0);
     signal en_s       : ENType;
 begin
     TB  :   entity work.reg_decoder_Testbench(Behavioral)
