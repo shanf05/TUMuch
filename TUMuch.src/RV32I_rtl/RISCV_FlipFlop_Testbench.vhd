@@ -6,14 +6,14 @@ library work;
 use work.defs_pack.all;
 
 -- reset signal generator
-entity rst_gen is 
+entity rst_gen_1 is 
     generic(rst_level : bit := '1';
             init_delay : time := 1 ns;
             T_rst : time := 1 ns );
     port(rst : out bit);
-end rst_gen;
+end rst_gen_1;
 
-architecture dataflow of rst_gen is
+architecture dataflow of rst_gen_1 is
 begin
     rst <= not rst_level,
            rst_level after init_delay,
