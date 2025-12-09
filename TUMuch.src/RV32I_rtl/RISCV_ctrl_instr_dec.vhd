@@ -15,7 +15,6 @@ entity ctrl_instr_dec is
     Port(
         instr     : in  BusDataType;
         pc_in     : in  bit_vector (AddrSize-1 downto 0); 
-        comp_res  : in  bit_vector (1 downto 0); 
         sel_in    : out bit_vector(4 downto 0);           -- rs2
         sel_out_a : out bit_vector(4 downto 0);           -- rd
         sel_out_b : out bit_vector(4 downto 0);           -- rs1

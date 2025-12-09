@@ -91,6 +91,7 @@ begin
                                                 inc_en=>inc_en_sig,
                                                 w_en=>w_en, 
                                                 pc_en=>pc_en_sig, 
+                                                comp_res => comp_res,
                                                 sel_mux_1=>sel_mux_1, 
                                                 sel_mux_2=>sel_mux_2, 
                                                 sel_mux_4=>sel_mux_4, 
@@ -101,8 +102,7 @@ begin
                                                 );   
     instr_dec : entity work.ctrl_instr_dec port map(
                                                 instr=>instr_sig,
-                                                pc_in => pc_sig, 
-                                                comp_res => comp_res,
+                                                pc_in => pc_sig,                                                 
                                                 sel_in=>sel_in, 
                                                 sel_out_a=>sel_out_a, 
                                                 sel_out_b=>sel_out_b, 
