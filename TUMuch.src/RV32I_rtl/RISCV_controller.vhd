@@ -118,7 +118,12 @@ begin
                                                 data_in=>inc_out_sig, 
                                                 data_out=>inc_sig,
                                                 enable=>inc_en_sig
-                                                );    
+                                                ); 
+    instr     : entity work.ctrl_instr     port map(
+                                                data_in=>data_in,
+                                                data_out=>instr_sig,
+                                                enable=>instr_en_sig
+                                                );   
     mux_5     : entity work.mux4x1          generic map(data_width=>16) 
                                             port map(
                                                 in_0=>imm_sig,                          -- + imm
