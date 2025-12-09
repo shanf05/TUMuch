@@ -140,8 +140,7 @@ begin
                 sel_mux_2 <= sel_mux_2_alu_res;                                 -- use alu result (pc + 4) as write data for regs
                 reg_en    <= '1';                                               -- enable registers to be written                 
             elsif cmd_stop = '1' then 
-                next_state <= s_stop;
-                active <= '0';
+                next_state <= s_stop;                
             else 
                 next_state <= s_if;                                             -- always restart with instr fetch when faulty input;
                 assert false; 
