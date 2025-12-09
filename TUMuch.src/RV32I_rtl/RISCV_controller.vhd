@@ -38,7 +38,7 @@ entity controller is
         sel_in    : out bit_vector(4 downto 0);
         sel_out_a : out bit_vector(4 downto 0);
         sel_out_b : out bit_vector(4 downto 0);
-        operation : out bit_vector(2 downto 0);        
+        operation : out bit_vector(3 downto 0);        
         
         const_1   : out BusDataType;
         const_2   : out BusDataType;

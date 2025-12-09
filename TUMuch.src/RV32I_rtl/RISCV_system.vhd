@@ -24,7 +24,7 @@ architecture rtl of system is
     signal sel_mux_2_sig   : bit;
     signal sel_mux_3_sig   : bit;
     signal sel_mux_4_sig   : bit;
-    signal operation_sig   : bit_vector(2 downto 0);
+    signal operation_sig   : bit_vector(3 downto 0);
     signal const_1_sig     : BusDataType; 
     signal const_2_sig     : BusDataType; 
     signal const_reg_sig   : BusDataType;
