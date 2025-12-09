@@ -28,5 +28,5 @@ Josip Pepić
 # RTL Model (Controller Based): 
 - Top Down Partitioning zwischen Contoller und Datapath
 - grobe Skizze:
-<img width="527" height="392" alt="image" src="https://github.com/user-attachments/assets/e18b8d36-ccbc-443b-9667-d620eca5e4cf" />
+![WhatsApp Bild 2025-12-09 um 02 13 28_438de9b8](https://github.com/user-attachments/assets/8f466436-e739-4b6c-913e-5493e5f3b157)
 <img width="402" height="305" alt="image" src="https://github.com/user-attachments/assets/6a6b152f-601e-4eda-8bd8-80c591984a4b" />
