@@ -1,6 +1,6 @@
 -- erstellt von Severin Hanf
 package ctrl_fsm_pack is 
-    subtype  StateType is bit_vector (4 downto 0); 
+    subtype  StateType is bit_vector (3 downto 0); 
     constant s_if   : StateType := "1000";         -- instruction fetch 
     constant s_pfex : StateType := "0100";         -- parameter fetch (decode) and execute
     constant s_mem  : StateTYpe := "0010";         -- memory write
