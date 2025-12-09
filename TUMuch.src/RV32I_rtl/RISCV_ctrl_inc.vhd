@@ -8,16 +8,17 @@ use IEEE.numeric_bit.all;
 entity ctrl_inc is
     Port(
         data_out : out bit_vector(AddrSize-1 downto 0); 
-        data_in  : in  bit_vector(AddrSize-1 downto 0) 
+        data_in  : in  bit_vector(AddrSize-1 downto 0);
+        enable   : in  bit
     );
 end ctrl_inc;
 
 architecture rtl of ctrl_inc is
 begin
-    process(data_in)
-        variable tmp_int : integer := 0;
+    process(data_in)        
     begin
-        tmp_int := to_integer(unsigned(data_in)) + 4;
-        data_out <= bit_vector(to_unsigned(tmp_int, AddrSize));
+        if enable = '1' then
+            data_out <= data_in;
+        end if;
     end process;
 end rtl;

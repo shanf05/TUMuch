@@ -12,14 +12,20 @@ use work.instr_dec_pack.all;
     --signal  to FSM: ctrl (cmd_stop, cmd_jmp, cmd_auipc, cmd_reg, cmd_load, cmd_const, cmd_calc, cmd_store, cmd_take_jmp)
 
 entity ctrl_instr_dec is
-    Port (instr : in bit_vector(BusDataSize-1 downto 0);
-          sel_in, sel_out_a, sel_out_b : out bit_vector(4 downto 0); --sel_out_a = rd, sel_out_b = rs1, sel_out_c = rs2
-          pc_in : in bit_vector (AddrSize-1 downto 0);
-          ctrl : out CtrlType;
-          op : out bit_vector(3 downto 0);
-          const_1 : out Immtype;
-          const_2 : out Immtype                                             
-          );
+    Port(
+        instr     : in  BusDataType;
+        pc_in     : in  bit_vector (AddrSize-1 downto 0); 
+        comp_res  : in  bit_vector (1 downto 0); 
+        sel_in    : out bit_vector(4 downto 0);           -- rs2
+        sel_out_a : out bit_vector(4 downto 0);           -- rd
+        sel_out_b : out bit_vector(4 downto 0);           -- rs1
+          
+        ctrl      : out CtrlType;
+        op        : out bit_vector(3 downto 0);
+        const_1   : out BusDataType;
+        const_2   : out BusDataType;       
+        const_reg : out BusDataType     
+        );
 end ctrl_instr_dec;
 
 architecture RTL of ctrl_instr_dec is 

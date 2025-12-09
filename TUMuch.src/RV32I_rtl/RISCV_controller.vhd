@@ -32,6 +32,7 @@ entity controller is
         sel_mux_1 : out bit;
         sel_mux_2 : out bit;
         sel_mux_3 : out bit; 
+        sel_mux_4 : out bit; 
         
         reg_en    : out bit;
         sel_in    : out bit_vector(4 downto 0);
@@ -39,9 +40,11 @@ entity controller is
         sel_out_b : out bit_vector(4 downto 0);
         operation : out bit_vector(2 downto 0);        
         
-        const     : out BusDataType;
+        const_1   : out BusDataType;
+        const_2   : out BusDataType;
+        const_reg : out BusDataType;
         
-        cmp_ctrl  : in bit_vector(1 downto 0);          -- information for branch conditions: MSB is result for r(rs1) < r(rs2) ? ; LSB is result of r(rs1) = r(rs2) ?
+        comp_res  : in  bit_vector(1 downto 0);          -- information for branch conditions: MSB is result for r(rs1) < r(rs2) ? ; LSB is result of r(rs1) = r(rs2) ?
                 
         -- interface to memory: 
         data_in   : in  BusDataType;
@@ -60,32 +63,93 @@ architecture rtl of controller is
     signal instr_en_sig  : bit := '0';                                          -- from fsm to instr
     signal instr_sig     : BusDataType := (others=>'0');                        -- from instr to id    
     -- fsm: 
-    signal sel_mux_4_sig : bit := '0';                                          -- from fsm to mux4
-    signal sel_mux_5_sig : bit := '0';                                          -- from fsm to mux5    
+    signal sel_mux_5_sig : bit_vector(1 downto 0) := "00";                      -- from fsm to mux_5
+    signal sel_mux_6_sig : bit := '0';                                          -- from fsm to mux_6
+    signal sel_mux_7_sig : bit := '0';                                          -- from fsm to mux_7        
     signal pc_en_sig     : bit := '0';                                          -- from fsm to pc 
-  --signal inc_en_sig    : bit := '0';                                          -- from fsm to inc -> do i need this -> test !    
+    signal inc_en_sig    : bit := '0';                                          -- from fsm to inc       
     -- id:
     signal ctrl_sig      : CtrlType := (others=>'0');                           -- id to fsm    
-    signal pc_off_sig    : bit_vector(AddrSize-1 downto 0) := (others=>'0');    -- offset for pc from id
+    signal imm_sig       : bit_vector(AddrSize-1 downto 0) := (others=>'0');    -- id to muxes
     -- inc: 
-    signal inc_out_sig   : bit_vector(AddrSize-1 downto 0) := (others=>'0');    -- from inc to pc
-       
-    -- mux: 
-    signal addr_out_sig : bit_vector(AddrSize-1 downto 0) := (others=>'0');     -- from mux to port and to inc    
-    signal mux_to_add_sig : bit_vector(AddrSize-1 downto 0) := (others=>'0');   -- from mux 
+    signal inc_sig       : bit_vector(AddrSize-1 downto 0) := (others=>'0');    -- from inc to pc
+    signal inc_out_sig   : bit_vector(AddrSize-1 downto 0) := (others=>'0');    -- from inc to addr_out    
+    -- adder:
+    signal summand_1_sig :  bit_vector(AddrSize-1 downto 0) := (others=>'0');   -- from mux to adder
+    signal summand_2_sig :  bit_vector(AddrSize-1 downto 0) := (others=>'0');   -- from mux to adder
 begin    
-    instr     : entity work.ctrl_instr     port map(data_in=>data_in, enable=>instr_en_sig, data_out=>instr_sig);  
-    pc        : entity work.ctrl_pc        port map(data_in=>inc_out_sig, data_out=>pc_sig, enable=>pc_en_sig);  
-    ctrl_fsm  : entity work.ctrl_fsm       port map(clk=>clk, rst=>rst, ctrl=>ctrl_sig, reg_en=>reg_en, instr_en=>instr_en_sig, w_en=>w_en, pc_en=>pc_en_sig, sel_mux_1=>sel_mux_1, sel_mux_2=>sel_mux_2, sel_mux_3=>sel_mux_3, sel_mux_4=>sel_mux_4_sig, sel_mux_5=>sel_mux_5_sig, cmp_ctrl => cmp_ctrl);   
-    instr_dec : entity work.ctrl_instr_dec port map(sel_in=>sel_in, sel_out_a=>sel_out_a, sel_out_b=>sel_out_b, ctrl=>ctrl_sig, instr=>instr_sig, pc_in => pc_sig, op=>operation, pc_off => pc_off_sig, const => const);  
-    -- inc       : entity work.ctrl_inc       port map(data_in=>addr_out_sig, data_out=>inc_out_sig);           -- replaced with adder
-    mux_4     : entity work.mux2x1         generic map(data_width=>16) port map(in_0=>addr_in(AddrSize-1 downto 0), in_1=>pc_sig, sel=>sel_mux_4_sig, output=>addr_out_sig);   
-    
-    
-    mux_5     : entity work.mux2x1         generic map(data_width => 16) port map(in_0 => pc_off_sig, in_1 => bit_vector(to_unsigned(4, AddrSize)), sel => sel_mux_5_sig, output => mux_to_add_sig);
-    addsub_16 : entity work.addsub         generic map(Datasize => 16) port map(a => pc_sig, b => mux_to_add_sig, d_out =>inc_out_sig, o_mode => '0');
+    pc        : entity work.ctrl_pc        port map(
+                                                data_in=>inc_sig, 
+                                                data_out=>pc_sig, 
+                                                enable=>pc_en_sig
+                                                );  
+    ctrl_fsm  : entity work.ctrl_fsm       port map(
+                                                clk=>clk, 
+                                                rst=>rst, 
+                                                ctrl=>ctrl_sig, 
+                                                reg_en=>reg_en, 
+                                                instr_en=>instr_en_sig, 
+                                                inc_en=>inc_en_sig,
+                                                w_en=>w_en, 
+                                                pc_en=>pc_en_sig, 
+                                                sel_mux_1=>sel_mux_1, 
+                                                sel_mux_2=>sel_mux_2, 
+                                                sel_mux_3=>sel_mux_3, 
+                                                sel_mux_4=>sel_mux_4, 
+                                                sel_mux_5=>sel_mux_5_sig,
+                                                sel_mux_6=>sel_mux_6_sig,
+                                                sel_mux_7=>sel_mux_7_sig, 
+                                                active=>active
+                                                );   
+    instr_dec : entity work.ctrl_instr_dec port map(
+                                                instr=>instr_sig,
+                                                pc_in => pc_sig, 
+                                                comp_res => comp_res,
+                                                sel_in=>sel_in, 
+                                                sel_out_a=>sel_out_a, 
+                                                sel_out_b=>sel_out_b, 
+                                                ctrl=>ctrl_sig,
+                                                op=>operation, 
+                                                const_1 => const_1, 
+                                                const_2 => const_2, 
+                                                const_reg => const_reg                                               
+                                                );    
+    inc       : entity work.ctrl_inc       port map(
+                                                data_in=>inc_out_sig, 
+                                                data_out=>inc_sig,
+                                                enable=>inc_en_sig
+                                                );    
+    mux_5     : entity work.mux4x1          generic map(data_width=>16) 
+                                            port map(
+                                                in_0=>imm_sig,                          -- + imm
+                                                in_1=>addr_in,                          -- + reg(rs1)
+                                                in_2=>bit_vector(to_unsigned(4, 16)),   -- + 4
+                                                in_3=>bit_vector(to_unsigned(0, 16)),   -- gnd
+                                                sel=>sel_mux_5_sig, 
+                                                output=>summand_2_sig
+                                                );
+    mux_6     : entity work.mux2x1          generic map(data_width=>16) 
+                                            port map(
+                                                in_0=>imm_sig, 
+                                                in_1=>pc_sig, 
+                                                sel=>sel_mux_6_sig, 
+                                                output=>summand_1_sig
+                                                );
+    mux_7     : entity work.mux2x1          generic map(data_width=>16) 
+                                            port map(
+                                                in_0=>pc_sig, 
+                                                in_1=>inc_out_sig, 
+                                                sel=>sel_mux_7_sig, 
+                                                output=>addr_out
+                                            );    
+    addsub_16 : entity work.addsub          generic map(Datasize => 16) 
+                                            port map(
+                                                a => summand_1_sig, 
+                                                b => summand_2_sig, 
+                                                d_out =>inc_out_sig,    
+                                                o_mode => '0'                           -- always add
+                                            );
      
-    addr_out <= addr_out_sig;   -- because input and output this needs to be buffered    
 end rtl;
 
 

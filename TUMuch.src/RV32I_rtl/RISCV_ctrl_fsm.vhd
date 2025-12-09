@@ -12,6 +12,7 @@ entity ctrl_fsm is
         ctrl      : in  bit_vector(8 downto 0);     -- from instruction decoder
         
         reg_en    : out bit;                        -- enables register    
+        inc_en    : out bit;                        -- enables inc latch
         instr_en  : out bit;                        -- enables forwarding instruction in instruction decoder
         w_en      : out bit;                        -- enables write in memory        
         pc_en     : out bit;                        -- enables forwarding pc as address        
@@ -19,10 +20,12 @@ entity ctrl_fsm is
         sel_mux_1 : out bit;                        -- to datapath 
         sel_mux_2 : out bit;                        -- to datapath 
         sel_mux_3 : out bit;                        -- to datapath 
-        sel_mux_4 : out bit;                        -- to mux_4
-        sel_mux_5 : out bit;                        -- to datapath
+        sel_mux_4 : out bit;                        -- to datapath
+        sel_mux_5 : out bit_vector (1 downto 0);    -- to mux_5
+        sel_mux_6 : out bit;                        -- to mux_6
+        sel_mux_7 : out bit;                        -- to mux_7
         
-        active    : out bit                        -- system status
+        active    : out bit                         -- system status
     );    
 end ctrl_fsm;
 

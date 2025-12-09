@@ -15,9 +15,11 @@ entity Datapath is
         
         -- from datapath:        
         addr_in   : out bit_vector(AddrSize downto 0); -- requires buffer
+        comp_res  : out bit_vector(1 downto 0);
         sel_mux_1 : in  bit;
         sel_mux_2 : in  bit;
         sel_mux_3 : in  bit; 
+        sel_mux_4 : in  bit;
         
         reg_en    : in  bit;
         sel_in    : in  bit_vector(4 downto 0);
@@ -26,7 +28,8 @@ entity Datapath is
         operation : in  bit_vector(2 downto 0);        
         
         const_1   : in  BusDataType;
-        const_2   : in  BusDataType
+        const_2   : in  BusDataType;
+        const_reg : in  BusDataType
     );
 end Datapath;
 
