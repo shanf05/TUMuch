@@ -31,7 +31,6 @@ entity controller is
         addr_in   : in  bit_vector(AddrSize-1 downto 0);
         sel_mux_1 : out bit;
         sel_mux_2 : out bit;
-        sel_mux_3 : out bit; 
         sel_mux_4 : out bit; 
         
         reg_en    : out bit;
@@ -94,7 +93,6 @@ begin
                                                 pc_en=>pc_en_sig, 
                                                 sel_mux_1=>sel_mux_1, 
                                                 sel_mux_2=>sel_mux_2, 
-                                                sel_mux_3=>sel_mux_3, 
                                                 sel_mux_4=>sel_mux_4, 
                                                 sel_mux_5=>sel_mux_5_sig,
                                                 sel_mux_6=>sel_mux_6_sig,

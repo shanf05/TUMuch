@@ -18,7 +18,6 @@ entity Datapath is
         comp_res  : out bit_vector(1 downto 0);
         sel_mux_1 : in  bit;
         sel_mux_2 : in  bit;
-        sel_mux_3 : in  bit; 
         sel_mux_4 : in  bit;
         
         reg_en    : in  bit;
@@ -67,14 +66,7 @@ begin
         operation => operation,
         
         result => alu_result
-    );
-    
-    MUX_3 : entity work.mux2x1 port map (
-        in_0 => alu_result,
-        in_1 => const_2,
-        sel => sel_mux_3,
-        output => out_mux3
-    );
+    );    
     
     rf : entity work.reg_file port map(
         clk => clk,
@@ -90,6 +82,6 @@ begin
         r_data_2 => rs_2            --rs2 
     );
     
-    data_out <= rs_1;
+    data_out <= rs_2;
     addr_in <= alu_result(AddrSize-1 downto 0);
 end RTL;

@@ -18,8 +18,7 @@ entity ctrl_fsm is
         pc_en     : out bit;                        -- enables forwarding pc as address        
         
         sel_mux_1 : out bit;                        -- to datapath 
-        sel_mux_2 : out bit;                        -- to datapath 
-        sel_mux_3 : out bit;                        -- to datapath 
+        sel_mux_2 : out bit;                        -- to datapath        
         sel_mux_4 : out bit;                        -- to datapath
         sel_mux_5 : out bit_vector (1 downto 0);    -- to mux_5
         sel_mux_6 : out bit;                        -- to mux_6
@@ -65,7 +64,6 @@ begin
         active    <= '1';               -- default: active
         sel_mux_1 <= sel_mux_1_rs_2;    -- default: use rs_2 as second input for alu     
         sel_mux_2 <= sel_mux_2_alu_res; -- default: use ralu res as register data input                
-        sel_mux_3 <= sel_mux_3_rs_1;    -- default: use rs_1 output            
         sel_mux_4 <= sel_mux_4_rs_1;    -- default: use rs_1 as second operand    
         sel_mux_5 <= sel_mux_5_imm_4;   -- default: use + 4 as for pc incrementation    
         sel_mux_6 <= sel_mux_6_pc;      -- default: use pc as base for pc incrementation              
