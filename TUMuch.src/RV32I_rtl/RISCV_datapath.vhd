@@ -17,9 +17,8 @@ entity Datapath is
         addr_in   : out bit_vector(AddrSize-1 downto 0); -- requires buffer
         comp_res  : out bit_vector(1 downto 0);
         sel_mux_1 : in  bit;
-        sel_mux_2 : in  bit_vector(1 downto 0);
-        sel_mux_4 : in  bit;
-        data_in   : in  BusDataType; 
+        sel_mux_2 : in  bit;
+        sel_mux_4 : in  bit; 
         
         reg_en    : in  bit;
         sel_in    : in  bit_vector(4 downto 0);
@@ -53,11 +52,9 @@ begin
         output => out_mux1
     );
     
-    MUX_2 : entity work.mux4x1 port map (
+    MUX_2 : entity work.mux2x1 port map (
         in_0 => rs_2,
-        in_1 => const_2,
-        in_2 => data_in,
-        in_3 => (others=>'0'), --  gnd 
+        in_1 => const_2,        
         sel => sel_mux_2,
         output => out_mux2
     );

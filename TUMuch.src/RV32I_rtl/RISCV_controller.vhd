@@ -30,7 +30,7 @@ entity controller is
         -- interface to datapath:        
         addr_in   : in  bit_vector(AddrSize-1 downto 0);
         sel_mux_1 : out bit;
-        sel_mux_2 : out bit_vector(1 downto 0);
+        sel_mux_2 : out bit;
         sel_mux_4 : out bit; 
         
         reg_en    : out bit;

@@ -21,7 +21,7 @@ architecture rtl of system is
     signal sel_out_a_sig   : bit_vector(4 downto 0);
     signal sel_out_b_sig   : bit_vector(4 downto 0);
     signal sel_mux_1_sig   : bit;
-    signal sel_mux_2_sig   : bit_vector(1 downto 0);
+    signal sel_mux_2_sig   : bit;
     signal sel_mux_4_sig   : bit;
     signal operation_sig   : bit_vector(3 downto 0);
     signal const_1_sig     : BusDataType; 
@@ -60,8 +60,7 @@ begin
     datapath   : entity work.datapath   port map(
                                             clk=>clk, 
                                             rst=>rst, 
-                                            data_out=>data_out_sig, 
-                                            data_in=>data_in_sig,
+                                            data_out=>data_out_sig,                                            
                                             addr_in=>addr_in_sig, 
                                             comp_res=>comp_res_sig,
                                             sel_mux_1=>sel_mux_1_sig, 

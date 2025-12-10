@@ -19,7 +19,7 @@ entity ctrl_fsm is
         
         comp_res  : in  bit_vector (1 downto 0);    -- from alu cmp unit
         sel_mux_1 : out bit;                        -- to datapath 
-        sel_mux_2 : out bit_vector (1 downto 0);    -- to datapath        
+        sel_mux_2 : out bit;                        -- to datapath        
         sel_mux_4 : out bit;                        -- to datapath
         sel_mux_5 : out bit_vector (1 downto 0);    -- to mux_5
         sel_mux_6 : out bit;                        -- to mux_6
@@ -74,20 +74,11 @@ begin
         case state is 
         when s_if =>
             next_state <= s_pfex;                                               -- always next state
-            if comp_res(0) = '1' then                                           -- last instr was unconditional jump or branch and condition is true
-                inc_en    <= '0';                                               -- DO NOT update inc, because it holds the jump address calculated in the last cycle
-                pc_en     <= '1';                                               -- update pc from inc  
-                sel_mux_7 <= sel_mux_7_pc;                                      -- when jumping, use updated pc as address for mem 
-            else 
-                sel_mux_5 <=  sel_mux_5_imm_4;                                  -- use 4 as first summand
-                sel_mux_6 <=  sel_mux_6_pc;                                     -- use pc as second summand
-                inc_en    <= '1';                                               -- update inc with pc + 4, because the jumping condition was not fulfilled
-                pc_en     <= '0';                                               -- DO NOT update pc YET -> execution cycle, because otherwise infinite addition !!!!!!!!!!!!!!!               
-                sel_mux_7 <= sel_mux_7_inc_out;                                 -- use pc + 4 as new address for memory                
-            end if;
+            inc_en    <= '0';                                                   -- DO NOT update inc, because it holds the jump address calculated in the last cycle (either special or pc + 4)
+            pc_en     <= '1';                                                   -- update pc from inc  
+            sel_mux_7 <= sel_mux_7_pc;                                          -- when jumping, use updated pc as address for mem          
             instr_en <= '1';                                                    -- fetch instruction            
-        when s_pfex =>
-            pc_en  <= '1';                                                      -- one cycle after instruction fetch, the actual pc value can be updated for execution (it was secured in inc)
+        when s_pfex =>            
             if cmd_stop = '1' then         
                 next_state <= s_stop;                                           -- only checkable when fetching instruction
             elsif cmd_load = '1' then                                           
@@ -128,8 +119,8 @@ begin
                 sel_mux_2 <= sel_mux_2_const_reg;                               -- use the immediate as write data for registers                  
             elsif cmd_jmp = '1' and cmd_calc = '0' then                         -- unconditional jumps        
                 next_state <= s_if;                                             -- jumps can be done in one cycle (address is getting used in next one)  
-                inc_en     <= '1';                                              -- enable buffering the jump address in inc -> pc is getting updated in instr_fetch
-                         
+                inc_en     <= '1';                                              -- enable buffering the jump address in inc -> pc is getting updated in instr_fetch                
+                --calculate jump address:
                 if cmd_reg = '0' then                                           -- JAL instruction
                     sel_mux_5 <= sel_mux_5_imm;                                 -- use imm as second summand
                     sel_mux_6 <= sel_mux_6_pc;                                  -- use pc as first summand
@@ -137,7 +128,7 @@ begin
                     sel_mux_5 <= sel_mux_5_addr_in;                             -- use rs1 as second summand     
                     sel_mux_6 <= sel_mux_6_imm;                                 -- use imm as first summand                                                 
                 end if;
-                                
+                --calculate return address:             
                 sel_mux_1 <= sel_mux_1_const_1;                                 -- use const_1 = 4 as second operand
                 sel_mux_4 <= sel_mux_4_const_2;                                 -- use pc as first operadn
                 sel_mux_2 <= sel_mux_2_alu_res;                                 -- use alu result (pc + 4) as write data for regs
@@ -150,13 +141,16 @@ begin
             end if;  
         when s_mem =>    
             next_state <= s_if;                                                 -- finished, return to instruction fetching
-            sel_mux_2 <= sel_mux_2_load_reg;                                    -- use constant input from id as register write data
+            sel_mux_2 <= sel_mux_2_const_reg;                                   -- use constant input from id as register write data
             reg_en    <= '1';                                                   -- enable writing the register
-            instr_en   <= '1';                                                  -- get the data from the memory loaded in instruction decoding for extension
         when s_cmp =>                                                           -- this state is only after pfex of branch instructions
             next_state <= s_if;                                                 -- always return to instr fetch
             sel_mux_4 <= sel_mux_4_rs_1;                                        -- set first cmp reg to rs1
             sel_mux_1 <= sel_mux_1_rs_2;                                        -- set second cmp reg to rs2
+            
+            sel_mux_5 <= sel_mux_5_imm_4;                                       -- use +4 as first summand
+            sel_mux_6 <= sel_mux_6_pc;                                          -- use pc as second summand
+            inc_en    <= not comp_res(0);                                       -- if condition is false, update inc with pc + 4 (else use jump address calculated in pfex)                         
             
         when s_stop =>
             next_state <= s_stop;                                               -- fallback to itsself
