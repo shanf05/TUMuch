@@ -17,6 +17,7 @@ entity ctrl_instr_dec is
     Port(
         instr     : in  BusDataType;
         pc_in     : in  bit_vector (AddrSize-1 downto 0); 
+
         sel_in    : out bit_vector(4 downto 0);           -- rd
         sel_out_a : out bit_vector(4 downto 0);           -- rs1
         sel_out_b : out bit_vector(4 downto 0);           -- rs2
@@ -27,6 +28,7 @@ entity ctrl_instr_dec is
         const_2   : out BusDataType;                      -- Signal to MUX_2
         const_reg : out BusDataType;                      -- Signal containing 
         imm       : out BusDataType                       -- Hardwired Signal IMM to MUX_5 and MUX_6    
+        acc_size  : out bit_vector(1 downto 0)            -- for store instructions
         );
 end ctrl_instr_dec;
 
@@ -159,6 +161,7 @@ begin
             -- '0', '0',   '0', '0',  '1', '0',  '0',   '0',
             cmd_load <= '1';
             ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
+
             const_1(31 downto 0)  <= (others => '0');           --LOAD: const_1 unused
             const_2(31 downto 0)  <= (others => '0');           --LOAD: const_2 unused
             imm(11 downto 0)      <= instr(31 downto 20);       --LOAD: imm to MUX_6
@@ -185,6 +188,7 @@ begin
             -- '0', '0',   '0', '0',  '0',   '0',  '0',   '1',
             cmd_store <= '1';
             ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
+
             op <= (others => '0');                            --no ALU Operation needed
             const_1(31 downto 0)  <= (others => '0');         --STORE: const_1 unused
             const_2(31 downto 0)  <= (others => '0');         --STORE: const_2 unused
@@ -209,6 +213,7 @@ begin
             sel_out_b <= instr(24 downto 20);
             sel_in <= (others => '0');
             op <= (others => '0');                         --no ALU Operation needed
+
             --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE,
             -- '0', '1',   '0', '0',  '0',   '0',  '1',   '0',
              cmd_calc <= '1';                              --BRANCH: cmd_jmp only ticked if condition is true
@@ -218,8 +223,8 @@ begin
             imm(3 downto 0) <= instr(11 downto 8);                  --BRANCH: imm to MUX_5       
             imm(9 downto 4) <= instr(30 downto 25);
             imm(10) <= instr(7);
-            imm(31 downto 11) <= (others => instr(31));
-            
+            imm(31 downto 11) <= (others => instr(31));           
+
             
             case func3 is
                 when F3_BEQ  => 
@@ -244,11 +249,13 @@ begin
             -- '0', '0',   '0', '1',  '0',   '0',  '0',   '0',   
             cmd_reg <= '1';
             ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
+
             const_1(31 downto 12) <= instr(31 downto 12);           --LUI: Immediate to MUX_1 (ALU)
             const_1(11 downto 0)  <= (others => '0');               --LUI: immediate of U-Format => imm & X"000"
             const_2(31 downto 0)  <= (others => '0');
             imm(31 downto 12) <= instr(31 downto 12);               --NOT USED in this case
             imm(11 downto 0)  <= (others => '0');                   --NOT USED in this case
+
             --AUIPC instruction
         when OP_AUIPC =>
             sel_in <= instr(11 downto 7);
@@ -259,6 +266,7 @@ begin
             -- '0', '0',   '1', '0',  '0',   '0',  '0',   '0',
             cmd_auipc <= '1';
             ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
+
             const_1(31 downto 12) <= instr(31 downto 12);       --AUIPC: immediate to MUX_1 (ALU)
             const_1(11 downto 0) <= (others => '0');            --AUIPC: immediate of U-Format => imm & X"000"
             const_2(13 downto 0) <= pc_in (13 downto 0);        --AUIPC: PC to MUX_4 (ALU)
@@ -271,6 +279,7 @@ begin
             sel_out_a <= (others => '0');
             sel_out_b <= (others => '0');
             op <= (others => '0');                                        --no ALU Operation needed            
+
             --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE,
             -- '0', '1',   '0', '0',  '0',   '0',  '0',   '0',
             cmd_jmp <='1';
@@ -291,6 +300,7 @@ begin
             sel_out_a <= instr(19 downto 15);
             sel_out_b <= (others => '0');            
             op <= (others => '0');
+
             --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE,
             -- '0', '1',   '0', '1',  '0',   '0',  '0',   '0',
             cmd_jmp <='1'; cmd_reg <='1';
@@ -301,6 +311,7 @@ begin
             const_2(31 downto 14) <= (others => '0');           --extend pc with zeroes
             imm (11 downto 0)     <= instr(31 downto 20);
             imm (31 downto 12)    <= (others => instr(31));
+
          -- end J-Type
          ---------------------------------------------------------------------------------------------
           -- Stop instruction

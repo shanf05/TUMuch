@@ -13,8 +13,9 @@ architecture stimul of RAM4096x32_Testbench is
    signal addr     : bit_vector(AddrSize-1 downto 0); 
    signal data_in  : MemDataType := (others=>'0'); 
    signal data_out : MemDataType := (others=>'0'); 
+   signal acc_size : bit_vector (1 downto 0) := acc_size_word; 
 begin    
-    ram4096x132_uut : entity work.ram4096x32 port map(clk=>clk, w_en=>w_en, addr=>addr, data_in=>data_in, data_out=>data_out); 
+    ram4096x132_uut : entity work.ram4096x32 port map(clk=>clk, w_en=>w_en, addr=>addr, acc_size=>acc_size, data_in=>data_in, data_out=>data_out); 
     
     clkgen : process
     begin

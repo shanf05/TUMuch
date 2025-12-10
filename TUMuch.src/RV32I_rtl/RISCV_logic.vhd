@@ -4,7 +4,7 @@ use IEEE.numeric_bit.all;
 library work; 
 use work.defs_pack.all;
 
---- OR ----
+--- OR ---------------------------------
 
 entity or32 is
     port(
@@ -21,7 +21,7 @@ begin
     end process;  
 end rtl;
 
---- XOR ----
+--- XOR ---------------------------------
 use work.defs_pack.all;
 entity xor32 is
     port(
@@ -38,27 +38,9 @@ begin
     end process;  
 end rtl;
 
---- NOR ----
+
+--- AND -------------------------------
 use work.defs_pack.all;
-
-entity nor32 is
-    port(
-        x1, x2 : in  BusDataType; 
-        y      : out BusDataType
-    );
-end nor32;
-
-architecture rtl of nor32 is
-begin
-    process(x1, x2)
-    begin        
-        y <= x1 nor x2; 
-    end process;  
-end rtl;
-
-use work.defs_pack.all;
-
---- AND ---
 entity and32 is
     port(
         x1, x2 : in  BusDataType; 
