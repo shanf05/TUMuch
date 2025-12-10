@@ -37,7 +37,7 @@ begin
                 case addr(1 downto 0) is
                 when "00"   => Mem(to_integer(unsigned(addr(AddrSize-1 downto 2))))(15 downto 0)  <= data_in(15 downto 0);               
                 when "10"   => Mem(to_integer(unsigned(addr(AddrSize-1 downto 2))))(31 downto 16) <= data_in(15 downto 0);
-                --when others => assert false report("wrong address for half word access");
+                when others => null; --assert false report("wrong address for half word access");
                 end case;
             when acc_size_byte =>
                 case addr(1 downto 0) is
@@ -46,7 +46,9 @@ begin
                 when "10" => Mem(to_integer(unsigned(addr(AddrSize-1 downto 2))))(23 downto 16) <= data_in(7 downto 0);
                 when "11" => Mem(to_integer(unsigned(addr(AddrSize-1 downto 2))))(31 downto 24) <= data_in(7 downto 0);
                 end case;
-            --when others => assert false report("wrong access size");
+            when others => 
+                --assert false report("wrong access size"); 
+                null;           
             end case;
         end if;                    
     end process;
