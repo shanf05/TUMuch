@@ -29,10 +29,8 @@ architecture rtl of system is
     signal const_reg_sig   : BusDataType;
     signal comp_res_sig    : bit_vector(1 downto 0);
     signal acc_size_sig    : bit_vector(1 downto 0);
-    
-    
 begin
-    ram4096x32 : entity work.ram4096x32 port map(
+    ram16384x32 : entity work.ram16384x32 port map(
                                             clk=>clk, 
                                             w_en=>w_en_sig, 
                                             addr=>addr_out_sig, 
@@ -60,7 +58,7 @@ begin
                                             active=>active
                                             );
                                             
-    datapath   : entity work.datapath   port map(
+    datapath : entity work.datapath   port map(
                                             clk=>clk, 
                                             rst=>rst, 
                                             data_out=>data_out_sig,                                            

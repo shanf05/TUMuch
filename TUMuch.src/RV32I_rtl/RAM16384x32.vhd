@@ -6,7 +6,7 @@ use IEEE.numeric_bit.all;
 library work; 
 use work.defs_pack.all; 
 
-entity RAM4096x32 is 
+entity RAM16384x32 is 
     generic(  -- look if this is necessary
         tc : time := 0 ns; --delay to react on input change
         th : time := 0 ns --time to hold signals stable
@@ -19,9 +19,9 @@ entity RAM4096x32 is
         data_in  : in  BusDataType;
         data_out : out BusDataType        
     );
-end RAM4096x32;
+end RAM16384x32;
 
-architecture behavioral of RAM4096x32 is
+architecture behavioral of RAM16384x32 is
     signal Mem : MemType;     --put flipflops right here 
 begin
     synchronus_write : process
