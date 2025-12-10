@@ -15,19 +15,19 @@ entity system is
 end;
 
 architecture rtl of system is
-    signal addr_in_sig     : bit_vector(AddrSize-1 downto 0);
-    signal reg_en_sig      : bit; 
-    signal sel_in_sig      : bit_vector(4 downto 0);
-    signal sel_out_a_sig   : bit_vector(4 downto 0);
-    signal sel_out_b_sig   : bit_vector(4 downto 0);
-    signal sel_mux_1_sig   : bit;
-    signal sel_mux_2_sig   : bit;
-    signal sel_mux_4_sig   : bit;
-    signal operation_sig   : bit_vector(3 downto 0);
-    signal const_1_sig     : BusDataType; 
-    signal const_2_sig     : BusDataType; 
-    signal const_reg_sig   : BusDataType;
-    signal bra_cond_sig    : bit;
+    signal addr_in_sig     : bit_vector(AddrSize-1 downto 0) := (others=>'0');
+    signal reg_en_sig      : bit := '0'; 
+    signal sel_in_sig      : bit_vector(4 downto 0) := (others=>'0');
+    signal sel_out_a_sig   : bit_vector(4 downto 0) := (others=>'0');
+    signal sel_out_b_sig   : bit_vector(4 downto 0) := (others=>'0');
+    signal sel_mux_1_sig   : bit := '0';
+    signal sel_mux_2_sig   : bit := '0';
+    signal sel_mux_4_sig   : bit := '0';
+    signal operation_sig   : bit_vector(3 downto 0) := (others=>'0');
+    signal const_1_sig     : BusDataType := (others=>'0'); 
+    signal const_2_sig     : BusDataType := (others=>'0'); 
+    signal const_reg_sig   : BusDataType := (others=>'0');
+    signal bra_cond_sig    : bit := '0';
 begin
     controller : entity work.controller port map(
                                             clk=>clk, 

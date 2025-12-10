@@ -32,18 +32,13 @@ entity Datapath is
     );
 end Datapath;
 
-architecture RTL of Datapath is
-    
-    signal rs_1 : BusDataType;
-    signal rs_2 : BusDataType;
-    
-    signal out_mux1 : BusDataType;
-    signal out_mux2 : BusDataType;
-    
-    signal alu_result : BusDataType;
-    
-    signal out_mux3 : BusDataType;
-    
+architecture RTL of Datapath is    
+    signal rs_1       : BusDataType := (others=>'0');
+    signal rs_2       : BusDataType := (others=>'0');    
+    signal out_mux1   : BusDataType := (others=>'0');
+    signal out_mux2   : BusDataType := (others=>'0');    
+    signal alu_result : BusDataType := (others=>'0');    
+    signal out_mux3   : BusDataType := (others=>'0');    
 begin
     MUX_1 : entity work.mux2x1 port map (
         in_0 => rs_1,
