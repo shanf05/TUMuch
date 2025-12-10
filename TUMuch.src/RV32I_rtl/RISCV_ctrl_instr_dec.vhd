@@ -25,7 +25,8 @@ entity ctrl_instr_dec is
         const_2   : out BusDataType;       
         const_reg : out BusDataType;     
         
-        data_in   : in BusDataType -- non delayed data_in signal (needed for Load instructions)
+        data_in   : in BusDataType; -- non delayed data_in signal (needed for Load instructions)
+        acc_size  : out bit_vector(1 downto 0)
         );
 end ctrl_instr_dec;
 

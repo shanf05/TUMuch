@@ -28,6 +28,7 @@ architecture rtl of system is
     signal const_2_sig     : BusDataType; 
     signal const_reg_sig   : BusDataType;
     signal comp_res_sig    : bit_vector(1 downto 0);
+    signal acc_size_sig    : bit_vector(1 downto 0);
     
     
 begin
@@ -35,6 +36,7 @@ begin
                                             clk=>clk, 
                                             w_en=>w_en_sig, 
                                             addr=>addr_out_sig, 
+                                            acc_size=>acc_size_sig,
                                             data_in=>data_out_sig, 
                                             data_out=>data_in_sig
                                             );
@@ -43,6 +45,7 @@ begin
                                             clk=>clk, 
                                             rst=>rst,
                                             addr_in=>addr_in_sig, 
+                                            acc_size=>acc_size_sig,
                                             sel_mux_1=>sel_mux_1_sig, 
                                             sel_mux_2=>sel_mux_2_sig,                                            
                                             sel_mux_4=>sel_mux_4_sig,

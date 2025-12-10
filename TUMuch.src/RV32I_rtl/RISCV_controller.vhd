@@ -49,6 +49,7 @@ entity controller is
         data_in   : in  BusDataType;
         addr_out  : out bit_vector(AddrSize-1 downto 0);
         w_en      : out bit;
+        acc_size  : out bit_vector(1 downto 0);
        
         -- status: 
         active : out bit
@@ -111,7 +112,8 @@ begin
                                                 op=>operation, 
                                                 const_1 => const_1, 
                                                 const_2 => const_2, 
-                                                const_reg => const_reg                                               
+                                                const_reg => const_reg,
+                                                acc_size=>acc_size                                               
                                                 );    
     inc       : entity work.ctrl_inc       port map(
                                                 data_in=>inc_out_sig, 
