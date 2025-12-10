@@ -17,19 +17,17 @@ architecture stimul of ALU32_Testbench is
     type operand_array is array (natural range <>) of bit_vector(31 downto 0);
 
     constant test_operands_a : operand_array := (
-        X"11111111",
-        X"FFFFFFFF",
         X"00000000",
-        "10101010101010101010101010101010",
-        X"DEADBEEF"
+        X"00000000",
+        X"FFFFFFFF",
+        X"FFFFFFFF"
     );
 
     constant test_operands_b : operand_array := (
-        "00000000000000000000000000000001",
-        "00000000000000000000000000000010",
-        "11111111111111111111111111111111",
-        "01010101010101010101010101010101",
-        X"DEADBEEF"
+        X"00000000",
+        X"FFFFFFFF",
+        X"00000000",
+        X"00000001"
     );
 
 begin
@@ -48,7 +46,7 @@ begin
             wait for clkCycle;
 
             -- Test all 8 ALU operations
-            for op in 0 to 9 loop
+            for op in 0 to 15 loop
                 operation <= bit_vector(to_unsigned(op, 4));
                 wait for clkCycle;
             end loop;
@@ -74,7 +72,7 @@ end ALU32_TLE;
 architecture Behavioral of ALU32_TLE is
     signal operand_a_sig, operand_b_sig, result_sig : BusDataType;
     signal operation_sig : bit_vector(3 downto 0);
-    signal comp_result_sig : bit_vector(1 downto 0);
+    signal branch_condition_sig : bit;
 begin
 
     TB   : entity work.ALU32_Testbench(stimul)
@@ -91,7 +89,7 @@ begin
                 operation => operation_sig, 
                 
                 result => result_sig, 
-                comp_result => comp_result_sig
+                branch_condition => branch_condition_sig
             );
 
 end;

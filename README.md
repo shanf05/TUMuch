@@ -7,7 +7,8 @@ Max Biricz,
 Jeongjoo Lim,
 Josip Pepić
 
-# Assembly Syntax für den Parser:
+# Funktionalmodell:
+## Assembly Syntax für den Parser:
 
 - Mnemonics müssen IMMER mind. 5 ZEICHEN (inkl. Whitespace) lang sein (ungültig: "ADD") (gültig: "ADD  ")
 - Register immer starten mit 'x' oder 'X' gefolgt von ZWEI Ziffern. Beispiel: X07 X15 etc. (Update: Parser unterstützt jetzt auch X1 X2 -> Allerdings: Es muss immer ein Whitespace hinter der Ziffer des einstelligen Registers sein -> Häufiger Fehler ist Vergessen von Whitespace bei Rd. Daher immer ein Whitespace nach letzter Ziffer von einstelligem Register z.B "X1 " übrig lassen) 
@@ -19,7 +20,7 @@ Josip Pepić
 - Zum Beenden des Programms immer "STOP  " verwenden, WICHTIG: hier 2 Whitespace hiner STOP setzen
 - der Befehl "NOP   " muss wie geschrieben mit 3 folgenden Leerzeichen geschriebnen werden. 
 
-# Alternative Speicher initialisierung über Bit-Code
+## Alternative Speicher initialisierung über Bit-Code
 
 - auskommentieren von "mem := init_memory_bin(BinFile);" in RISCV.vhd
 - binary Inputs in bin_input.txt (eine Zeile mit 32 Bits füllen, kein Leerzeichen danach)
