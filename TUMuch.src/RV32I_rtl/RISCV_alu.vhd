@@ -8,7 +8,7 @@ entity alu32 is
         operation            : in  bit_vector(3 downto 0);
          
         result               : out BusDataType;
-        comp_result          : out bit_vector(1 downto 0)    
+        branch_condition     : out bit
     );
 end alu32;
 
@@ -16,13 +16,22 @@ end alu32;
 --      xor(i)      0000     0
 --      or(i)       0001     1
 --      and(i)      0010     2
+
 --      add(i)      0011     3
 --      sub(i)      0100     4
+
 --      sll(i)      0101     5
 --      srl(i)      0110     6
 --      sra(i)      0111     7
---      slt(i)      1000     8
---      slt(i)u     1001     9
+
+--      slt(i)/blt  1000     8
+--      slt(i)u/bltu1001     9
+--      BEQ         1010     A
+--      BNE         1011     B
+--      ---         1100     C
+--      BGE         1101     D
+--      ----        1110     E
+--      BGEU        1111     F
 
 architecture rtl of alu32 is
     -- adder: 
@@ -68,12 +77,12 @@ begin
         in_7 => res_shifter_sig,
         in_8 => res_comp_sig,
         in_9 => res_comp_sig,
-        in_10 => zero_sig,
-        in_11 => zero_sig,
+        in_10 => res_comp_sig,
+        in_11 => res_comp_sig,
         in_12 => zero_sig,
-        in_13 => zero_sig,
+        in_13 => res_comp_sig,
         in_14 => zero_sig,
-        in_15 => zero_sig,
+        in_15 => res_comp_sig,
         in_16 => zero_sig,
         in_17 => zero_sig,
         in_18 => zero_sig,
@@ -95,7 +104,7 @@ begin
         sel => mux_sel_sig
     );
     
-    mux_sel_sig <= '0' & operation;
+    mux_sel_sig <= '0' & operation; --FIX
     
     process(operation, operand_a, operand_b)
     begin
@@ -115,6 +124,8 @@ begin
                 dir_sig    <= '0';          -- prevent latches
                 arith_sig  <= '0';          -- prevent latches         
                 comp_is_signed_sig <= '0';  -- prevent latches       
+
+
             when "0011" =>   --add(i)
                 o_mode_sig <= '0';
                 dir_sig    <= '0';          -- prevent latches
@@ -125,6 +136,8 @@ begin
                 dir_sig    <= '0';          -- prevent latches
                 arith_sig  <= '0';          -- prevent latches        
                 comp_is_signed_sig <= '0';  -- prevent latches
+
+
             when "0101" =>   --sll(i)
                 o_mode_sig <= '0';          -- prevent latches
                 dir_sig    <= '0'; 
@@ -140,6 +153,8 @@ begin
                 dir_sig    <= '1';          -- prevent latches
                 arith_sig  <= '1';          -- prevent latches
                 comp_is_signed_sig <= '0';  -- prevent latches
+
+
             when "1000" =>   --slt(i)
                 o_mode_sig <= '0';          -- prevent latches
                 dir_sig    <= '0';
@@ -150,6 +165,38 @@ begin
                 dir_sig    <= '0';          -- prevent latches
                 arith_sig  <= '0';          -- prevent latches
                 comp_is_signed_sig <= '0';
+            when "1010" =>   --beq
+                o_mode_sig <= '0';          -- prevent latches
+                dir_sig    <= '0';
+                arith_sig  <= '0';
+                comp_is_signed_sig <= '0';         
+            when "1011" =>   --bne
+                o_mode_sig <= '0';          -- prevent latches
+                dir_sig    <= '0';          -- prevent latches
+                arith_sig  <= '0';          -- prevent latches
+                comp_is_signed_sig <= '0';
+            -- when "1100" =>   --blt
+            --     o_mode_sig <= '0';          -- prevent latches
+            --     dir_sig    <= '0';
+            --     arith_sig  <= '0';
+            --     comp_is_signed_sig <= '1';         
+            when "1101" =>   --bge
+                o_mode_sig <= '0';          -- prevent latches
+                dir_sig    <= '0';          -- prevent latches
+                arith_sig  <= '0';          -- prevent latches
+                comp_is_signed_sig <= '1';
+            -- when "1110" =>   --bltu
+            --     o_mode_sig <= '0';          -- prevent latches
+            --     dir_sig    <= '0';
+            --     arith_sig  <= '0';
+            --     comp_is_signed_sig <= '1';         
+            when "1111" =>   -- bgeu
+                o_mode_sig <= '0';          -- prevent latches
+                dir_sig    <= '0';          -- prevent latches
+                arith_sig  <= '0';          -- prevent latches
+                comp_is_signed_sig <= '0';
+
+
             when others => 
                 o_mode_sig <= '0';          -- prevent latches
                 dir_sig    <= '0';          -- prevent latches
@@ -157,8 +204,20 @@ begin
                 comp_is_signed_sig <= '0';  -- prevent latches
         end case;
     end process; 
-        
-    comp_result <= equal_out_sig & res_comp_sig(0); 
+    
+
+    process (operation, equal_out_sig, res_comp_sig)
+    begin
     -- equal_out_sig:   result for a==b
     -- res_comp_sig(0): result for a<b
+        case operation is
+            when "1010" => branch_condition <= equal_out_sig;                               --beq   
+            when "1011" => branch_condition <= not equal_out_sig;                           --bne
+            when "1100" => branch_condition <=     res_comp_sig(0)      and not equal_out_sig;       --blt
+            when "1101" => branch_condition <= not res_comp_sig(0)  or      equal_out_sig;        --bge
+            when "1110" => branch_condition <=     res_comp_sig(0)      and not equal_out_sig;       --bltu     
+            when "1111" => branch_condition <= not res_comp_sig(0)  or      equal_out_sig;    -- bgeu
+            when others => branch_condition <= '0';
+        end case;
+    end process;
 end rtl;
