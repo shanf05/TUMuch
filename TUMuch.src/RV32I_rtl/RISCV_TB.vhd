@@ -20,7 +20,7 @@ entity TB is
         w_en            : out bit;
         acc_size        : out bit_vector(1 downto 0);
         
-        sel             : out bit
+        sel             : out bit                               -- high when TB is connected to memory, low when system is connected to memory
         
      );
 end TB;
@@ -56,6 +56,7 @@ begin
             report "done";
         end loop;
         w_en <= '0';
+        sel <= '0';
         
         -- wait for cpu to finish instructions 
         rst <= '1';
@@ -64,6 +65,7 @@ begin
         wait until active = '0';
         
         -------------------- Memory Dump --------------------
+        sel <= '1';
         
         write( w , string'(" ADDR  |   HEX    |              BIN"));
         writeline(DataDumpFile, w);
