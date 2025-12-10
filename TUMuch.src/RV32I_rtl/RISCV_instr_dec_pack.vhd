@@ -21,5 +21,11 @@ package instr_dec_pack is
     constant ALU_SRA  : ALUOp := "0111";          --also valid for SRAI
     constant ALU_SLT  : ALUOp := "1000";          --also valid for SLTI
     constant ALU_SLTU : ALUOp := "1001";          --also valid for SLTIU
+    constant ALU_BEQ  : ALUOp := "1010";
+    constant ALU_BNE  : ALUOp := "1011";
+    constant ALU_BLT  : ALUOp := "1100";
+    constant ALU_BGE  : ALUOp := "1101";
+    constant ALU_BLTU : ALUOp := "1110";
+    constant ALU_BGEU : ALUOp := "1111";          
     
 end package;
