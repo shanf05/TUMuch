@@ -30,4 +30,4 @@ Josip Pepić
 - grobe Skizze:
 
 ![structure](https://github.com/user-attachments/assets/d8e6cf41-d994-4a0b-b964-418cb6bc702a)
-<img width="421" height="313" alt="image" src="https://github.com/user-attachments/assets/fc11e5fb-26c9-4a73-b657-803013c44059" />
+<img width="437" height="470" alt="image" src="https://github.com/user-attachments/assets/ff53573c-6d10-41d6-94f3-bdd71b21644c" />
