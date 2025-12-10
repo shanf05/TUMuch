@@ -36,12 +36,11 @@ package defs_pack is
     constant clkCycle     : time := 10ns; 
     
     -- instruction decoding shared types (Implementation using a bit_vector)
-    subtype CtrlType is bit_vector(7 downto 0);    
+    subtype CtrlType is bit_vector(7 downto 0);
     
     -- memory access sizes
     constant acc_size_word      : bit_vector (1 downto 0) := "00"; 
     constant acc_size_half_word : bit_vector (1 downto 0) := "01"; 
     constant acc_size_byte      : bit_vector (1 downto 0) := "10";
-    
     
 end; 
