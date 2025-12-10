@@ -14,13 +14,13 @@ signal clk_sig, rst_sig, active_sig, dbg_sig : bit;
 -- System Signals
 signal w_en_sys_sig : bit;
 signal addr_out_sys_sig : bit_vector(AddrSize-1 downto 0);
-signal data_out_sys_sig, data_in_sys_sig : BusDataType;
+signal data_out_sys_sig : BusDataType;
 signal acc_size_sys_sig : bit_vector (1 downto 0);
 
 -- TB signals
 signal w_en_tb_sig, sel_sig : bit;
 signal addr_out_tb_sig : bit_vector(AddrSize-1 downto 0);
-signal data_out_tb_sig, data_in_tb_sig : BusDataType;
+signal data_out_tb_sig : BusDataType;
 signal acc_size_tb_sig : bit_vector (1 downto 0);
 
 -- RAM signals
@@ -44,7 +44,7 @@ begin
                 w_en => w_en_sys_sig,    
                 addr_out => addr_out_sys_sig,
                 data_out => data_out_sys_sig, 
-                data_in => data_in_sys_sig, 
+                data_in => data_out_sig, 
                 acc_size => acc_size_sys_sig
                 );
             
@@ -59,8 +59,8 @@ begin
                                             w_en=>w_en_sig, 
                                             addr=>addr_out_sig, 
                                             acc_size=>acc_size_sig,
-                                            data_in=>data_out_sig, 
-                                            data_out=>data_in_sig
+                                            data_in=>data_in_sig, 
+                                            data_out=>data_out_sig
                                             );
     
     TB          : entity work.TB(Behavioral) port map(
@@ -68,7 +68,7 @@ begin
                                                 clk => clk_sig, 
                                                 rst => rst_sig, 
                                                 w_en => w_en_tb_sig, 
-                                                data_from_mem => data_in_tb_sig, 
+                                                data_from_mem => data_out_sig, 
                                                 data_to_mem => data_out_tb_sig, 
                                                 mem_addr => addr_out_tb_sig,
                                                 acc_size => acc_size_tb_sig, 
@@ -76,7 +76,7 @@ begin
              
     mux_w_en        : entity work.mux2x1    generic map (data_width => 1) port map(in_0(0) => w_en_sys_sig, in_1(0) => w_en_tb_sig, sel => sel_sig, output(0) => w_en_sig);
     mux_addr        : entity work.mux2x1    generic map (data_width => AddrSize) port map(in_0 => addr_out_sys_sig, in_1 => addr_out_tb_sig, sel => sel_sig, output => addr_out_sig);
-    mux_data_in     : entity work.mux2x1    generic map (data_width => BusDataSize) port map(in_0 => data_out_sys_sig, in_1 => data_out_tb_sig, sel => sel_sig, output => data_in_sys_sig);
+    mux_data_in     : entity work.mux2x1    generic map (data_width => BusDataSize) port map(in_0 => data_out_sys_sig, in_1 => data_out_tb_sig, sel => sel_sig, output => data_in_sig);
 --     mux_data_out    : entity work.mux2x1    generic map (data_width => BusDataSize) port map(in_0 =>, in_1 => , sel => sel_sig);
     mux_acc_size    : entity work.mux2x1    generic map (data_width => 2) port map(in_0 => acc_size_sys_sig, in_1 => acc_size_tb_sig, sel => sel_sig, output => acc_size_sig);
              
