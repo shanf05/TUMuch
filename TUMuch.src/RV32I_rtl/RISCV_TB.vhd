@@ -53,14 +53,13 @@ begin
             mem_addr <= bit_vector(to_unsigned(addr, AddrSize));
             wait until clk'event and clk='1';
             addr := addr + 4;
-            report "done";
         end loop;
         w_en <= '0';
         sel <= '0';
         
         -- wait for cpu to finish instructions 
         rst <= '1';
-        wait for 2 ns;
+        wait for 0 ns;
         rst <= '0';
         wait until active = '0';
         
