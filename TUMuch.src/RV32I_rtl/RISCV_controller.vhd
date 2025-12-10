@@ -43,7 +43,7 @@ entity controller is
         const_2   : out BusDataType;
         const_reg : out BusDataType;
         
-        comp_res  : in  bit_vector(1 downto 0);          -- information for branch conditions: MSB is result for r(rs1) < r(rs2) ? ; LSB is result of r(rs1) = r(rs2) ?
+        bra_cond  : in  bit;
                 
         -- interface to memory: 
         data_in   : in  BusDataType;
@@ -92,7 +92,7 @@ begin
                                                 inc_en=>inc_en_sig,
                                                 w_en=>w_en, 
                                                 pc_en=>pc_en_sig, 
-                                                comp_res => comp_res,
+                                                bra_cond=>bra_cond,
                                                 sel_mux_1=>sel_mux_1, 
                                                 sel_mux_2=>sel_mux_2, 
                                                 sel_mux_4=>sel_mux_4, 

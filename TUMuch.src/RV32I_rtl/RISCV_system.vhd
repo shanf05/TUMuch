@@ -27,7 +27,7 @@ architecture rtl of system is
     signal const_1_sig     : BusDataType; 
     signal const_2_sig     : BusDataType; 
     signal const_reg_sig   : BusDataType;
-    signal comp_res_sig    : bit_vector(1 downto 0);
+    signal bra_cond_sig    : bit;
 begin
     controller : entity work.controller port map(
                                             clk=>clk, 
@@ -41,7 +41,7 @@ begin
                                             const_1=>const_1_sig, 
                                             const_2=>const_2_sig,
                                             const_reg=>const_reg_sig,
-                                            comp_res=>comp_res_sig,
+                                            bra_cond=>bra_cond_sig,
                                             data_in=>data_in, 
                                             addr_out=>addr_out,
                                             w_en=>w_en, 
@@ -53,7 +53,7 @@ begin
                                             rst=>rst, 
                                             data_out=>data_out,                                            
                                             addr_in=>addr_in_sig, 
-                                            comp_res=>comp_res_sig,
+                                            bra_cond=>bra_cond_sig,
                                             sel_mux_1=>sel_mux_1_sig, 
                                             sel_mux_2=>sel_mux_2_sig, 
                                             sel_mux_4=>sel_mux_4_sig, 

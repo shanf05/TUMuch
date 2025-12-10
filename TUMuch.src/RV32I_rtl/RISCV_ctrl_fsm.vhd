@@ -17,7 +17,7 @@ entity ctrl_fsm is
         w_en      : out bit;                        -- enables write in memory        
         pc_en     : out bit;                        -- enables forwarding pc as address        
         
-        comp_res  : in  bit_vector (1 downto 0);    -- from alu cmp unit
+        bra_cond  : in  bit;                        -- from alu cmp unit -> 1 if condition is true
         sel_mux_1 : out bit;                        -- to datapath 
         sel_mux_2 : out bit;                        -- to datapath        
         sel_mux_4 : out bit;                        -- to datapath
@@ -105,7 +105,7 @@ begin
                     inc_en    <= '1';                                           -- store the jump address in inc buffer -> when condition is true, inc value is used, otherwise normal pc + 4 
                 elsif cmd_reg = '1' then                                        -- set instructions
                     next_state <= s_if;                                         -- return to instr fetch -> only need one cycle
-                    reg_en <= comp_res(0);                                      -- enable register writing only if condition is valid
+                    reg_en <= bra_cond;                                      -- enable register writing only if condition is valid
                     sel_mux_4 <= sel_mux_4_rs_1;                                -- use rs1 as operand 1
                 else                                                            -- "normal" arithmetric instruction 
                     next_state <= s_if;                                         -- return after this cycle
@@ -149,7 +149,7 @@ begin
             
             sel_mux_5 <= sel_mux_5_imm_4;                                       -- use +4 as first summand
             sel_mux_6 <= sel_mux_6_pc;                                          -- use pc as second summand
-            inc_en    <= not comp_res(0);                                       -- if condition is false, update inc with pc + 4 (else use jump address calculated in pfex)                         
+            inc_en    <= not bra_cond;                                          -- if condition is false, update inc with pc + 4 (else use jump address calculated in pfex)                         
             
         when s_stop =>
             next_state <= s_stop;                                               -- fallback to itsself
