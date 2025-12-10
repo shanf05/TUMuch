@@ -27,7 +27,7 @@ entity ctrl_instr_dec is
         const_1   : out BusDataType;                      -- Signal to MUX_1
         const_2   : out BusDataType;                      -- Signal to MUX_2
         const_reg : out BusDataType;                      -- Signal containing 
-        imm       : out BusDataType                       -- Hardwired Signal IMM to MUX_5 and MUX_6    
+        imm       : out BusDataType;                       -- Hardwired Signal IMM to MUX_5 and MUX_6    
         acc_size  : out bit_vector(1 downto 0)            -- for store instructions
         );
 end ctrl_instr_dec;
