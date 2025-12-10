@@ -27,8 +27,9 @@ entity ctrl_instr_dec is
         op        : out bit_vector(3 downto 0);           -- Operation signal to ALU
         const_1   : out BusDataType;                      -- Signal to MUX_1
         const_2   : out BusDataType;                      -- Signal to MUX_2
-        const_reg : out BusDataType;                      -- Signal containing 
-        imm       : out BusDataType;                       -- Hardwired Signal IMM to MUX_5 and MUX_6    
+        const_reg : out BusDataType;                      -- Signal to Register (LOAD: Address of memory) 
+        imm       : out BusDataType;                      -- Hardwired Signal Imm to MUX_5 and MUX_6
+        data_in   : in  BusDataType;                      -- Only for LOAD: get Byte/Halfword/Word through wire skipping ctrl_instr    
         acc_size  : out bit_vector(1 downto 0)            -- for store instructions
         );
 end ctrl_instr_dec;
@@ -103,7 +104,7 @@ begin
                     end case;                        
             end case;
             ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;  --assign ctrl signal as last step 
-                                                                                                             --as SLTU and SLT differ from others
+                                                                                                             --(SLTI and SLTIU -> cmd_reg)
         -- end R-Type        
         ---------------------------------------------------------------------------------------------    
         -- I-Type Instructions
@@ -115,11 +116,11 @@ begin
             --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE,
             -- '0', '0',   '0', '0',  '0',   '1',  '1',   '0',
             cmd_const <= '1'; cmd_calc <= '1';
-            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
-            const_2(11 downto 0) <= instr(31 downto 20);        --imm to ALU
-            const_2(31 downto 12) <= (others => instr(31));     --imm to ALU
-            const_1(13 downto 0) <= pc_in (13 downto 0);        --pc in const_1
-            const_1(31 downto 14) <= (others => '0');           --pc in const_1
+            const_1(11 downto 0)  <= instr(31 downto 20);           -- I-Type: imm to MUX_1
+            const_1(31 downto 12) <= (others => instr(31));         -- I-Type: imm to MUX_1
+            const_2(31 downto 0)  <= (others => '0');               -- I-Type: const_2 unused 
+            imm(11 downto 0)      <= instr(31 downto 20);           -- Hardwired imm to MUX_5 and MUX_6
+            imm(31 downto 12)     <= (others => instr(31));         -- Hardwired imm to MUX_5 and MUX_6
             
             case func3 is
                 when F3_ADDI   =>
@@ -147,10 +148,11 @@ begin
                             op <= ALU_SRA;
                         when others =>
                     end case;
-        
             end case;
+            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;     --assign ctrl at last step
+                                                                                                                --(SLTI and SLTIU -> cmd_reg)
         -- end I-Type
- 
+        ---------------------------------------------------------------------------------------------
         -- Load Instructions
         when OP_Load =>
             func3 <= instr(14 downto 12);
@@ -169,11 +171,20 @@ begin
             imm(31 downto 12)     <= (others => instr(31));     --Sign extension of imm
             
             case func3 is
-                when F3_LB => 
-                when F3_LH =>
                 when F3_LW =>
-                when F3_LBU =>
+                    const_reg <= data_in;
+                when F3_LH => 
+                    const_reg(15 downto 0)  <= data_in(15 downto 0);
+                    const_reg(31 downto 16) <= (others => data_in(15));
                 when F3_LHU =>
+                    const_reg(15 downto 0)  <= data_in(15 downto 0);
+                    const_reg(31 downto 16) <= (others => '0');
+                when F3_LB =>
+                    const_reg(7 downto 0)   <= data_in(7 downto 0);
+                    const_reg(31 downto 8)  <= (others => data_in(7));
+                when F3_LBU =>
+                    const_reg(7 downto 0)   <= data_in(7 downto 0);
+                    const_reg(31 downto 8)  <= (others => '0');
                 when others =>
             end case;
         
@@ -200,8 +211,11 @@ begin
             
             case func3 is
                 when F3_SB  =>
-                when F3_SH  => 
+                    acc_size <= acc_size_byte;
+                when F3_SH  =>  
+                    acc_size <= acc_size_half_word;
                 when F3_SW  => 
+                    acc_size <= acc_size_word;
                 when others =>
              end case;
             
