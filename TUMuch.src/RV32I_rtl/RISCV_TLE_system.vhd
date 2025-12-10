@@ -76,7 +76,7 @@ begin
              
     mux_w_en        : entity work.mux2x1    generic map (data_width => 1) port map(in_0(0) => w_en_sys_sig, in_1(0) => w_en_tb_sig, sel => sel_sig, output(0) => w_en_sig);
     mux_addr        : entity work.mux2x1    generic map (data_width => AddrSize) port map(in_0 => addr_out_sys_sig, in_1 => addr_out_tb_sig, sel => sel_sig, output => addr_out_sig);
-    mux_data_in     : entity work.mux2x1    generic map (data_width => BusDataSize) port map(in_0 => data_out_sys_sig, in_1 => data_out_tb_sig, sel => sel_sig);
+    mux_data_in     : entity work.mux2x1    generic map (data_width => BusDataSize) port map(in_0 => data_out_sys_sig, in_1 => data_out_tb_sig, sel => sel_sig, output => data_in_sys_sig);
 --     mux_data_out    : entity work.mux2x1    generic map (data_width => BusDataSize) port map(in_0 =>, in_1 => , sel => sel_sig);
     mux_acc_size    : entity work.mux2x1    generic map (data_width => 2) port map(in_0 => acc_size_sys_sig, in_1 => acc_size_tb_sig, sel => sel_sig, output => acc_size_sig);
              
