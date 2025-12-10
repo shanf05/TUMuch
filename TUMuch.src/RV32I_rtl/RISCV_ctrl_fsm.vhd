@@ -19,7 +19,7 @@ entity ctrl_fsm is
         
         comp_res  : in  bit_vector (1 downto 0);    -- from alu cmp unit
         sel_mux_1 : out bit;                        -- to datapath 
-        sel_mux_2 : out bit;                        -- to datapath        
+        sel_mux_2 : out bit_vector (1 downto 0);    -- to datapath        
         sel_mux_4 : out bit;                        -- to datapath
         sel_mux_5 : out bit_vector (1 downto 0);    -- to mux_5
         sel_mux_6 : out bit;                        -- to mux_6
@@ -150,12 +150,11 @@ begin
             end if;  
         when s_mem =>    
             next_state <= s_if;                                                 -- finished, return to instruction fetching
-            sel_mux_2 <= sel_mux_2_const_reg;                                   -- use constant input from id as register write data
+            sel_mux_2 <= sel_mux_2_load_reg;                                    -- use constant input from id as register write data
             reg_en    <= '1';                                                   -- enable writing the register
             instr_en   <= '1';                                                  -- get the data from the memory loaded in instruction decoding for extension
-        when s_cmp =>
-            
-            next_state <= s_if;                                                 -- always return to instr fetch -> there the condition 
+        when s_cmp =>                                                           -- this state is only after pfex of branch instructions
+            next_state <= s_if;                                                 -- always return to instr fetch
             sel_mux_4 <= sel_mux_4_rs_1;                                        -- set first cmp reg to rs1
             sel_mux_1 <= sel_mux_1_rs_2;                                        -- set second cmp reg to rs2
             

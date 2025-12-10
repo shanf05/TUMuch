@@ -11,8 +11,10 @@ package ctrl_fsm_pack is
     constant sel_mux_1_rs_2      : bit  := '0'; 
     constant sel_mux_1_const_1   : bit  := '1'; 
     
-    constant sel_mux_2_alu_res   : bit  := '0'; 
-    constant sel_mux_2_const_reg : bit  := '1'; 
+    constant sel_mux_2_alu_res   : bit_vector(1 downto 0)  := "00"; 
+    constant sel_mux_2_const_reg : bit_vector(1 downto 0)  := "01"; 
+    constant sel_mux_2_load_reg  : bit_vector(1 downto 0)  := "10"; 
+    constant sel_mux_2_gnd       : bit_vector(1 downto 0)  := "11"; 
     
     constant sel_mux_4_const_2   : bit  := '0'; 
     constant sel_mux_4_rs_1      : bit  := '1';
