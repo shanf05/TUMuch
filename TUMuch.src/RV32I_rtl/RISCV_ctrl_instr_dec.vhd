@@ -29,7 +29,6 @@ entity ctrl_instr_dec is
         const_2   : out BusDataType;                      -- Signal to MUX_2
         const_reg : out BusDataType;                      -- Signal to Register (LOAD: Address of memory) 
         imm       : out BusDataType;                      -- Hardwired Signal Imm to MUX_5 and MUX_6
-        data_in   : in  BusDataType;                      -- Only for LOAD: get Byte/Halfword/Word through wire skipping ctrl_instr    
         acc_size  : out bit_vector(1 downto 0)            -- for store instructions
         );
 end ctrl_instr_dec;
@@ -60,9 +59,10 @@ begin
             --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE,
             -- '0', '0',   '0', '0',  '0',   '0',  '1',   '0',
             cmd_calc <= '1';
-            const_2 <= (others => '0');
-            const_1(13 downto 0) <= pc_in (13 downto 0);
-            const_1(31 downto 14) <= (others => '0');
+            const_1    <= (others => '0');              --prevent latches
+            const_2    <= (others => '0');              --prevent latches
+            const_reg  <= data_in;                      --prevent latches
+            imm        <= (others => '0');              --prevent latches
             
             case func3 is
                 when F3_ADD  => 
@@ -338,7 +338,9 @@ begin
             -- '1', '0',   '0', '0',  '0',   '0',  '0',   '0',
             cmd_stop <='1';
             ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
-            const_2 <= (others => '0');         --immediate to ALU
+            const_1 <= (others => '0');         --prevent latch
+            const_2 <= (others => '0');         --prevent latch
+            imm     <= (others => '0');         --prevent latch
         
         -- case: invalid instr   
         when others =>
