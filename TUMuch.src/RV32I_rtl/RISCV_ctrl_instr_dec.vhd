@@ -9,7 +9,7 @@ use work.instr_dec_pack.all;
 --decoder
     --signals to ALU: OP
     --signals to RegFile: sel_in, sel_out_a, sel_out_b
-    --signal  to FSM: ctrl (cmd_stop, cmd_jmp, cmd_auipc, cmd_reg, cmd_load, cmd_const, cmd_calc, cmd_store, cmd_take_jmp)
+    --signal  to FSM: ctrl (cmd_stop, cmd_jmp, cmd_auipc, cmd_reg, cmd_load, cmd_const, cmd_calc, cmd_store)
 
 entity ctrl_instr_dec is
     Port(
@@ -23,7 +23,9 @@ entity ctrl_instr_dec is
         op        : out bit_vector(3 downto 0);
         const_1   : out BusDataType;
         const_2   : out BusDataType;       
-        const_reg : out BusDataType     
+        const_reg : out BusDataType;     
+        
+        data_in   : in BusDataType -- non delayed data_in signal (needed for Load instructions)
         );
 end ctrl_instr_dec;
 
@@ -31,14 +33,14 @@ architecture RTL of ctrl_instr_dec is
 signal op_code : bit_vector(6 downto 0) := (others => '0');         --prevent Latch
 signal func3 : bit_vector(2 downto 0) := (others => '0');           --prevent Latch
 signal func7 : bit_vector(6 downto 0) := (others => '0');           --prevent Latch
-signal cmd_take_jmp, cmd_store, cmd_calc, cmd_const, cmd_load, cmd_reg, cmd_auipc, cmd_jmp, cmd_stop : bit;
+signal cmd_store, cmd_calc, cmd_const, cmd_load, cmd_reg, cmd_auipc, cmd_jmp, cmd_stop : bit;
 begin
     op_code <= instr(6 downto 0);
     
     process
     begin
     -- default assignment of ctrl signals
-    cmd_take_jmp <='0'; cmd_store <='0'; cmd_calc <='0'; cmd_const <='0'; cmd_load <='0';
+    cmd_store <='0'; cmd_calc <='0'; cmd_const <='0'; cmd_load <='0';
     cmd_reg <= '0'; cmd_auipc <='0'; cmd_jmp <='0'; cmd_stop <= '0';
     func3 <= (others => '0'); func7 <= (others => '0'); op <= (others => '0');
     case op_code is
@@ -53,7 +55,7 @@ begin
             --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE, TAKE_JMP
             -- '0', '0',   '0', '0',  '0',   '0',  '1',   '0',   '0'
             cmd_calc <= '1';
-            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store & cmd_take_jmp;
+            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
             const_2 <= (others => '0');
             const_1(13 downto 0) <= pc_in (13 downto 0);
             const_1(31 downto 14) <= (others => '0');
@@ -106,7 +108,7 @@ begin
             --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE, TAKE_JMP
             -- '0', '0',   '0', '0',  '0',   '1',  '1',   '0',   '0'
             cmd_const <= '1'; cmd_calc <= '1';
-            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store & cmd_take_jmp;
+            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
             const_2(11 downto 0) <= instr(31 downto 20);        --imm to ALU
             const_2(31 downto 12) <= (others => instr(31));     --imm to ALU
             const_1(13 downto 0) <= pc_in (13 downto 0);        --pc in const_1
@@ -150,7 +152,7 @@ begin
             --STOP, JMP, AUIPC, REG, LOAD, IMM, CALC, STORE, TAKE_JMP
             -- '0', '0',   '0', '0',  '1', '0',  '0',   '0',   '0'
             cmd_load <= '1';
-            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store & cmd_take_jmp;
+            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
             const_2(11 downto 0) <= instr(31 downto 20);
             const_2(31 downto 0) <= (others => instr(31));
             const_1(13 downto 0) <= pc_in (13 downto 0);
@@ -176,7 +178,7 @@ begin
             --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE, TAKE_JMP
             -- '0', '0',   '0', '0',  '0',   '0',  '0',   '1',   '0'
             cmd_store <= '1';
-            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store & cmd_take_jmp;
+            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
             op <= (others => '0');                         --no ALU Operation needed
             const_1(4 downto 0) <= instr(11 downto 7);      --Only in Store instr: Immediate in const_1
             const_1(11 downto 5) <= instr(31 downto 25);    --Only in Store instr: Immediate in const_1
@@ -202,8 +204,8 @@ begin
             op <= (others => '0');                         --no ALU Operation needed
             --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE, TAKE_JMP
             -- '0', '1',   '0', '0',  '0',   '0',  '1',   '0',   '1'
-            cmd_jmp <= '1'; cmd_calc <= '1'; cmd_take_jmp <= '1';
-            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store & cmd_take_jmp;
+            cmd_jmp <= '1'; cmd_calc <= '1';
+            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
             const_2(3 downto 0) <= instr(11 downto 8);
             const_2(9 downto 4) <= instr(30 downto 25);
             const_2(10) <= instr(7);
@@ -233,7 +235,7 @@ begin
             --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE, TAKE_JMP
             -- '0', '0',   '0', '1',  '0',   '0',  '0',   '0',   '0'   
             cmd_reg <= '1';
-            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store & cmd_take_jmp;
+            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
             const_2(31 downto 12) <= instr(31 downto 12);
             const_2(11 downto 0) <= (others => '0');
             const_1(13 downto 0) <= pc_in (13 downto 0);
@@ -247,7 +249,7 @@ begin
             --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE, TAKE_JMP
             -- '0', '0',   '1', '0',  '0',   '0',  '0',   '0',   '0'  
             cmd_auipc <= '1';
-            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store & cmd_take_jmp;
+            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
             const_2(31 downto 12) <= instr(31 downto 12);       --immediate to ALU
             const_2(11 downto 0) <= (others => '0');            --immediate to ALU
             const_1(13 downto 0) <= pc_in (13 downto 0);        --pc to ALU
@@ -262,8 +264,8 @@ begin
             op <= (others => '0');                                        --no ALU Operation needed            
             --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE, TAKE_JMP
             -- '0', '1',   '0', '0',  '0',   '0',  '0',   '0',   '1'
-            cmd_jmp <='1'; cmd_take_jmp<='1';
-            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store & cmd_take_jmp;
+            cmd_jmp <='1';
+            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
             const_2(0) <= '0';                                      --immediate to ALU
             const_2(10 downto 1)    <= instr(30 downto 21);         --immediate to ALU
             const_2(11)             <= instr(20);                   --immediate to ALU
@@ -280,8 +282,8 @@ begin
             op <= (others => '0');
             --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE, TAKE_JMP
             -- '0', '1',   '0', '1',  '0',   '0',  '0',   '0',   '1'  
-            cmd_jmp <='1'; cmd_take_jmp <='1'; cmd_reg <='1';
-            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store & cmd_take_jmp;
+            cmd_jmp <='1'; cmd_reg <='1';
+            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
             const_2(11 downto 0) <= instr(31 downto 20);            --immediate to ALU
             const_2(31 downto 12) <= (others => instr(31));         --immediate to ALU
             const_1(13 downto 0) <= pc_in (13 downto 0);      
@@ -297,7 +299,7 @@ begin
             --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE, TAKE_JMP
             -- '1', '0',   '0', '0',  '0', '0',  '0',   '0',   '0'
             cmd_stop <='1';
-            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store & cmd_take_jmp;
+            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
             const_2 <= (others => '0');         --immediate to ALU
             
         when others =>

@@ -106,6 +106,7 @@ begin
                                                 sel_in=>sel_in, 
                                                 sel_out_a=>sel_out_a, 
                                                 sel_out_b=>sel_out_b, 
+                                                data_in=>data_in,
                                                 ctrl=>ctrl_sig,
                                                 op=>operation, 
                                                 const_1 => const_1, 

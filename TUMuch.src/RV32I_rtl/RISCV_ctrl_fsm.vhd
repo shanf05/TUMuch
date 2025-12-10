@@ -9,7 +9,7 @@ entity ctrl_fsm is
         clk       : in  bit;                        -- clk
         rst       : in  bit;                        -- asynchronus rese
         
-        ctrl      : in  bit_vector(8 downto 0);     -- from instruction decoder
+        ctrl      : in  CtrlType;                   -- from instruction decoder
         
         reg_en    : out bit;                        -- enables register    
         inc_en    : out bit;                        -- enables inc latch
@@ -31,15 +31,14 @@ end ctrl_fsm;
 
 architecture mealy of ctrl_fsm is
     --signal mapping from ctrl:
-    signal cmd_take_jmp : bit := ctrl(0);  -- after jump instructions
-    signal cmd_store    : bit := ctrl(1);  -- store instructions
-    signal cmd_calc     : bit := ctrl(2);  -- every instruction that goes into alu
-    signal cmd_const    : bit := ctrl(3);  -- every instruction with immediate, that has to go to alu
-    signal cmd_load     : bit := ctrl(4);  -- every load instruction
-    signal cmd_reg      : bit := ctrl(5);  -- only used for LUI
-    signal cmd_auipc    : bit := ctrl(6);  -- only used for AUPIC (pc needs to go to data_in)
-    signal cmd_jmp      : bit := ctrl(7);  -- fump instructions
-    signal cmd_stop     : bit := ctrl(8);  -- stop all execution -> needs reset
+    signal cmd_store    : bit := ctrl(0);  -- store instructions
+    signal cmd_calc     : bit := ctrl(1);  -- every instruction that goes into alu
+    signal cmd_const    : bit := ctrl(2);  -- every instruction with immediate, that has to go to alu
+    signal cmd_load     : bit := ctrl(3);  -- every load instruction
+    signal cmd_reg      : bit := ctrl(4);  -- only used for LUI
+    signal cmd_auipc    : bit := ctrl(5);  -- only used for AUPIC (pc needs to go to data_in)
+    signal cmd_jmp      : bit := ctrl(6);  -- fump instructions
+    signal cmd_stop     : bit := ctrl(7);  -- stop all execution -> needs reset
     
     --states:
     signal state, next_state : StateType := s_stop;     
@@ -54,7 +53,7 @@ begin
         end if;    
     end process;    
     
-    mixed_changes : process (state, cmd_calc, cmd_const, cmd_load, cmd_reg, cmd_auipc, cmd_jmp, cmd_stop, cmd_take_jmp, cmd_store)
+    mixed_changes : process (state, cmd_calc, cmd_const, cmd_load, cmd_reg, cmd_auipc, cmd_jmp, cmd_stop, cmd_store)
     begin 
         -- set default values:        
         instr_en  <= '0';               -- default: not enabled
