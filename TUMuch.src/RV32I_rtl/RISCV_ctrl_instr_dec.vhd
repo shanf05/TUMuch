@@ -243,10 +243,11 @@ begin
             const_1(31 downto 0) <= (others => '0');                --BRANCH: const_1 unused
             const_2(31 downto 0) <= (others => '0');                --BRANCH: const_2 unused
             const_reg            <= data_in;
-            imm(3 downto 0) <= instr(11 downto 8);                  --BRANCH: imm to MUX_5       
-            imm(9 downto 4) <= instr(30 downto 25);
-            imm(10) <= instr(7);
-            imm(31 downto 11) <= (others => instr(31));           
+            imm(0)               <= '0';
+            imm(4 downto 1)      <= instr(11 downto 8);             --BRANCH: imm to MUX_5       
+            imm(10 downto 5)     <= instr(30 downto 25);
+            imm(11)              <= instr(7);
+            imm(31 downto 11)    <= (others => instr(31));           
 
             
             case func3 is
