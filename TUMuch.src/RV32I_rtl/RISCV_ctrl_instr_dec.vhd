@@ -55,6 +55,7 @@ begin
             sel_in <= instr(11 downto 7);
             sel_out_a <= instr(19 downto 15);
             sel_out_b <= instr(24 downto 20);
+            acc_size  <= acc_size_word;
             --ctrl table
             --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE,
             -- '0', '0',   '0', '0',  '0',   '0',  '1',   '0',
@@ -113,12 +114,15 @@ begin
             sel_in <= instr(11 downto 7);
             sel_out_a <= instr(19 downto 15);
             sel_out_b <= (others => '0');
+            acc_size  <= acc_size_word;
             --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE,
             -- '0', '0',   '0', '0',  '0',   '1',  '1',   '0',
             cmd_const <= '1'; cmd_calc <= '1';
             const_1(11 downto 0)  <= instr(31 downto 20);           -- I-Type: imm to MUX_1
             const_1(31 downto 12) <= (others => instr(31));         -- I-Type: imm to MUX_1
-            const_2(31 downto 0)  <= (others => '0');               -- I-Type: const_2 unused 
+            const_2(31 downto 0)  <= (others => '0');               -- I-Type: const_2 unused
+            const_reg(11 downto 0)  <= instr(31 downto 20);         -- Hardwired Imm to MUX_2
+            const_reg(31 downto 12) <= (others => instr(31));       -- Hardwired Imm to MUX_2
             imm(11 downto 0)      <= instr(31 downto 20);           -- Hardwired imm to MUX_5 and MUX_6
             imm(31 downto 12)     <= (others => instr(31));         -- Hardwired imm to MUX_5 and MUX_6
             
@@ -159,16 +163,18 @@ begin
             sel_in <= instr(11 downto 7);
             sel_out_a <= instr(19 downto 15);
             sel_out_b <= (others => '0');
+            acc_size  <= acc_size_word;
             op <= (others => '0');      --no ALU Operation needed
             --STOP, JMP, AUIPC, REG, LOAD, IMM, CALC, STORE,
             -- '0', '0',   '0', '0',  '1', '0',  '0',   '0',
             cmd_load <= '1';
             ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
-
-            const_1(31 downto 0)  <= (others => '0');           --LOAD: const_1 unused
-            const_2(31 downto 0)  <= (others => '0');           --LOAD: const_2 unused
-            imm(11 downto 0)      <= instr(31 downto 20);       --LOAD: imm to MUX_6
-            imm(31 downto 12)     <= (others => instr(31));     --Sign extension of imm
+            
+            const_1(31 downto 0)    <= (others => '0');           --LOAD: const_1 unused
+            const_2(31 downto 0)    <= (others => '0');           --LOAD: const_2 unused
+            const_reg               <= data_in;
+            imm(11 downto 0)        <= instr(31 downto 20);       --LOAD: imm to MUX_6
+            imm(31 downto 12)       <= (others => instr(31));     --Sign extension of imm
             
             case func3 is
                 when F3_LW =>
@@ -195,16 +201,16 @@ begin
             func3 <= instr(14 downto 12);
             sel_in <= (others => '0');
             sel_out_a <= instr(19 downto 15);       
-            sel_out_b <= instr(24 downto 20);       
+            sel_out_b <= instr(24 downto 20);      
             --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE,
             -- '0', '0',   '0', '0',  '0',   '0',  '0',   '1',
             cmd_store <= '1';
             ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
-
+            
             op <= (others => '0');                            --no ALU Operation needed
             const_1(31 downto 0)  <= (others => '0');         --STORE: const_1 unused
             const_2(31 downto 0)  <= (others => '0');         --STORE: const_2 unused
-            const_reg             <= (others => '0');         --STORE: const_reg unused
+            const_reg             <= data_in;                 --STORE: const_reg unused
             imm(4 downto 0)       <= instr(11 downto 7);      --STORE: Imm to MUX_6
             imm(11 downto 5)      <= instr(31 downto 25);     --STORE: Imm to MUX_6
             imm(31 downto 12)     <= (others => instr(31));   --Sign extend immediate
@@ -217,6 +223,7 @@ begin
                 when F3_SW  => 
                     acc_size <= acc_size_word;
                 when others =>
+                    acc_size <= acc_size_word;  --prevent latch
              end case;
             
         -- end S-Type
@@ -226,15 +233,16 @@ begin
             func3 <= instr(14 downto 12);
             sel_out_a <= instr(19 downto 15);
             sel_out_b <= instr(24 downto 20);
+            acc_size  <= acc_size_word;
             sel_in <= (others => '0');
             op <= (others => '0');                         --no ALU Operation needed
-
             --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE,
             -- '0', '1',   '0', '0',  '0',   '0',  '1',   '0',
              cmd_calc <= '1';                              --BRANCH: cmd_jmp only ticked if condition is true
             ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
             const_1(31 downto 0) <= (others => '0');                --BRANCH: const_1 unused
             const_2(31 downto 0) <= (others => '0');                --BRANCH: const_2 unused
+            const_reg            <= data_in;
             imm(3 downto 0) <= instr(11 downto 8);                  --BRANCH: imm to MUX_5       
             imm(9 downto 4) <= instr(30 downto 25);
             imm(10) <= instr(7);
@@ -259,6 +267,7 @@ begin
             sel_in <= instr(11 downto 7);
             sel_out_a <= (others => '0');
             sel_out_b <= (others => '0');
+            acc_size  <= acc_size_word;
             op <= (others => '0');                                  --no ALU Operation needed
             --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE,
             -- '0', '0',   '0', '1',  '0',   '0',  '0',   '0',   
@@ -267,7 +276,8 @@ begin
 
             const_1(31 downto 12) <= instr(31 downto 12);           --LUI: Immediate to MUX_1 (ALU)
             const_1(11 downto 0)  <= (others => '0');               --LUI: immediate of U-Format => imm & X"000"
-            const_2(31 downto 0)  <= (others => '0');
+            const_2(31 downto 0)  <= (others => '0');               --LUI: const_2 is zero -> Only Upperimmediate stored in Register
+            const_reg             <= data_in;                       --Hardwired instr to const_reg
             imm(31 downto 12) <= instr(31 downto 12);               --NOT USED in this case
             imm(11 downto 0)  <= (others => '0');                   --NOT USED in this case
 
@@ -276,6 +286,7 @@ begin
             sel_in <= instr(11 downto 7);
             sel_out_a <= (others => '0');
             sel_out_b <= (others => '0');
+            acc_size  <= acc_size_word;
             op <= (others => '0');                                   --no ALU Operation needed
             --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE,
             -- '0', '0',   '1', '0',  '0',   '0',  '0',   '0',
@@ -283,9 +294,12 @@ begin
             ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
 
             const_1(31 downto 12) <= instr(31 downto 12);       --AUIPC: immediate to MUX_1 (ALU)
-            const_1(11 downto 0) <= (others => '0');            --AUIPC: immediate of U-Format => imm & X"000"
-            const_2(13 downto 0) <= pc_in (13 downto 0);        --AUIPC: PC to MUX_4 (ALU)
+            const_1(11 downto 0)  <= (others => '0');           --AUIPC: immediate of U-Format => imm & X"000"
+            const_2(13 downto 0)  <= pc_in (13 downto 0);       --AUIPC: PC to MUX_4 (ALU)
             const_2(31 downto 14) <= (others => '0');           --AUIPC: extend pc with 0
+            const_reg             <= data_in;
+            imm(31 downto 12)     <= instr(31 downto 12);           
+            imm(11 downto 0)      <= (others => '0');
         
         --jump-type instructions (J-Type)
             --JAL instruction
@@ -293,8 +307,8 @@ begin
             sel_in <= instr(11 downto 7);
             sel_out_a <= (others => '0');
             sel_out_b <= (others => '0');
+            acc_size  <= acc_size_word;
             op <= (others => '0');                                        --no ALU Operation needed            
-
             --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE,
             -- '0', '1',   '0', '0',  '0',   '0',  '0',   '0',
             cmd_jmp <='1';
@@ -303,6 +317,7 @@ begin
             const_1               <= X"00000004";               --JAL: const_1 hardwired to 4                        
             const_2(13 downto 0)  <= pc_in(13 downto 0);        --JAL: const_2 contains pc
             const_2(31 downto 14) <= (others => '0');           --extend pc with zeroes
+            const_reg             <= data_in;
             imm(0)                <= '0';                       --JAL: imm to MUX_6
             imm(10 downto 1)      <= Instr(30 downto 21);       --JAL: imm to MUX_6
             imm(11)               <= Instr(20);                 --JAL: imm to MUX_6
@@ -313,9 +328,9 @@ begin
         when OP_JALR =>
             sel_in <= instr(11 downto 7);
             sel_out_a <= instr(19 downto 15);
-            sel_out_b <= (others => '0');            
+            sel_out_b <= (others => '0');     
+            acc_size  <= acc_size_word;       
             op <= (others => '0');
-
             --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE,
             -- '0', '1',   '0', '1',  '0',   '0',  '0',   '0',
             cmd_jmp <='1'; cmd_reg <='1';
@@ -324,6 +339,7 @@ begin
             const_1               <= X"00000004";               --JALR: const_1 hardwired to 4                        
             const_2(13 downto 0)  <= pc_in(13 downto 0);        --JALR: const_2 contains pc
             const_2(31 downto 14) <= (others => '0');           --extend pc with zeroes
+            const_reg             <= data_in;
             imm (11 downto 0)     <= instr(31 downto 20);
             imm (31 downto 12)    <= (others => instr(31));
 
@@ -331,28 +347,33 @@ begin
          ---------------------------------------------------------------------------------------------
           -- Stop instruction
         when OP_STOP =>
-            sel_in <= (others => '0');
+            sel_in    <= (others => '0');
             sel_out_a <= (others => '0');
             sel_out_b <= (others => '0');
+            acc_size  <= acc_size_word;
             --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE,
             -- '1', '0',   '0', '0',  '0',   '0',  '0',   '0',
             cmd_stop <='1';
             ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
-            const_1 <= (others => '0');         --prevent latch
-            const_2 <= (others => '0');         --prevent latch
-            imm     <= (others => '0');         --prevent latch
-        
+            const_1     <= (others => '0');         --prevent latch
+            const_2     <= (others => '0');         --prevent latch
+            const_reg   <= data_in;
+            imm         <= (others => '0');         --prevent latch
+        -- end Stop instruction
+        ---------------------------------------------------------------------------------------------
         -- case: invalid instr   
         when others =>
-            sel_in <= (others => '0');
-            sel_out_a <= (others => '0');
-            sel_out_b <= (others => '0');
-            ctrl <= (others => '0');
-            const_1(13 downto 0) <= pc_in (13 downto 0);      
+            sel_in                <= (others => '0');
+            sel_out_a             <= (others => '0');
+            sel_out_b             <= (others => '0');
+            acc_size  <= acc_size_word;
+            ctrl                  <= (others => '0');
+            const_1(13 downto 0)  <= pc_in (13 downto 0);      
             const_1(31 downto 14) <= (others => '0');
-            const_2 <= (others => '0');
-            imm <= (others => '0');
-         --end invalid instr
+            const_2               <= (others => '0');
+            const_reg             <= data_in;
+            imm                   <= (others => '0');
+         -- end invalid instr
         ---------------------------------------------------------------------------------------------
     end case;
     wait;
