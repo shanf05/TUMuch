@@ -75,8 +75,8 @@ architecture rtl of controller is
     signal inc_sig       : bit_vector(AddrSize-1 downto 0) := (others=>'0');    -- from inc to pc
     signal inc_out_sig   : bit_vector(AddrSize-1 downto 0) := (others=>'0');    -- from inc to addr_out    
     -- adder:
-    signal summand_1_sig :  bit_vector(AddrSize-1 downto 0) := (others=>'0');   -- from mux to adder
-    signal summand_2_sig :  bit_vector(AddrSize-1 downto 0) := (others=>'0');   -- from mux to adder
+    signal summand_1_sig : bit_vector(AddrSize-1 downto 0) := (others=>'0');   -- from mux to adder
+    signal summand_2_sig : bit_vector(AddrSize-1 downto 0) := (others=>'0');   -- from mux to adder
 begin    
     pc        : entity work.ctrl_pc        port map(
                                                 data_in=>inc_sig, 

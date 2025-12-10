@@ -1,11 +1,11 @@
 -- erstellt von Severin Hanf
 package ctrl_fsm_pack is 
-    subtype  StateType is bit_vector (3 downto 0); 
-    constant s_if   : StateType := "1000";         -- instruction fetch 
-    constant s_pfex : StateType := "0100";         -- parameter fetch (decode) and execute
-    constant s_mem  : StateTYpe := "0010";         -- memory reads need one extra cycle
-    constant s_stop : StateType := "0001";         -- fullstop (and fallback to stop)
-    constant s_cmp  : StateType := "1001";         -- one extra cycle for branches
+    subtype  StateType is bit_vector (4 downto 0); 
+    constant s_if   : StateType := "10000";         -- instruction fetch 
+    constant s_pfex : StateType := "01000";         -- parameter fetch (decode) and execute
+    constant s_mem  : StateTYpe := "00100";         -- memory reads need one extra cycle
+    constant s_stop : StateType := "00010";         -- fullstop (and fallback to stop)
+    constant s_cmp  : StateType := "00001";         -- one extra cycle for branches
     
     -- MUX selects: 
     constant sel_mux_1_rs_2      : bit  := '0'; 
