@@ -22,8 +22,9 @@ entity RAM16384x32 is
 end RAM16384x32;
 
 architecture behavioral of RAM16384x32 is
-    signal Mem : MemType;     --put flipflops right here 
-begin
+    signal Mem : MemType;     --put flipflops right here    
+begin    
+
     synchronus_write : process
     begin        
         wait until clk = '1'; 

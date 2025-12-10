@@ -17,7 +17,7 @@ entity ctrl_instr_dec is
     Port(
         instr     : in  BusDataType;
         pc_in     : in  bit_vector (AddrSize-1 downto 0); 
-        data_in   : in  BusDataType; 
+        data_in   : in  BusDataType;                      -- Only for LOAD: get Byte/Halfword/Word through wire skipping ctrl_instr
 
         sel_in    : out bit_vector(4 downto 0);           -- rd
         sel_out_a : out bit_vector(4 downto 0);           -- rs1
