@@ -15,7 +15,7 @@ entity Datapath is
         
         -- from datapath:        
         addr_in   : out bit_vector(AddrSize-1 downto 0); -- requires buffer
-        comp_res  : out bit_vector(1 downto 0);
+        bra_cond  : out bit;
         sel_mux_1 : in  bit;
         sel_mux_2 : in  bit;
         sel_mux_4 : in  bit; 
@@ -64,7 +64,7 @@ begin
         operand_b => out_mux2,      -- rs2/const2
         
         operation => operation,
-        
+            
         result => alu_result
     );    
     
