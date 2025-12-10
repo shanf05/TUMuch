@@ -25,3 +25,23 @@ begin
         end case;
     end process;
 end RTL;
+
+entity mux2x1x1 is    
+    port (
+        in_0, in_1  : in  bit;
+        sel         : in  bit;
+        output      : out bit
+         );
+end mux2x1x1;
+
+architecture RTL of mux2x1x1 is
+
+begin
+    process(in_0, in_1, sel)
+    begin
+        case sel is
+            when '0'    => output <= in_0;
+            when others => output <= in_1;
+        end case;
+    end process;
+end RTL;

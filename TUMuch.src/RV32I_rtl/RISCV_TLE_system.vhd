@@ -47,7 +47,7 @@ begin
                                             data_out=>data_in_sig
                                             );
                                              
-    dbg_mux_1 : entity work.mux2x1 port map(in_0=>data_out_sig, in_1=>dbg_data_sig, sel=>dbg_sig);        --data 
-    dbg_mux_2 : entity work.mux2x1 generic map (data_width=>16) port map(in_0=>dbg_addr_sig, in_1=>addr_out_sig, sel=>dbg_sig);        --addr
-    --dbg_mux_3 : entity work.mux2x1 generic map (data_width=>1) port map(in_0=>dbg_w_en_sig, in_1=>w_en_sig, sel=>dbg_sig);        --w_en
+    dbg_mux_1 : entity work.mux2x1   port map(in_0=>data_out_sig, in_1=>dbg_data_sig, sel=>dbg_sig);        --data 
+    dbg_mux_2 : entity work.mux2x1   generic map (data_width=>16) port map(in_0=>dbg_addr_sig, in_1=>addr_out_sig, sel=>dbg_sig);        --addr
+    dbg_mux_3 : entity work.mux2x1x1 port map(in_0=>dbg_w_en_sig, in_1=>w_en_sig, sel=>dbg_sig);        --w_en
 end RTL;
