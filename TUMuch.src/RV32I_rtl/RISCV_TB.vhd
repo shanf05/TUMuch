@@ -76,7 +76,8 @@ begin
         for i in 0 to 2**MemAddrSize-1 loop
             mem_addr <= bit_vector(to_unsigned(addr, AddrSize));
             
-            wait for 0.5 ns;
+            wait for 0 ns;
+            wait for 0 ns;
             
             write( w , string'("0x") );            
             write( w , hex_image_4(bit_vector(to_unsigned(i*4, 32))) );
