@@ -279,7 +279,8 @@ begin
             const_1(31 downto 12) <= instr(31 downto 12);           --LUI: Immediate to MUX_1 (ALU)
             const_1(11 downto 0)  <= (others => '0');               --LUI: immediate of U-Format => imm & X"000"
             const_2(31 downto 0)  <= (others => '0');               --LUI: const_2 is zero -> Only Upperimmediate stored in Register
-            const_reg             <= data_in;                       --Hardwired instr to const_reg
+            const_reg(31 downto 12)<= instr(31 downto 12);           --LUI: imm to Register
+            const_reg(11 downto 0) <= (others => '0');
             imm(31 downto 12) <= instr(31 downto 12);               --NOT USED in this case
             imm(11 downto 0)  <= (others => '0');                   --NOT USED in this case
 
