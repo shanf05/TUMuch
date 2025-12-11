@@ -70,7 +70,7 @@ architecture rtl of controller is
     signal inc_en_sig    : bit := '0';                                          -- from fsm to inc       
     -- id:      
     signal cmd_store_sig, cmd_calc_sig, cmd_const_sig, cmd_load_sig, cmd_reg_sig, cmd_auipc_sig, cmd_jmp_sig, cmd_stop_sig : bit := '0';   -- id to fsm
-    signal imm_sig       : bit_vector(AddrSize-1 downto 0) := (others=>'0');    -- id to muxes
+    signal imm_sig       : BusDataType := (others=>'0');    -- id to muxes
     -- inc: 
     signal inc_sig       : bit_vector(AddrSize-1 downto 0) := (others=>'0');    -- from inc to pc
     signal inc_out_sig   : bit_vector(AddrSize-1 downto 0) := (others=>'0');    -- from inc to addr_out    
@@ -144,14 +144,14 @@ begin
                                             port map(
                                                 in_0=>bit_vector(to_unsigned(4, AddrSize)),   -- + 4
                                                 in_1=>addr_in,                          -- + reg(rs1)
-                                                in_2=>imm_sig,                          -- + imm
+                                                in_2=>imm_sig(15 downto 0),                          -- + imm
                                                 in_3=>bit_vector(to_unsigned(0, AddrSize)),   -- gnd
                                                 sel=>sel_mux_5_sig, 
                                                 output=>summand_2_sig
                                                 );
     mux_6     : entity work.mux2x1          generic map(data_width=>16) 
                                             port map(
-                                                in_0=>imm_sig, 
+                                                in_0=>imm_sig(15 downto 0), 
                                                 in_1=>pc_sig, 
                                                 sel=>sel_mux_6_sig, 
                                                 output=>summand_1_sig
