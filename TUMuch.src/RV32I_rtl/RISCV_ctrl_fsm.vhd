@@ -152,6 +152,10 @@ begin
                 next_state <= s_stop;                
             else 
                 next_state <= s_if;                                             -- always restart with instr fetch when faulty input;
+                --update inc:
+                inc_en     <= '1';           
+                sel_mux_5  <= sel_mux_5_imm_4;
+                sel_mux_6  <= sel_mux_6_pc;
                 assert false; 
             end if;  
         when s_mem =>    
