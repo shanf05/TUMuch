@@ -9,7 +9,7 @@ entity TLE_system is
 end TLE_system;
 
 architecture RTL of TLE_system is
-signal clk_sig, rst_sig, active_sig, dbg_sig : bit;
+signal clk_sig, rst_sig, active_sig: bit;
 
 -- System Signals
 signal w_en_sys_sig : bit;
@@ -79,10 +79,5 @@ begin
     mux_data_in     : entity work.mux2x1    generic map (data_width => BusDataSize) port map(in_0 => data_out_sys_sig, in_1 => data_out_tb_sig, sel => sel_sig, output => data_in_sig);
 --     mux_data_out    : entity work.mux2x1    generic map (data_width => BusDataSize) port map(in_0 =>, in_1 => , sel => sel_sig);
     mux_acc_size    : entity work.mux2x1    generic map (data_width => 2) port map(in_0 => acc_size_sys_sig, in_1 => acc_size_tb_sig, sel => sel_sig, output => acc_size_sig);
-             
-             
-                                             
---    dbg_mux_1 : entity work.mux2x1   port map(in_0=>data_out_sig, in_1=>dbg_data_sig, sel=>dbg_sig);        --data 
---    dbg_mux_2 : entity work.mux2x1   generic map (data_width=>16) port map(in_0=>dbg_addr_sig, in_1=>addr_out_sig, sel=>dbg_sig);        --addr
---    dbg_mux_3 : entity work.mux2x1x1 port map(in_0=>dbg_w_en_sig, in_1=>w_en_sig, sel=>dbg_sig);        --w_en
+
 end RTL;
