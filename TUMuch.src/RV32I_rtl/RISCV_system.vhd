@@ -33,20 +33,23 @@ begin
                                             clk=>clk, 
                                             rst=>rst,
                                             addr_in=>addr_in_sig, 
-                                            acc_size=>acc_size,
                                             sel_mux_1=>sel_mux_1_sig, 
                                             sel_mux_2=>sel_mux_2_sig,                                            
                                             sel_mux_4=>sel_mux_4_sig,
+                                            reg_en => reg_en_sig,
+                                            sel_in => sel_in_sig,
+                                            sel_out_a => sel_out_a_sig,
+                                            sel_out_b => sel_out_b_sig,
                                             operation=>operation_sig,
                                             const_1=>const_1_sig, 
                                             const_2=>const_2_sig,
                                             const_reg=>const_reg_sig,
-                                            bra_cond=>bra_cond_sig,
+                                            bra_cond=>bra_cond_sig, 
                                             data_in=>data_in, 
                                             addr_out=>addr_out,
                                             w_en=>w_en, 
-                                            active=>active,
-                                            reg_en => reg_en_sig
+                                            acc_size=>acc_size,
+                                            active=>active                                           
                                             );
                                             
     datapath : entity work.datapath   port map(
