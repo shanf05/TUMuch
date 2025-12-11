@@ -45,7 +45,8 @@ begin
                                             data_in=>data_in, 
                                             addr_out=>addr_out,
                                             w_en=>w_en, 
-                                            active=>active
+                                            active=>active,
+                                            reg_en => reg_en_sig
                                             );
                                             
     datapath : entity work.datapath   port map(
