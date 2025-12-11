@@ -34,58 +34,14 @@ architecture Behavioral of TB is
     type data_array is array (natural range <>) of BusDataType;
     
     constant OVERWRITE_ADDR : addr_array := (
-        x"F000",
-        x"0FF8",
         x"1000",
         x"1004",
-        x"1008",
-        x"100C",
-        x"1010",
-        x"1FF0",
-        x"1FF4",
-        x"1FF8",
-        x"1FFC",
-        x"2000",
-        x"2004",
-        x"2008",
-        x"200C",
-        x"2FF0",
-        x"2FF4",
-        x"2FF8",
-        x"2FFC",
-        x"3000",
-        x"3004",
-        x"3008",
-        x"300C",
-        x"3010",
-        x"3014"
+        x"1008"
     );
     constant OVERWRITE_DATA : data_array := (
-        x"12345678",
-        x"AAAAAAAA",
-        x"AAAAAAAA",
-        x"AAAAAAAA",
-        x"AAAAAAAA",
-        x"AAAAAAAA",
-        x"AAAAAAAA",
-        x"BBBBBBBB",
-        x"BBBBBBBB",
-        x"BBBBBBBB",
-        x"BBBBBBBB",
-        x"BBBBBBBB",
-        x"BBBBBBBB",
-        x"BBBBBBBB",
-        x"BBBBBBBB",
-        x"CCCCCCCC",
-        x"CCCCCCCC",
-        x"CCCCCCCC",
-        x"CCCCCCCC",
-        x"CCCCCCCC",
-        x"CCCCCCCC",
-        x"CCCCCCCC",
-        x"CCCCCCCC",
-        x"CCCCCCCC",
-        x"CCCCCCCC"
+        x"89ABCDEF",
+        x"FEDCBA94",
+        x"00001000"
     );
 begin
     process
