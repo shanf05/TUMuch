@@ -314,7 +314,7 @@ begin
             cmd_jmp <='1';
                         
             const_1               <= X"00000004";               --JAL: const_1 hardwired to 4                        
-            const_2(13 downto 0)  <= pc_in(13 downto 0);        --JAL: const_2 contains pc
+            const_2(15 downto 0)  <= pc_in(15 downto 0);        --JAL: const_2 contains pc
             const_2(31 downto 14) <= (others => '0');           --extend pc with zeroes
             const_reg             <= data_in;
             imm(0)                <= '0';                       --JAL: imm to MUX_6
