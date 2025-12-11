@@ -36,27 +36,34 @@ architecture RTL of Datapath is
     signal rs_1       : BusDataType := (others=>'0');
     signal rs_2       : BusDataType := (others=>'0');    
     signal out_mux1   : BusDataType := (others=>'0');
-    signal out_mux2   : BusDataType := (others=>'0');    
+    signal out_mux2   : BusDataType := (others=>'0');
+    signal out_mux4   : BusDataType := (others=>'0');    
     signal alu_result : BusDataType := (others=>'0');    
-    signal out_mux3   : BusDataType := (others=>'0');    
 begin
     MUX_1 : entity work.mux2x1 port map (
-        in_0 => rs_1,
+        in_0 => rs_2,
         in_1 => const_1,
         sel => sel_mux_1,
         output => out_mux1
     );
     
     MUX_2 : entity work.mux2x1 port map (
-        in_0 => rs_2,
-        in_1 => const_2,        
+        in_0 => alu_result,
+        in_1 => const_reg,        
         sel => sel_mux_2,
         output => out_mux2
     );
     
+    MUX_4 : entity work.mux2x1 port map (
+        in_0 => const_2,
+        in_1 => rs_1,        
+        sel => sel_mux_2,
+        output => out_mux4
+    );
+    
     ALU : entity work.alu32 port map(
-        operand_a => out_mux1,      -- rs1/const1
-        operand_b => out_mux2,      -- rs2/const2
+        operand_a => out_mux1,      -- rs2/const1
+        operand_b => out_mux2,      -- rs1/const2
         
         operation => operation,
         branch_condition=>bra_cond,    
@@ -68,15 +75,15 @@ begin
         rst => rst,
         
         we => reg_en,
-        w_addr => sel_in,
-        w_data => out_mux3,
+        w_addr => sel_in,           --rd
+        w_data => out_mux2,
         
-        re_addr_1 => sel_out_a,
-        r_data_1 => rs_1,           --rs1
-        re_addr_2 => sel_out_b,
-        r_data_2 => rs_2            --rs2 
+        re_addr_1 => sel_out_a,     --rs1
+        r_data_1 => rs_1,           --reg(rs1)
+        re_addr_2 => sel_out_b,     --rs2
+        r_data_2 => rs_2            --reg(rs2) 
     );
     
     data_out <= rs_2;
-    addr_in <= alu_result(AddrSize-1 downto 0);
+    addr_in <= rs_1;
 end RTL;

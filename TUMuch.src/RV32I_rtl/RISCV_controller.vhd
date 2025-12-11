@@ -127,9 +127,9 @@ begin
                                                 );   
     mux_5     : entity work.mux4x1          generic map(data_width=>16) 
                                             port map(
-                                                in_0=>imm_sig,                          -- + imm
+                                                in_0=>bit_vector(to_unsigned(4, 16)),   -- + 4
                                                 in_1=>addr_in,                          -- + reg(rs1)
-                                                in_2=>bit_vector(to_unsigned(4, 16)),   -- + 4
+                                                in_2=>imm_sig,                          -- + imm
                                                 in_3=>bit_vector(to_unsigned(0, 16)),   -- gnd
                                                 sel=>sel_mux_5_sig, 
                                                 output=>summand_2_sig
