@@ -68,8 +68,8 @@ architecture rtl of controller is
     signal sel_mux_7_sig : bit := '0';                                          -- from fsm to mux_7        
     signal pc_en_sig     : bit := '0';                                          -- from fsm to pc 
     signal inc_en_sig    : bit := '0';                                          -- from fsm to inc       
-    -- id:
-    signal ctrl_sig      : CtrlType := (others=>'0');                           -- id to fsm    
+    -- id:      
+    signal cmd_store_sig, cmd_calc_sig, cmd_const_sig, cmd_load_sig, cmd_reg_sig, cmd_auipc_sig, cmd_jmp_sig, cmd_stop_sig : bit := '0';   -- id to fsm
     signal imm_sig       : bit_vector(AddrSize-1 downto 0) := (others=>'0');    -- id to muxes
     -- inc: 
     signal inc_sig       : bit_vector(AddrSize-1 downto 0) := (others=>'0');    -- from inc to pc
@@ -86,7 +86,14 @@ begin
     ctrl_fsm  : entity work.ctrl_fsm       port map(
                                                 clk=>clk, 
                                                 rst=>rst, 
-                                                ctrl=>ctrl_sig, 
+                                                cmd_store=>cmd_store_sig,
+                                                cmd_calc=>cmd_calc_sig,
+                                                cmd_const=>cmd_const_sig,
+                                                cmd_load=>cmd_load_sig,
+                                                cmd_reg=>cmd_reg_sig,
+                                                cmd_auipc=>cmd_auipc_sig,
+                                                cmd_jmp=>cmd_jmp_sig,
+                                                cmd_stop=>cmd_stop_sig, 
                                                 reg_en=>reg_en, 
                                                 instr_en=>instr_en_sig, 
                                                 inc_en=>inc_en_sig,
@@ -108,7 +115,14 @@ begin
                                                 sel_out_a=>sel_out_a, 
                                                 sel_out_b=>sel_out_b, 
                                                 data_in=>data_in,
-                                                ctrl=>ctrl_sig,
+                                                cmd_store=>cmd_store_sig,
+                                                cmd_calc=>cmd_calc_sig,
+                                                cmd_const=>cmd_const_sig,
+                                                cmd_load=>cmd_load_sig,
+                                                cmd_reg=>cmd_reg_sig,
+                                                cmd_auipc=>cmd_auipc_sig,
+                                                cmd_jmp=>cmd_jmp_sig,
+                                                cmd_stop=>cmd_stop_sig,
                                                 op=>operation, 
                                                 const_1 => const_1, 
                                                 const_2 => const_2, 

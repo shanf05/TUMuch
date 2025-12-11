@@ -23,7 +23,9 @@ entity ctrl_instr_dec is
         sel_out_a : out bit_vector(4 downto 0);           -- rs1
         sel_out_b : out bit_vector(4 downto 0);           -- rs2
           
-        ctrl      : out CtrlType;
+        --ctrl      : out CtrlType;
+        cmd_store, cmd_calc, cmd_const, cmd_load, cmd_reg, cmd_auipc, cmd_jmp, cmd_stop : out bit;
+       
         op        : out bit_vector(3 downto 0);           -- Operation signal to ALU
         const_1   : out BusDataType;                      -- Signal to MUX_1
         const_2   : out BusDataType;                      -- Signal to MUX_2
@@ -37,7 +39,6 @@ architecture RTL of ctrl_instr_dec is
 signal op_code : bit_vector(6 downto 0) := (others => '0');         --prevent Latch
 signal func3 : bit_vector(2 downto 0) := (others => '0');           --prevent Latch
 signal func7 : bit_vector(6 downto 0) := (others => '0');           --prevent Latch
-signal cmd_store, cmd_calc, cmd_const, cmd_load, cmd_reg, cmd_auipc, cmd_jmp, cmd_stop : bit;
 begin
     op_code <= instr(6 downto 0);
     
@@ -56,9 +57,7 @@ begin
             sel_out_a <= instr(19 downto 15);
             sel_out_b <= instr(24 downto 20);
             acc_size  <= acc_size_word;
-            --ctrl table
-            --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE,
-            -- '0', '0',   '0', '0',  '0',   '0',  '1',   '0',
+            
             cmd_calc <= '1';
             const_1    <= (others => '0');              --prevent latches
             const_2    <= (others => '0');              --prevent latches
@@ -104,7 +103,7 @@ begin
                         when others =>
                     end case;                        
             end case;
-            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;  --assign ctrl signal as last step 
+            --ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;  --assign ctrl signal as last step 
                                                                                                              --(SLTI and SLTIU -> cmd_reg)
         -- end R-Type        
         ---------------------------------------------------------------------------------------------    
@@ -153,7 +152,7 @@ begin
                         when others =>
                     end case;
             end case;
-            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;     --assign ctrl at last step
+            --ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;     --assign ctrl at last step
                                                                                                                 --(SLTI and SLTIU -> cmd_reg)
         -- end I-Type
         ---------------------------------------------------------------------------------------------
@@ -168,7 +167,7 @@ begin
             --STOP, JMP, AUIPC, REG, LOAD, IMM, CALC, STORE,
             -- '0', '0',   '0', '0',  '1', '0',  '0',   '0',
             cmd_load <= '1';
-            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
+            --ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
             
             const_1(31 downto 0)    <= (others => '0');           --LOAD: const_1 unused
             const_2(31 downto 0)    <= (others => '0');           --LOAD: const_2 unused
@@ -205,7 +204,7 @@ begin
             --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE,
             -- '0', '0',   '0', '0',  '0',   '0',  '0',   '1',
             cmd_store <= '1';
-            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
+            --ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
             
             op <= (others => '0');                            --no ALU Operation needed
             const_1(31 downto 0)  <= (others => '0');         --STORE: const_1 unused
@@ -239,7 +238,7 @@ begin
             --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE,
             -- '0', '1',   '0', '0',  '0',   '0',  '1',   '0',
              cmd_calc <= '1'; cmd_jmp <= '1';                        --BRANCH: 
-            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
+            --ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
             const_1(31 downto 0) <= (others => '0');                --BRANCH: const_1 unused
             const_2(31 downto 0) <= (others => '0');                --BRANCH: const_2 unused
             const_reg            <= data_in;
@@ -279,7 +278,7 @@ begin
             --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE,
             -- '0', '0',   '0', '1',  '0',   '0',  '0',   '0',   
             cmd_reg <= '1';
-            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
+            --ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
 
             const_1(31 downto 12) <= instr(31 downto 12);           --LUI: Immediate to MUX_1 (ALU)
             const_1(11 downto 0)  <= (others => '0');               --LUI: immediate of U-Format => imm & X"000"
@@ -298,7 +297,7 @@ begin
             --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE,
             -- '0', '0',   '1', '0',  '0',   '0',  '0',   '0',
             cmd_auipc <= '1';
-            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
+            --ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
 
             const_1(31 downto 12) <= instr(31 downto 12);       --AUIPC: immediate to MUX_1 (ALU)
             const_1(11 downto 0)  <= (others => '0');           --AUIPC: immediate of U-Format => imm & X"000"
@@ -319,7 +318,7 @@ begin
             --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE,
             -- '0', '1',   '0', '0',  '0',   '0',  '0',   '0',
             cmd_jmp <='1';
-            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
+            --ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
             
             const_1               <= X"00000004";               --JAL: const_1 hardwired to 4                        
             const_2(13 downto 0)  <= pc_in(13 downto 0);        --JAL: const_2 contains pc
@@ -341,7 +340,7 @@ begin
             --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE,
             -- '0', '1',   '0', '1',  '0',   '0',  '0',   '0',
             cmd_jmp <='1'; cmd_reg <='1';
-            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
+            --ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
             
             const_1               <= X"00000004";               --JALR: const_1 hardwired to 4                        
             const_2(13 downto 0)  <= pc_in(13 downto 0);        --JALR: const_2 contains pc
@@ -361,7 +360,7 @@ begin
             --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE,
             -- '1', '0',   '0', '0',  '0',   '0',  '0',   '0',
             cmd_stop <='1';
-            ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
+            --ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
             const_1     <= (others => '0');         --prevent latch
             const_2     <= (others => '0');         --prevent latch
             const_reg   <= data_in;
@@ -374,7 +373,14 @@ begin
             sel_out_a             <= (others => '0');
             sel_out_b             <= (others => '0');
             acc_size  <= acc_size_word;
-            ctrl                  <= (others => '0');
+            cmd_store  <= '0';
+            cmd_calc  <= '0'; 
+            cmd_const  <= '0';
+            cmd_load  <= '0';
+            cmd_reg  <= '0'; 
+            cmd_auipc <= '0';
+            cmd_jmp  <= '0';
+            cmd_stop <= '0';
             const_1(13 downto 0)  <= pc_in (13 downto 0);      
             const_1(31 downto 14) <= (others => '0');
             const_2               <= (others => '0');

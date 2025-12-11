@@ -9,7 +9,7 @@ entity ctrl_fsm is
         clk       : in  bit;                        -- clk
         rst       : in  bit;                        -- asynchronus rese
         
-        ctrl      : in  CtrlType;                   -- from instruction decoder
+        cmd_store, cmd_calc, cmd_const, cmd_load, cmd_reg, cmd_auipc, cmd_jmp, cmd_stop : in bit; -- from instruction decoder
         
         reg_en    : out bit;                        -- enables register    
         inc_en    : out bit;                        -- enables inc latch
@@ -31,14 +31,14 @@ end ctrl_fsm;
 
 architecture mealy of ctrl_fsm is
     --signal mapping from ctrl:
-    signal cmd_stop     : bit := ctrl(0);  -- stop all execution -> needs reset
-    signal cmd_jmp      : bit := ctrl(1);  -- fump instructions
-    signal cmd_auipc    : bit := ctrl(2);  -- only used for AUPIC (pc needs to go to data_in)
-    signal cmd_reg      : bit := ctrl(3);  -- only used for LUI
-    signal cmd_load     : bit := ctrl(4);  -- every load instruction
-    signal cmd_const    : bit := ctrl(5);  -- every instruction with immediate, that has to go to alu
-    signal cmd_calc     : bit := ctrl(6);  -- every instruction that goes into alu
-    signal cmd_store    : bit := ctrl(7);  -- store instructions
+    --signal cmd_stop     : bit := ctrl(0);  -- stop all execution -> needs reset
+    --signal cmd_jmp      : bit := ctrl(1);  -- jump instructions
+    --signal cmd_auipc    : bit := ctrl(2);  -- only used for AUPIC (pc needs to go to data_in)
+    --signal cmd_reg      : bit := ctrl(3);  -- only used for LUI
+    --signal cmd_load     : bit := ctrl(4);  -- every load instruction
+    --signal cmd_const    : bit := ctrl(5);  -- every instruction with immediate, that has to go to alu
+    --signal cmd_calc     : bit := ctrl(6);  -- every instruction that goes into alu
+    --signal cmd_store    : bit := ctrl(7);  -- store instructions
         
     --states:
     signal state, next_state : StateType := s_if;     
