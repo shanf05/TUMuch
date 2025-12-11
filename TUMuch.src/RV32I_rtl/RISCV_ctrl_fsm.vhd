@@ -53,7 +53,7 @@ begin
         end if;    
     end process;    
     
-    mixed_changes : process (state, cmd_calc, cmd_const, cmd_load, cmd_reg, cmd_auipc, cmd_jmp, cmd_stop, cmd_store)
+    mixed_changes : process (state, cmd_calc, cmd_const, cmd_load, cmd_reg, cmd_auipc, cmd_jmp, cmd_stop, cmd_store, bra_cond)
     begin 
         -- set default values:        
         instr_en  <= '0';               -- default: not enabled
