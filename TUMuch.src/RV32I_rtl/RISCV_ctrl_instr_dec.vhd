@@ -41,7 +41,7 @@ signal cmd_store, cmd_calc, cmd_const, cmd_load, cmd_reg, cmd_auipc, cmd_jmp, cm
 begin
     op_code <= instr(6 downto 0);
     
-    process
+    process (instr, pc_in, data_in)
     begin
     -- default assignment of ctrl signals
     cmd_store <='0'; cmd_calc <='0'; cmd_const <='0'; cmd_load <='0';
@@ -382,8 +382,7 @@ begin
             imm                   <= (others => '0');
          -- end invalid instr
         ---------------------------------------------------------------------------------------------
-    end case;
-    wait;
+    end case;    
 end process;
 
 end RTL;
