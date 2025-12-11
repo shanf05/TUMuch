@@ -5,6 +5,7 @@ library work;
 use work.defs_pack.all;
 use work.inst_layout_pack.all;
 use work.instr_dec_pack.all;
+use work.inst_encoding_pack.all;
 
 --decoder
     --signals to ALU: OP
@@ -345,17 +346,19 @@ begin
          ---------------------------------------------------------------------------------------------
           -- Stop instruction
         when OP_STOP =>
+            if instr = STOP_code then
             sel_in    <= (others => '0');
-            sel_out_a <= (others => '0');
-            sel_out_b <= (others => '0');
-            acc_size  <= acc_size_word;
-            --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE,
-            -- '1', '0',   '0', '0',  '0',   '0',  '0',   '0',
-            cmd_stop <='1';            
-            const_1     <= (others => '0');         --prevent latch
-            const_2     <= (others => '0');         --prevent latch
-            const_reg   <= data_in;
-            imm         <= (others => '0');         --prevent latch
+                sel_out_a <= (others => '0');
+                sel_out_b <= (others => '0');
+                acc_size  <= acc_size_word;
+                --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE,
+                -- '1', '0',   '0', '0',  '0',   '0',  '0',   '0',
+                cmd_stop <='1';            
+                const_1     <= (others => '0');         --prevent latch
+                const_2     <= (others => '0');         --prevent latch
+                const_reg   <= data_in;
+                imm         <= (others => '0');         --prevent latch
+             end if;
         -- end Stop instruction
         ---------------------------------------------------------------------------------------------
         -- case: invalid instr   
