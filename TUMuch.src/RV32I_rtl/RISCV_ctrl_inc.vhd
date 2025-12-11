@@ -15,7 +15,7 @@ end ctrl_inc;
 
 architecture rtl of ctrl_inc is
 begin
-    process(data_in)        
+    process(data_in, enable)        
     begin
         if enable = '1' then
             data_out <= data_in;
