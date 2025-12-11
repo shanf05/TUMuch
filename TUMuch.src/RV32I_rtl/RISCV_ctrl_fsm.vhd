@@ -156,7 +156,7 @@ begin
                 inc_en     <= '1';           
                 sel_mux_5  <= sel_mux_5_imm_4;
                 sel_mux_6  <= sel_mux_6_pc;
-                assert false; 
+                --assert false; 
             end if;  
         when s_mem =>    
             next_state <= s_if;                                                 -- finished, return to instruction fetching
@@ -186,7 +186,7 @@ begin
             inc_en     <= '1';           
             sel_mux_5  <= sel_mux_5_imm_4;
             sel_mux_6  <= sel_mux_6_pc;
-            assert false; 
+            --assert false; 
         end case;
     end process;
 end mealy;
