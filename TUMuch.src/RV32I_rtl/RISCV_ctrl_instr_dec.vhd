@@ -11,7 +11,7 @@ use work.instr_dec_pack.all;
     --signals to RegFile: sel_in, sel_out_a, sel_out_b
     --signal  to FSM: ctrl (cmd_stop, cmd_jmp, cmd_auipc, cmd_reg, cmd_load, cmd_const, cmd_calc, cmd_store)
     --signal to MUX_2: const_reg (only used for load commands)
-    --signal to MUX_6: imm
+    --signal to MUX_5 and MUX_6: imm
 
 entity ctrl_instr_dec is
     Port(
@@ -238,7 +238,7 @@ begin
             op <= (others => '0');                         --no ALU Operation needed
             --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE,
             -- '0', '1',   '0', '0',  '0',   '0',  '1',   '0',
-             cmd_calc <= '1';                              --BRANCH: cmd_jmp only ticked if condition is true
+             cmd_calc <= '1'; cmd_jmp <= '1';                        --BRANCH: 
             ctrl <= cmd_stop & cmd_jmp & cmd_auipc & cmd_reg & cmd_load & cmd_const & cmd_calc & cmd_store;
             const_1(31 downto 0) <= (others => '0');                --BRANCH: const_1 unused
             const_2(31 downto 0) <= (others => '0');                --BRANCH: const_2 unused
@@ -251,12 +251,18 @@ begin
 
             
             case func3 is
-                when F3_BEQ  => 
-                when F3_BNE  => 
-                when F3_BLT  => 
+                when F3_BEQ  =>
+                    op <= ALU_BEQ;
+                when F3_BNE  =>
+                    op <= ALU_BNE; 
+                when F3_BLT  =>
+                    op <= ALU_SLT; 
                 when F3_BGE  => 
+                    op <= ALU_BGE;
                 when F3_BLTU => 
+                    op <= ALU_SLTU;
                 when F3_BGEU =>
+                    op <= ALU_BGEU;
                 when others =>
             end case;
             
