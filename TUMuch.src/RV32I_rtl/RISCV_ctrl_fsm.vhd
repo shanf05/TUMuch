@@ -109,7 +109,7 @@ begin
                     inc_en    <= '1';                                           -- store the jump address in inc buffer -> when condition is true, inc value is used, otherwise normal pc + 4 
                 elsif cmd_reg = '1' then                                        -- set instructions
                     next_state <= s_if;                                         -- return to instr fetch -> only need one cycle
-                    reg_en <= bra_cond;                                         -- enable register writing only if condition is valid
+                    reg_en <= '1';                                              -- enable register writing only if condition is valid
                     sel_mux_4 <= sel_mux_4_rs_1;                                -- use rs1 as operand 1
                     -- update inc:
                     inc_en     <= '1';           
