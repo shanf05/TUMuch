@@ -46,7 +46,7 @@ begin
     
     state_changes : process(clk, rst)
     begin 
-        if rst = '0' then
+        if rst = '1' then
             state <= s_IF;          -- always start with instruction fetch after reset
         elsif clk = '1' and clk'event then
             state <= next_state;    -- otherwise update state   
