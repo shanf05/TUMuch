@@ -41,7 +41,7 @@ architecture RTL of Datapath is
     signal alu_result : BusDataType := (others=>'0');    
 begin
     MUX_1 : entity work.mux2x1 port map (
-        in_0 => rs_2,
+        in_0 => rs_1,
         in_1 => const_1,
         sel => sel_mux_1,
         output => out_mux1
@@ -56,7 +56,7 @@ begin
     
     MUX_4 : entity work.mux2x1 port map (
         in_0 => const_2,
-        in_1 => rs_1,        
+        in_1 => rs_2,        
         sel => sel_mux_4,
         output => out_mux4
     );
