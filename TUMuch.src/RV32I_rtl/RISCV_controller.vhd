@@ -110,11 +110,11 @@ begin
                                                 );   
     instr_dec : entity work.ctrl_instr_dec port map(
                                                 instr=>instr_sig,
-                                                pc_in => pc_sig,                                                 
+                                                pc_in => pc_sig,   
+                                                data_in=>data_in,                                              
                                                 sel_in=>sel_in, 
                                                 sel_out_a=>sel_out_a, 
-                                                sel_out_b=>sel_out_b, 
-                                                data_in=>data_in,
+                                                sel_out_b=>sel_out_b,                                                
                                                 cmd_store=>cmd_store_sig,
                                                 cmd_calc=>cmd_calc_sig,
                                                 cmd_const=>cmd_const_sig,
@@ -127,6 +127,7 @@ begin
                                                 const_1 => const_1, 
                                                 const_2 => const_2, 
                                                 const_reg => const_reg,
+                                                imm => imm_sig,
                                                 acc_size=>acc_size                                               
                                                 );    
     inc       : entity work.ctrl_inc       port map(
