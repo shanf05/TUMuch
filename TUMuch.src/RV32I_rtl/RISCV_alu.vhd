@@ -59,7 +59,7 @@ architecture rtl of alu32 is
         
 begin    
     addsub32  : entity work.addsub    port map(o_mode=>o_mode_sig, a=>operand_a, b=>operand_b, d_out=>res_addsub_sig);
-    shifter32 : entity work.shifter32 port map(data_in=>operand_a, direction=>dir_sig, arithmetic=>arith_sig, shamt=>operand_b(4 downto 0), data_out=>res_shifter_sig);
+    shifter32 : entity work.shifter32 port map(data_in=>operand_b, direction=>dir_sig, arithmetic=>arith_sig, shamt=>operand_a(4 downto 0), data_out=>res_shifter_sig);
     and32     : entity work.and32     port map(x1=>operand_a, x2=>operand_b, y=>res_and_sig); 
     or32      : entity work.or32      port map(x1=>operand_a, x2=>operand_b, y=>res_or_sig); 
     xor32     : entity work.xor32     port map(x1=>operand_a, x2=>operand_b, y=>res_xor_sig);
