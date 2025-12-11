@@ -63,7 +63,7 @@ begin
     and32     : entity work.and32     port map(x1=>operand_a, x2=>operand_b, y=>res_and_sig); 
     or32      : entity work.or32      port map(x1=>operand_a, x2=>operand_b, y=>res_or_sig); 
     xor32     : entity work.xor32     port map(x1=>operand_a, x2=>operand_b, y=>res_xor_sig);
-    comp32    : entity work.cmp       port map(a =>operand_a, b =>operand_b, is_signed=>comp_is_signed_sig, lt_out=>res_comp_sig, equal_out=>equal_out_sig);
+    comp32    : entity work.cmp       port map(a =>operand_b, b =>operand_a, is_signed=>comp_is_signed_sig, lt_out=>res_comp_sig, equal_out=>equal_out_sig);
         
     mux32x5   : entity work.mux32x1       
     port map(
