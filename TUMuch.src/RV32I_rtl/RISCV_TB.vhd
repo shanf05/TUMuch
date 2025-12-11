@@ -36,10 +36,8 @@ begin
         variable success : boolean;
         variable addr   : integer range 0 to 2**MemAddrSize-1 := 0; 
     begin
-        
-        
-        rst <= '0';
-        
+        rst <= '1';
+    
         -------------------- Memory Load --------------------
         
         sel <= '1';
@@ -58,8 +56,7 @@ begin
         sel <= '0';
         
         -- wait for cpu to finish instructions 
-        rst <= '1';
-        wait for 0 ns;
+        wait for 15 ns;
         rst <= '0';
         wait until active = '0';
         
