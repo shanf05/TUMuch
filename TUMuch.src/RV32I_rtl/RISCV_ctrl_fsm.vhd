@@ -41,7 +41,7 @@ architecture mealy of ctrl_fsm is
     signal cmd_store    : bit := ctrl(7);  -- store instructions
         
     --states:
-    signal state, next_state : StateType := s_stop;     
+    signal state, next_state : StateType := s_if;     
 begin    
     
     state_changes : process(clk, rst)
