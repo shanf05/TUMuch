@@ -30,11 +30,6 @@ signal data_out_sig, data_in_sig : BusDataType;
 signal acc_size_sig : bit_vector (1 downto 0);
 
 
---initialisation: 
---signal dbg_data_sig : BusDataType; 
---signal dbg_addr_sig : bit_vector(AddrSize-1 downto 0);
---signal dbg_w_en_sig : bit; 
-
 begin
     system : entity work.system
              port map(
@@ -46,10 +41,7 @@ begin
                 data_out => data_out_sys_sig, 
                 data_in => data_out_sig, 
                 acc_size => acc_size_sys_sig
-                );
-            
---    rst_gen : entity work.rst_gen
---              port map (rst => rst_sig);
+                );            
               
     clk_gen : entity work.clk_gen
               port map (clk => clk_sig);
@@ -77,7 +69,6 @@ begin
     mux_w_en        : entity work.mux2x1    generic map (data_width => 1) port map(in_0(0) => w_en_sys_sig, in_1(0) => w_en_tb_sig, sel => sel_sig, output(0) => w_en_sig);
     mux_addr        : entity work.mux2x1    generic map (data_width => AddrSize) port map(in_0 => addr_out_sys_sig, in_1 => addr_out_tb_sig, sel => sel_sig, output => addr_out_sig);
     mux_data_in     : entity work.mux2x1    generic map (data_width => BusDataSize) port map(in_0 => data_out_sys_sig, in_1 => data_out_tb_sig, sel => sel_sig, output => data_in_sig);
---     mux_data_out    : entity work.mux2x1    generic map (data_width => BusDataSize) port map(in_0 =>, in_1 => , sel => sel_sig);
     mux_acc_size    : entity work.mux2x1    generic map (data_width => 2) port map(in_0 => acc_size_sys_sig, in_1 => acc_size_tb_sig, sel => sel_sig, output => acc_size_sig);
 
 end RTL;
