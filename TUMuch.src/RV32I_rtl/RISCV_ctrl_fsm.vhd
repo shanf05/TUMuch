@@ -86,7 +86,7 @@ begin
                 sel_mux_6  <= sel_mux_6_imm;                                    -- use the immediate as second summand
                 sel_mux_7  <= sel_mux_7_inc_out;                                -- use the addition as memory address -> data has to be written to regs in the next cylce                                                                                
             elsif cmd_store = '1' then                
-                next_state <= s_if;                                             -- store instructions dont need another cycle, because the registers are not getting writte             
+                next_state <= s_mem;                                            -- store instructions needs another cycle to update           
                 w_en   <= '1';                                                  -- enable write for memory
                 sel_mux_5  <= sel_mux_5_addr_in;                                -- use reg(rs1) as first summand
                 sel_mux_6  <= sel_mux_6_imm;                                    -- use the immediate as second summand
@@ -96,7 +96,11 @@ begin
                 reg_en    <= '1';                                               -- enable writing the pc to registers
                 sel_mux_1 <= sel_mux_1_const_1;                                 -- use imm as first summand
                 sel_mux_4 <= sel_mux_4_const_2;                                 -- use pc as second summand
-                sel_mux_2 <= sel_mux_2_alu_res;                                 -- use the alu result (addition) as write data for registers        
+                sel_mux_2 <= sel_mux_2_alu_res;                                 -- use the alu result (addition) as write data for registers   
+                -- update inc:
+                inc_en     <= '1';           
+                sel_mux_5  <= sel_mux_5_imm_4;
+                sel_mux_6  <= sel_mux_6_pc;     
             elsif cmd_calc = '1' then                                           -- calculation instructions                                                                                         
                 if cmd_jmp = '1' then                                           -- branch instructions                                
                     next_state <= s_cmp;                                        -- contitional branches need another cycle to check condition 
@@ -105,17 +109,29 @@ begin
                     inc_en    <= '1';                                           -- store the jump address in inc buffer -> when condition is true, inc value is used, otherwise normal pc + 4 
                 elsif cmd_reg = '1' then                                        -- set instructions
                     next_state <= s_if;                                         -- return to instr fetch -> only need one cycle
-                    reg_en <= bra_cond;                                      -- enable register writing only if condition is valid
+                    reg_en <= bra_cond;                                         -- enable register writing only if condition is valid
                     sel_mux_4 <= sel_mux_4_rs_1;                                -- use rs1 as operand 1
+                    -- update inc:
+                    inc_en     <= '1';           
+                    sel_mux_5  <= sel_mux_5_imm_4;
+                    sel_mux_6  <= sel_mux_6_pc;
                 else                                                            -- "normal" arithmetric instruction 
                     next_state <= s_if;                                         -- return after this cycle
-                    reg_en <= '1';                                              -- enable writing the result to registers                    
+                    reg_en <= '1';                                              -- enable writing the result to registers   
+                    -- update inc:
+                    inc_en     <= '1';           
+                    sel_mux_5  <= sel_mux_5_imm_4;
+                    sel_mux_6  <= sel_mux_6_pc;                 
                 end if; 
                 if cmd_const = '1' then sel_mux_1 <= sel_mux_1_const_1; end if; -- use immediate as second operand: the same for all instructions above                                                                                  
             elsif cmd_reg = '1' and cmd_jmp = '0' and cmd_calc = '0' then       -- this is only the LUI instruction
                 next_state <= s_if;                                             -- lui can be done in one cycle 
                 reg_en <= '1';                                                  -- enable writing the immediate to registers
-                sel_mux_2 <= sel_mux_2_const_reg;                               -- use the immediate as write data for registers                  
+                sel_mux_2 <= sel_mux_2_const_reg;                               -- use the immediate as write data for registers     
+                --update inc:
+                inc_en     <= '1';           
+                sel_mux_5  <= sel_mux_5_imm_4;
+                sel_mux_6  <= sel_mux_6_pc;  
             elsif cmd_jmp = '1' and cmd_calc = '0' then                         -- unconditional jumps        
                 next_state <= s_if;                                             -- jumps can be done in one cycle (address is getting used in next one)  
                 inc_en     <= '1';                                              -- enable buffering the jump address in inc -> pc is getting updated in instr_fetch                
@@ -140,8 +156,14 @@ begin
             end if;  
         when s_mem =>    
             next_state <= s_if;                                                 -- finished, return to instruction fetching
-            sel_mux_2 <= sel_mux_2_const_reg;                                   -- use constant input from id as register write data
-            reg_en    <= '1';                                                   -- enable writing the register
+            if cmd_load = '1' then 
+                sel_mux_2 <= sel_mux_2_const_reg;                               -- use constant input from id as register write data
+                reg_en    <= '1';                                               -- enable writing the register
+            end if;                
+            -- update inc:
+            inc_en     <= '1';           
+            sel_mux_5  <= sel_mux_5_imm_4;
+            sel_mux_6  <= sel_mux_6_pc;
         when s_cmp =>                                                           -- this state is only after pfex of branch instructions
             next_state <= s_if;                                                 -- always return to instr fetch
             sel_mux_4 <= sel_mux_4_rs_1;                                        -- set first cmp reg to rs1
@@ -156,6 +178,10 @@ begin
             active <= '0';                                                      -- not active anymore -> needs reset
         when others =>
             next_state <= s_if;                                                 -- always restart with instr fetch if in phantom state 
+            -- update inc:
+            inc_en     <= '1';           
+            sel_mux_5  <= sel_mux_5_imm_4;
+            sel_mux_6  <= sel_mux_6_pc;
             assert false; 
         end case;
     end process;
