@@ -85,5 +85,5 @@ begin
     );
     
     data_out <= rs_2;
-    addr_in <= rs_1;
+    addr_in <= rs_1(15 downto 0);
 end RTL;
