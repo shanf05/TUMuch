@@ -57,13 +57,13 @@ begin
     MUX_4 : entity work.mux2x1 port map (
         in_0 => const_2,
         in_1 => rs_1,        
-        sel => sel_mux_2,
+        sel => sel_mux_4,
         output => out_mux4
     );
     
     ALU : entity work.alu32 port map(
         operand_a => out_mux1,      -- rs2/const1
-        operand_b => out_mux2,      -- rs1/const2
+        operand_b => out_mux4,      -- rs1/const2
         
         operation => operation,
         branch_condition=>bra_cond,    
