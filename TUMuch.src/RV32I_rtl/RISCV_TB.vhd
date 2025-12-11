@@ -26,7 +26,7 @@ entity TB is
 end TB;
 
 architecture Behavioral of TB is
-    file BinFile        : Text open read_mode is "../../../../bin_input_SLT_SLTU.txt";
+    file BinFile        : Text open read_mode is "../../../../bin_input.txt";
     file DataDumpFile   : Text open write_mode is "../../../../data_dump.txt";
 begin
     process
