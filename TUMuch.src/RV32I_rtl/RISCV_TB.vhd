@@ -26,8 +26,8 @@ entity TB is
 end TB;
 
 architecture Behavioral of TB is
-    file BinFile        : Text open read_mode is "../../../../TUMuch.rsc/RV32I_rtl/bin_input.txt";
-    file DataDumpFile   : Text open write_mode is "../../../../TUMuch.rsc/RV32I_rtl/data_dump.txt";
+    file BinFile        : Text open read_mode is "../../../../bin_input_ADD_ADDI_SUB.txt";
+    file DataDumpFile   : Text open write_mode is "../../../../data_dump.txt";
 begin
     process
         variable l : line;
@@ -72,6 +72,7 @@ begin
         for i in 0 to 2**MemAddrSize-1 loop
             mem_addr <= bit_vector(to_unsigned(addr, AddrSize));
             
+            wait for 0 ns;
             wait for 0 ns;
             wait for 0 ns;
             
