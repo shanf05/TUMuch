@@ -28,7 +28,7 @@ entity Datapath is
         
         const_1   : in  BusDataType;
         const_2   : in  BusDataType;
-        const_reg : in  BusDataType
+        const_reg : in  BusDataType        
     );
 end Datapath;
 
@@ -59,7 +59,7 @@ begin
         operand_b => out_mux2,      -- rs2/const2
         
         operation => operation,
-            
+        branch_condition=>bra_cond,    
         result => alu_result
     );    
     
