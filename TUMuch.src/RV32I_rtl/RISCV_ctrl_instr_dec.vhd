@@ -35,24 +35,25 @@ entity ctrl_instr_dec is
         );
 end ctrl_instr_dec;
 
-architecture RTL of ctrl_instr_dec is 
-signal op_code : bit_vector(6 downto 0);
-signal func3 : bit_vector(2 downto 0);
-signal func7 : bit_vector(6 downto 0);
-begin
-    op_code <= instr(6 downto 0);
-    
-    process (instr, pc_in, data_in, op_code)
+architecture RTL of ctrl_instr_dec is
+begin    
+    process (instr, pc_in, data_in)
+        variable op_code : bit_vector(6 downto 0) := (others=>'0');
+        variable func3   : bit_vector(2 downto 0) := (others=>'0');
+        variable func7   : bit_vector(6 downto 0) := (others=>'0');
     begin
     -- default assignment of ctrl signals
+    op_code := instr(6 downto 0);
     cmd_store <='0'; cmd_calc <='0'; cmd_const <='0'; cmd_load <='0';
     cmd_reg <= '0'; cmd_auipc <='0'; cmd_jmp <='0'; cmd_stop <= '0';
-    func3 <= (others => '0'); func7 <= (others => '0'); op <= (others => '0');
+    op <= (others => '0');
+    
+    
     case op_code is
         -- R-Type Instructions
         when OP_OP =>
-            func3 <= instr(14 downto 12);
-            func7 <= instr(31 downto 25);
+            func3 := instr(14 downto 12);
+            func7 := instr(31 downto 25);
             sel_in <= instr(11 downto 7);
             sel_out_a <= instr(19 downto 15);
             sel_out_b <= instr(24 downto 20);
@@ -94,7 +95,7 @@ begin
                     cmd_reg <='1';
                     op <= ALU_SLTU;
                 when F3_SRL =>
-                    func7 <= instr(31 downto 25);
+                    func7 := instr(31 downto 25);
                     case func7 is
                         when F7_SRL =>
                             op <= ALU_SRL;
@@ -108,7 +109,7 @@ begin
         ---------------------------------------------------------------------------------------------    
         -- I-Type Instructions
         when OP_IMM =>
-            func3 <= instr(14 downto 12);
+            func3 := instr(14 downto 12);
             sel_in <= instr(11 downto 7);
             sel_out_a <= instr(19 downto 15);
             sel_out_b <= (others => '0');
@@ -142,7 +143,7 @@ begin
                 when F3_SLL  =>
                     op <= ALU_SLL;
                 when F3_SRL =>
-                    func7 <= instr(31 downto 25);
+                    func7 := instr(31 downto 25);
                     case func7 is
                         when F7_SRL =>
                             op <= ALU_SRL;
@@ -156,7 +157,7 @@ begin
         ---------------------------------------------------------------------------------------------
         -- Load Instructions
         when OP_Load =>
-            func3 <= instr(14 downto 12);
+            func3 := instr(14 downto 12);
             sel_in <= instr(11 downto 7);
             sel_out_a <= instr(19 downto 15);
             sel_out_b <= (others => '0');
@@ -194,7 +195,7 @@ begin
         ---------------------------------------------------------------------------------------------
         --Store instructions (S-Type)
         when OP_STORE =>
-            func3 <= instr(14 downto 12);
+            func3 := instr(14 downto 12);
             sel_in <= (others => '0');
             sel_out_a <= instr(19 downto 15);       
             sel_out_b <= instr(24 downto 20);      
@@ -225,7 +226,7 @@ begin
         ---------------------------------------------------------------------------------------------
         --branch-type instructions (B-Type)
         when OP_BRANCH =>  
-            func3 <= instr(14 downto 12);
+            func3 := instr(14 downto 12);
             sel_out_a <= instr(19 downto 15);
             sel_out_b <= instr(24 downto 20);
             acc_size  <= acc_size_word;
