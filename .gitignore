@@ -31,3 +31,4 @@ TUMuch.rsc/asm_input.txt
 # Ignore second src directory which also holds synth data
 
 TUMuch.srcs/
+*.wcfg
