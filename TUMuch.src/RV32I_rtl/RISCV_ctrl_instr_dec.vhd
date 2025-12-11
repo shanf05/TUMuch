@@ -137,17 +137,21 @@ begin
                     op <= ALU_AND;
                 when F3_SLT    => 
                     cmd_reg <= '1';         --SLTI: Set cmd_reg for FSM
-                    op      <= ALU_SLT;     
+                    op <= ALU_SLT;     
                 when F3_SLTU   =>
                     cmd_reg <= '1';         --SLTIU: Set cmd_reg for FSM
-                    op      <= ALU_SLTU;
+                    op <= ALU_SLTU;
                 when F3_SLL  =>
                     op <= ALU_SLL;
+                    const_1(4 downto 0) <= instr(24 downto 20);
+                    const_1(31 downto 5)<= (others => '0');
                 when F3_SRL =>
                     func7 := instr(31 downto 25);
                     case func7 is
                         when F7_SRL =>
                             op <= ALU_SRL;
+                            const_1(4 downto 0) <= instr(24 downto 20);
+                            const_1(31 downto 5)<= (others => '0');
                         when F7_SRA =>
                             op <= ALU_SRA;
                         when others =>
@@ -252,11 +256,11 @@ begin
                 when F3_BNE  =>
                     op <= ALU_BNE; 
                 when F3_BLT  =>
-                    op <= ALU_SLT; 
+                    op <= ALU_SLT;          --SLT and BLT use same ALU Operation
                 when F3_BGE  => 
                     op <= ALU_BGE;
                 when F3_BLTU => 
-                    op <= ALU_SLTU;
+                    op <= ALU_SLTU;         --SLTU and BLTU use same ALU Operation
                 when F3_BGEU =>
                     op <= ALU_BGEU;
                 when others =>
