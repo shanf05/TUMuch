@@ -28,6 +28,65 @@ end TB;
 architecture Behavioral of TB is
     file BinFile        : Text open read_mode is "../../../../TUMuch.rsc/RV32I_rtl/bin_input.txt";
     file DataDumpFile   : Text open write_mode is "../../../../TUMuch.rsc/RV32I_rtl/data_dump.txt";
+    
+    -- Data to overwrite in specific adresses (useful for STORE tests) --
+    type addr_array is array (natural range <>) of bit_vector(AddrSize-1 downto 0);
+    type data_array is array (natural range <>) of BusDataType;
+    
+    constant OVERWRITE_ADDR : addr_array := (
+        x"F000",
+        x"0FF8",
+        x"1000",
+        x"1004",
+        x"1008",
+        x"100C",
+        x"1010",
+        x"1FF0",
+        x"1FF4",
+        x"1FF8",
+        x"1FFC",
+        x"2000",
+        x"2004",
+        x"2008",
+        x"200C",
+        x"2FF0",
+        x"2FF4",
+        x"2FF8",
+        x"2FFC",
+        x"3000",
+        x"3004",
+        x"3008",
+        x"300C",
+        x"3010",
+        x"3014"
+    );
+    constant OVERWRITE_DATA : data_array := (
+        x"12345678",
+        x"AAAAAAAA",
+        x"AAAAAAAA",
+        x"AAAAAAAA",
+        x"AAAAAAAA",
+        x"AAAAAAAA",
+        x"AAAAAAAA",
+        x"BBBBBBBB",
+        x"BBBBBBBB",
+        x"BBBBBBBB",
+        x"BBBBBBBB",
+        x"BBBBBBBB",
+        x"BBBBBBBB",
+        x"BBBBBBBB",
+        x"BBBBBBBB",
+        x"CCCCCCCC",
+        x"CCCCCCCC",
+        x"CCCCCCCC",
+        x"CCCCCCCC",
+        x"CCCCCCCC",
+        x"CCCCCCCC",
+        x"CCCCCCCC",
+        x"CCCCCCCC",
+        x"CCCCCCCC",
+        x"CCCCCCCC"
+    );
 begin
     process
         variable l : line;
@@ -52,12 +111,25 @@ begin
             wait until clk'event and clk='1';
             addr := addr + 4;
         end loop;
+        
+        
+        -------------------- Memory Overwrite (comment out if not in use) --------------------
+        
+        for i in overwrite_addr'range loop
+            data_to_mem <= overwrite_data(i);
+            mem_addr <= overwrite_addr(i);
+            wait until clk'event and clk='1';
+        end loop;        
+        
         w_en <= '0';
         sel <= '0';
         
-        -- wait for cpu to finish instructions 
+        -------------------- Run Instructions --------------------
+         
         wait for 15 ns;
         rst <= '0';
+        
+        -- wait for cpu to finish instructions
         wait until active = '0';
         
         -------------------- Memory Dump --------------------
