@@ -355,14 +355,14 @@ begin
             sel_out_a <= (others => '0');
             sel_out_b <= (others => '0');
             acc_size  <= acc_size_word;
-            op <= (others => '0');                                        --no ALU Operation needed            
+            op <= ALU_ADD;                                      --JAL: PC + 4 in AL        
             --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE,
             -- '0', '1',   '0', '0',  '0',   '0',  '0',   '0',
             cmd_jmp <='1';
                         
             const_1               <= X"00000004";               --JAL: const_1 hardwired to 4                        
             const_2(15 downto 0)  <= pc_in(15 downto 0);        --JAL: const_2 contains pc
-            const_2(31 downto 14) <= (others => '0');           --extend pc with zeroes
+            const_2(31 downto 16) <= (others => '0');           --extend pc with zeroes
             const_reg             <= data_in;
             imm(0)                <= '0';                       --JAL: imm to MUX_6
             imm(10 downto 1)      <= Instr(30 downto 21);       --JAL: imm to MUX_6
@@ -376,14 +376,14 @@ begin
             sel_out_a <= instr(19 downto 15);
             sel_out_b <= (others => '0');     
             acc_size  <= acc_size_word;       
-            op <= (others => '0');
+            op <= ALU_ADD;                                      --JALR: PC + 4 in AL 
             --STOP, JMP, AUIPC, REG, LOAD, CONST, CALC, STORE,
             -- '0', '1',   '0', '1',  '0',   '0',  '0',   '0',
             cmd_jmp <='1'; cmd_reg <='1';          
             
             const_1               <= X"00000004";               --JALR: const_1 hardwired to 4                        
-            const_2(13 downto 0)  <= pc_in(13 downto 0);        --JALR: const_2 contains pc
-            const_2(31 downto 14) <= (others => '0');           --extend pc with zeroes
+            const_2(15 downto 0)  <= pc_in(15 downto 0);        --JALR: const_2 contains pc
+            const_2(31 downto 16) <= (others => '0');           --extend pc with zeroes
             const_reg             <= data_in;
             imm (11 downto 0)     <= instr(31 downto 20);
             imm (31 downto 12)    <= (others => instr(31));
