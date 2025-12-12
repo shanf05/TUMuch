@@ -108,100 +108,42 @@ begin
     
     process(operation, operand_a, operand_b)
     begin
-        case operation is    
-            when "0000" =>   --xor(i)
-                o_mode_sig <= '0';          -- prevent latches 
-                dir_sig    <= '0';          -- prevent latches
-                arith_sig  <= '0';          -- prevent latches         
-                comp_is_signed_sig <= '0';  -- prevent latches       
-            when "0001" =>   --or(i)
-                o_mode_sig <= '0';          -- prevent latches 
-                dir_sig    <= '0';          -- prevent latches
-                arith_sig  <= '0';          -- prevent latches        
-                comp_is_signed_sig <= '0';  -- prevent latches
-            when "0010" =>   --and(i)
-                o_mode_sig <= '0';          -- prevent latches 
-                dir_sig    <= '0';          -- prevent latches
-                arith_sig  <= '0';          -- prevent latches         
-                comp_is_signed_sig <= '0';  -- prevent latches       
+        -- default assignments to prevent latches
+        o_mode_sig <= '0'; 
+        dir_sig    <= '0';
+        arith_sig  <= '0';         
+        comp_is_signed_sig <= '0';     
+
+        case operation is                 
+            when "0000" =>                      --xor(i) 
+            when "0001" =>                      --or(i)
+            when "0010" =>                      --and(i) 
+
+            when "0011" =>                      --add(i)
+            when "0100" =>                      --sub
+                o_mode_sig <= '1';      
+
+            when "0101" =>                      --sll(i)
+            when "0110" =>                      --srl(i)
+                dir_sig    <= '1';          
+            when "0111" =>                      --sra(i)
+                dir_sig    <= '1';          
+                arith_sig  <= '1';          
+            when "1000" =>                      --slt(i)
+                comp_is_signed_sig <= '1';             
+            when "1001" =>                      --slt(i)u
 
 
-            when "0011" =>   --add(i)
-                o_mode_sig <= '0';
-                dir_sig    <= '0';          -- prevent latches
-                arith_sig  <= '0';          -- prevent latches        
-                comp_is_signed_sig <= '0';  -- prevent latches
-            when "0100" =>   --sub
-                o_mode_sig <= '1';
-                dir_sig    <= '0';          -- prevent latches
-                arith_sig  <= '0';          -- prevent latches        
-                comp_is_signed_sig <= '0';  -- prevent latches
-
-
-            when "0101" =>   --sll(i)
-                o_mode_sig <= '0';          -- prevent latches
-                dir_sig    <= '0'; 
-                arith_sig  <= '0';        
-                comp_is_signed_sig <= '0';  -- prevent latches
-            when "0110" =>   --srl(i)
-                o_mode_sig <= '0';          -- prevent latches
-                dir_sig    <= '1';
-                arith_sig  <= '0';         
-                comp_is_signed_sig <= '0';  -- prevent latches
-            when "0111" =>   --sra(i)
-                o_mode_sig <= '0';          -- prevent latches
-                dir_sig    <= '1';          -- prevent latches
-                arith_sig  <= '1';          -- prevent latches
-                comp_is_signed_sig <= '0';  -- prevent latches
-
-
-            when "1000" =>   --slt(i)
-                o_mode_sig <= '0';          -- prevent latches
-                dir_sig    <= '0';
-                arith_sig  <= '0';
-                comp_is_signed_sig <= '1';         
-            when "1001" =>   --slt(i)u
-                o_mode_sig <= '0';          -- prevent latches
-                dir_sig    <= '0';          -- prevent latches
-                arith_sig  <= '0';          -- prevent latches
-                comp_is_signed_sig <= '0';
-            when "1010" =>   --beq
-                o_mode_sig <= '0';          -- prevent latches
-                dir_sig    <= '0';
-                arith_sig  <= '0';
-                comp_is_signed_sig <= '0';         
-            when "1011" =>   --bne
-                o_mode_sig <= '0';          -- prevent latches
-                dir_sig    <= '0';          -- prevent latches
-                arith_sig  <= '0';          -- prevent latches
-                comp_is_signed_sig <= '0';
-            -- when "1100" =>   --blt
-            --     o_mode_sig <= '0';          -- prevent latches
-            --     dir_sig    <= '0';
-            --     arith_sig  <= '0';
+            when "1010" =>                      --beq
+            when "1011" =>                      --bne
+            -- when "1100" =>                   --blt
             --     comp_is_signed_sig <= '1';         
-            when "1101" =>   --bge
-                o_mode_sig <= '0';          -- prevent latches
-                dir_sig    <= '0';          -- prevent latches
-                arith_sig  <= '0';          -- prevent latches
-                comp_is_signed_sig <= '1';
-            -- when "1110" =>   --bltu
-            --     o_mode_sig <= '0';          -- prevent latches
-            --     dir_sig    <= '0';
-            --     arith_sig  <= '0';
-            --     comp_is_signed_sig <= '1';         
-            when "1111" =>   -- bgeu
-                o_mode_sig <= '0';          -- prevent latches
-                dir_sig    <= '0';          -- prevent latches
-                arith_sig  <= '0';          -- prevent latches
-                comp_is_signed_sig <= '0';
-
+            when "1101" =>                      --bge
+                comp_is_signed_sig <= '1';  
+            -- when "1110" =>                   --bltu
+            when "1111" =>                      --bgeu
 
             when others => 
-                o_mode_sig <= '0';          -- prevent latches
-                dir_sig    <= '0';          -- prevent latches
-                arith_sig  <= '0';          -- prevent latches
-                comp_is_signed_sig <= '0';  -- prevent latches
         end case;
     end process; 
     
@@ -211,12 +153,12 @@ begin
     -- equal_out_sig:   result for a==b
     -- res_comp_sig(0): result for a<b
         case operation is
-            when "1010" => branch_condition <= equal_out_sig;                               --beq   
-            when "1011" => branch_condition <= not equal_out_sig;                           --bne
-            when "1000" => branch_condition <=     res_comp_sig(0)      and not equal_out_sig;       --blt/slt
-            when "1101" => branch_condition <= not res_comp_sig(0)  or      equal_out_sig;        --bge
-            when "1001" => branch_condition <=     res_comp_sig(0)      and not equal_out_sig;       --bltu/sltu     
-            when "1111" => branch_condition <= not res_comp_sig(0)  or      equal_out_sig;    -- bgeu
+            when "1010" => branch_condition <=     equal_out_sig;      --beq   
+            when "1011" => branch_condition <= not equal_out_sig;      --bne
+            when "1000" => branch_condition <=     res_comp_sig(0);    --blt/slt
+            when "1101" => branch_condition <= not res_comp_sig(0);    --bge
+            when "1001" => branch_condition <=     res_comp_sig(0);    --bltu/sltu     
+            when "1111" => branch_condition <= not res_comp_sig(0);    -- bgeu
             when others => branch_condition <= '0';
         end case;
     end process;
