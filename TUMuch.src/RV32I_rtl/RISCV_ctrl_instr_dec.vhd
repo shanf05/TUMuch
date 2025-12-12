@@ -181,18 +181,57 @@ begin
             case func3 is
                 when F3_LW =>
                     const_reg <= data_in;
+
                 when F3_LH => 
-                    const_reg(15 downto 0)  <= data_in(15 downto 0);
-                    const_reg(31 downto 16) <= (others => data_in(15));
-                when F3_LHU =>
-                    const_reg(15 downto 0)  <= data_in(15 downto 0);
+                    case instr(21 downto 20) is 
+                        when "10" =>    -- offset mod 4 == 2
+                            const_reg(15 downto 0)  <= data_in(31 downto 16);
+                            const_reg(31 downto 16) <= (others => data_in(31));
+                        when others =>  -- otherwise  
+                            const_reg(15 downto 0)  <= data_in(15 downto 0);
+                            const_reg(31 downto 16) <= (others => data_in(15));
+                    end case;
+
+                when F3_LHU => 
+                    case instr(21 downto 20) is 
+                        when "10" =>    -- offset mod 4 == 2
+                            const_reg(15 downto 0)  <= data_in(31 downto 16);
+                        when others =>  --otherwise
+                            const_reg(15 downto 0)  <= data_in(15 downto 0);
+                    end case;
                     const_reg(31 downto 16) <= (others => '0');
+
                 when F3_LB =>
-                    const_reg(7 downto 0)   <= data_in(7 downto 0);
-                    const_reg(31 downto 8)  <= (others => data_in(7));
+                    case instr(21 downto 20) is
+                        when "00" =>
+                            const_reg(7 downto 0)   <= data_in(7 downto 0);
+                            const_reg(31 downto 8)  <= (others => data_in(7));
+                        when "01" =>
+                            const_reg(7 downto 0)   <= data_in(15 downto 8);
+                            const_reg(31 downto 8)  <= (others => data_in(15));
+                        when "10" =>
+                            const_reg(7 downto 0)   <= data_in(23 downto 16);
+                            const_reg(31 downto 8)  <= (others => data_in(23));
+                        when "11" =>
+                            const_reg(7 downto 0)   <= data_in(31 downto 24);
+                            const_reg(31 downto 8)  <= (others => data_in(31));    
+                        when others =>
+                    end case; 
+
                 when F3_LBU =>
-                    const_reg(7 downto 0)   <= data_in(7 downto 0);
+                    case instr(21 downto 20) is
+                        when "00" =>
+                            const_reg(7 downto 0)   <= data_in(7 downto 0);
+                        when "01" =>
+                            const_reg(7 downto 0)   <= data_in(15 downto 8);
+                        when "10" =>
+                            const_reg(7 downto 0)   <= data_in(23 downto 16);
+                        when "11" =>
+                            const_reg(7 downto 0)   <= data_in(31 downto 24);                        
+                        when others =>
+                    end case; 
                     const_reg(31 downto 8)  <= (others => '0');
+
                 when others =>
             end case;
         

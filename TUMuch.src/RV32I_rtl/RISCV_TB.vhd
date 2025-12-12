@@ -40,7 +40,7 @@ architecture Behavioral of TB is
     );
     constant OVERWRITE_DATA : data_array := (
         x"89ABCDEF",
-        x"FEDCBA94",
+        x"FEDCBA98",
         x"00001000"
     );
 begin
