@@ -24,7 +24,9 @@ entity TB is
 end TB;
 
 architecture Behavioral of TB is
-    file BinFile        : Text open read_mode is "../../../../TUMuch.rsc/RV32I_rtl/bin_input.txt";
+    file BinFile        : Text open read_mode is "../../../../TUMuch.rsc/RV32I_rtl/test/bin/bin_input_ADD_ADDI_SUB.txt";    -- USE THIS TO CHOOSE YOUR TEST
+                                                                                                                            -- TO SEE WHAT THE TEST DOES, looak at /test/asm/asm_input_xyz.txt
+                                                                                                                            -- IF YOU ARE USING THE input_LOAD.txt UNCOMMENT THE MEMORY OVERWRITE BELOW
     file DataDumpFile   : Text open write_mode is "../../../../TUMuch.rsc/RV32I_rtl/data_dump.txt";
     
     -- Data to overwrite in specific adresses (useful for STORE tests) --
@@ -51,7 +53,7 @@ begin
     begin
         rst <= '1';
     
-        -------------------- Memory Load --------------------
+        ---------------------------------- Memory Load --------------------------------------------
         
         sel <= '1';
         w_en <= '1';
@@ -67,7 +69,7 @@ begin
         end loop;
         
         
-        -------------------- Memory Overwrite (comment out if not in use) --------------------
+        -------------------- Memory Overwrite (used for LOAD test -> uncomment) --------------------
         
         --for i in overwrite_addr'range loop
         --    data_to_mem <= overwrite_data(i);
@@ -75,7 +77,7 @@ begin
         --    wait until clk'event and clk='1';
         --end loop;        
         
-        -------------------- Run Instructions --------------------
+        ------------------------------------ Run Instructions --------------------------------------
         
         w_en <= '0';
         sel <= '0';
@@ -86,7 +88,7 @@ begin
         -- wait for cpu to finish instructions
         wait until active = '0';
         
-        -------------------- Memory Dump --------------------
+        --------------------------------------- Memory Dump -----------------------------------------
         sel <= '1';
         
         write( w , string'(" ADDR  |   HEX    |              BIN"));
