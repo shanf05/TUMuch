@@ -153,12 +153,12 @@ begin
     -- equal_out_sig:   result for a==b
     -- res_comp_sig(0): result for a<b
         case operation is
-            when "1010" => branch_condition <= equal_out_sig;                               --beq   
-            when "1011" => branch_condition <= not equal_out_sig;                           --bne
-            when "1000" => branch_condition <=     res_comp_sig(0)      and not equal_out_sig;       --blt/slt
-            when "1101" => branch_condition <= not res_comp_sig(0)  or      equal_out_sig;        --bge
-            when "1001" => branch_condition <=     res_comp_sig(0)      and not equal_out_sig;       --bltu/sltu     
-            when "1111" => branch_condition <= not res_comp_sig(0)  or      equal_out_sig;    -- bgeu
+            when "1010" => branch_condition <=     equal_out_sig;      --beq   
+            when "1011" => branch_condition <= not equal_out_sig;      --bne
+            when "1000" => branch_condition <=     res_comp_sig(0);    --blt/slt
+            when "1101" => branch_condition <= not res_comp_sig(0);    --bge
+            when "1001" => branch_condition <=     res_comp_sig(0);    --bltu/sltu     
+            when "1111" => branch_condition <= not res_comp_sig(0);    -- bgeu
             when others => branch_condition <= '0';
         end case;
     end process;
