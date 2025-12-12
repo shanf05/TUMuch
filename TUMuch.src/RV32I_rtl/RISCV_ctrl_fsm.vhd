@@ -161,10 +161,7 @@ begin
                 --assert false; 
             end if;  
         when s_mem =>    
-            next_state <= s_if;                                                 -- finished, return to instruction fetching
-            if cmd_load = '1' then 
-                reg_en    <= '0';                                               -- disable writing the register
-            end if;                
+            next_state <= s_if;                                                 -- finished, return to instruction fetching                            
             -- update inc:
             inc_en     <= '1';           
             sel_mux_5  <= sel_mux_5_imm_4;
