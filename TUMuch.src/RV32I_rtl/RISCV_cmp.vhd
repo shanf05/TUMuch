@@ -17,14 +17,8 @@ entity cmp is
          );
 end cmp;
 
-architecture RTL of cmp is
-    signal res_sub : BusDataType;
-    signal a_sig, b_sig : BusDataType := (others=>'0');
-    
+architecture RTL of cmp is    
 begin
-    sub32  : entity work.addsub    port map(o_mode=>'1', a=>a_sig, b=>b_sig, d_out=>res_sub); -- res_sub = a - b
-    
-
     process(a, b, is_signed)
     begin
         equal_out   <= '0';
@@ -34,18 +28,10 @@ begin
             equal_out   <= '1';
         end if;
         
-        if is_signed = '1' then 
-            a_sig <= bit_vector(signed(a)); 
-            b_sig <= bit_vector(signed(b)); 
-            
-        else
-            a_sig <= bit_vector(unsigned(a)); 
-            b_sig <= bit_vector(unsigned(b));            
+        if is_signed = '1' and (signed(a) < signed(b)) then 
+            lt_out(0)   <= '1';
+        elsif is_signed = '0' and (unsigned(a) < unsigned(b)) then
+            lt_out(0)   <= '1'; 
         end if;
-        
-        if res_sub(31) = '1' then 
-            lt_out(0) <= '1';       -- a is smaller than b, because a - b is negative        
-        end if;
-        
     end process;
 end RTL;

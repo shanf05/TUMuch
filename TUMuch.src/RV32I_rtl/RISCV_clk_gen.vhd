@@ -17,23 +17,16 @@ entity clk_gen is
 end clk_gen;
 
 architecture dataflow of clk_gen is
+    signal clk_sig : bit := '0';
 begin
-process
-    variable clk_var : bit;
-    begin
-        if now = 0ns then
-            clk_var := not init_value;
-            clk <= clk_var;
-            wait for init_delay;
-            clk_var := init_value;
-        elsif clk_var = '0' and now > 0 ns and now < T_active then
-            wait for T_low;
-            clk_var := '1';
-        elsif  clk_var = '1' and now > 0 ns and now < T_active then
-            wait for T_high;
-            clk_var := '0';
-        else clk_var := clk_var;
-        end if;
-        clk <= clk_var;
-end process;
+    clk_gen :process
+        --variable clk_var : bit;
+    begin        
+        wait for T_high;
+        clk_sig <= not clk_sig;        
+        wait for T_low;
+        clk_sig <= not clk_sig; 
+    end process;
+    
+    clk <= clk_sig;
 end dataflow;
