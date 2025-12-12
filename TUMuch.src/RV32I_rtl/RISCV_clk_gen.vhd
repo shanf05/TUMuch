@@ -12,17 +12,27 @@ entity clk_gen is
             T_active        : time := 10000 ns
             );
     port (
-        clk : buffer bit := init_value
+        clk : out bit := init_value
         );
 end clk_gen;
 
 architecture dataflow of clk_gen is
-
 begin
-    clk <= not init_value, init_value after init_delay
-            when now = 0 ns 
-            else '1' after T_low when clk = '0' and now > 0 ns and now < T_active 
-            else '0' after T_high when clk = '1' and now > 0 ns and now < T_active 
-            else clk;
-
+process
+    variable clk_var : bit;
+    begin
+        if now = 0ns then
+            clk_var := not init_value;
+            wait for init_delay;
+            clk_var := init_value;
+        elsif clk_var = '0' and now > 0 ns and now < T_active then
+            wait for T_low;
+            clk_var := '1';
+        elsif  clk_var = '1' and now > 0 ns and now < T_active then
+            wait for T_high;
+            clk_var := '0';
+        else clk_var := clk_var;
+        end if;
+        clk <= clk_var;
+end process;
 end dataflow;
