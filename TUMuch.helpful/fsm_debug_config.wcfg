@@ -20,14 +20,14 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0.000 ns"></ZoomStartTime>
-      <ZoomEndTime time="210.383 ns"></ZoomEndTime>
-      <Cursor1Time time="27.095 ns"></Cursor1Time>
+      <ZoomEndTime time="313.501 ns"></ZoomEndTime>
+      <Cursor1Time time="10,050.000 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="245"></NameColumnWidth>
-      <ValueColumnWidth column_width="152"></ValueColumnWidth>
+      <ValueColumnWidth column_width="128"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="29" />
+   <WVObjectSize size="34" />
    <wvobject fp_name="/TLE_system/clk_sig" type="logic">
       <obj_property name="ElementShortName">clk_sig</obj_property>
       <obj_property name="ObjectShortName">clk_sig</obj_property>
@@ -54,13 +54,13 @@
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="ElementShortName">data_out_sig[31:0]</obj_property>
       <obj_property name="ObjectShortName">data_out_sig[31:0]</obj_property>
-      <obj_property name="label">data_to_mem</obj_property>
+      <obj_property name="label">data_from_mem</obj_property>
    </wvobject>
    <wvobject fp_name="/TLE_system/data_in_sig" type="array">
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="ElementShortName">data_in_sig[31:0]</obj_property>
       <obj_property name="ObjectShortName">data_in_sig[31:0]</obj_property>
-      <obj_property name="label">data_from_mem</obj_property>
+      <obj_property name="label">data_to_mem</obj_property>
    </wvobject>
    <wvobject fp_name="/TLE_system/system/controller/ctrl_fsm/reg_en" type="logic">
       <obj_property name="ElementShortName">reg_en</obj_property>
@@ -149,5 +149,31 @@
    <wvobject fp_name="/TLE_system/system/controller/ctrl_fsm/cmd_stop" type="logic">
       <obj_property name="ElementShortName">cmd_stop</obj_property>
       <obj_property name="ObjectShortName">cmd_stop</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(1)\/i" type="other">
+      <obj_property name="ElementShortName">i</obj_property>
+      <obj_property name="ObjectShortName">i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(1)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="label">reg(1)</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(2)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="label">reg(2)</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(3)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="label">reg(3)</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/controller/bra_cond" type="logic">
+      <obj_property name="ElementShortName">bra_cond</obj_property>
+      <obj_property name="ObjectShortName">bra_cond</obj_property>
    </wvobject>
 </wave_config>

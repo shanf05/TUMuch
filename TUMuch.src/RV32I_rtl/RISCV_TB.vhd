@@ -14,7 +14,7 @@ entity TB is
         clk             : in bit;                               
         data_from_mem   : in BusDataType;
         
-        rst             : out bit;                              -- used to "start" the cpu manually
+        rst             : out bit;                              -- used to reset the cpu manually
         data_to_mem     : out BusDataType;                      
         mem_addr        : out bit_vector(AddrSize-1 downto 0);
         w_en            : out bit;
@@ -71,16 +71,16 @@ begin
         
         -------------------- Memory Overwrite (comment out if not in use) --------------------
         
-        for i in overwrite_addr'range loop
-            data_to_mem <= overwrite_data(i);
-            mem_addr <= overwrite_addr(i);
-            wait until clk'event and clk='1';
-        end loop;        
+        --for i in overwrite_addr'range loop
+        --    data_to_mem <= overwrite_data(i);
+        --    mem_addr <= overwrite_addr(i);
+        --    wait until clk'event and clk='1';
+        --end loop;        
+        
+        -------------------- Run Instructions --------------------
         
         w_en <= '0';
         sel <= '0';
-        
-        -------------------- Run Instructions --------------------
          
         wait for 15 ns;
         rst <= '0';
