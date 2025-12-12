@@ -62,8 +62,8 @@ begin
     );
     
     ALU : entity work.alu32 port map(
-        operand_a => out_mux1,      -- rs2/const1
-        operand_b => out_mux4,      -- rs1/const2
+        operand_a => out_mux4,      -- rs2/const1
+        operand_b => out_mux1,      -- rs1/const2
         
         operation => operation,
         branch_condition=>bra_cond,    
