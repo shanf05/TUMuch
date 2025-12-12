@@ -23,6 +23,7 @@ process
     begin
         if now = 0ns then
             clk_var := not init_value;
+            clk <= clk_var;
             wait for init_delay;
             clk_var := init_value;
         elsif clk_var = '0' and now > 0 ns and now < T_active then
