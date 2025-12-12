@@ -23,9 +23,9 @@ package instr_dec_pack is
     constant ALU_SLTU : ALUOp := "1001";          --also valid for SLTIU
     constant ALU_BEQ  : ALUOp := "1010";
     constant ALU_BNE  : ALUOp := "1011";
-    constant ALU_BLT  : ALUOp := "1100";
+    -- constant ALU_BLT  : ALUOp := "1100";           --not in use, replaced by ALU_SLT
     constant ALU_BGE  : ALUOp := "1101";
-    constant ALU_BLTU : ALUOp := "1110";
+    -- constant ALU_BLTU : ALUOp := "1110";           --not in use, replaced by ALU_SLTU
     constant ALU_BGEU : ALUOp := "1111";          
     
 end package;
