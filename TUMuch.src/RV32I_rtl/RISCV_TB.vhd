@@ -2,9 +2,7 @@ library IEEE;
 use IEEE.numeric_bit.ALL;
 library work;
 use work.defs_pack.all;
-use work.mem_pack.all;
 use work.helper_func.all;
-use work.trace_pack.all;
 use std.textio.all;
 
 
