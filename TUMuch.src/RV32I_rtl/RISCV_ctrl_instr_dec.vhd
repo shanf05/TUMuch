@@ -183,21 +183,23 @@ begin
                     const_reg <= data_in;
 
                 when F3_LH => 
-                    case instr(21 downto 20) is 
-                        when "10" =>    -- offset mod 4 == 2
-                            const_reg(15 downto 0)  <= data_in(31 downto 16);
-                            const_reg(31 downto 16) <= (others => data_in(31));
-                        when others =>  -- otherwise  
+                    case instr(21) is 
+                        when '0' =>    -- offset mod 4 == 0 or 1
                             const_reg(15 downto 0)  <= data_in(15 downto 0);
                             const_reg(31 downto 16) <= (others => data_in(15));
+                        when '1' =>    -- offset mod 4 == 2 or 3
+                            const_reg(15 downto 0)  <= data_in(31 downto 16);
+                            const_reg(31 downto 16) <= (others => data_in(31));
+                        when others =>
                     end case;
 
                 when F3_LHU => 
-                    case instr(21 downto 20) is 
-                        when "10" =>    -- offset mod 4 == 2
-                            const_reg(15 downto 0)  <= data_in(31 downto 16);
-                        when others =>  --otherwise
+                    case instr(21) is 
+                        when '0' =>    -- offset mod 4 == 0 or 1
                             const_reg(15 downto 0)  <= data_in(15 downto 0);
+                        when '1' =>    -- offset mod 4 == 2 or 3
+                            const_reg(15 downto 0)  <= data_in(31 downto 16);
+                        when others =>
                     end case;
                     const_reg(31 downto 16) <= (others => '0');
 
