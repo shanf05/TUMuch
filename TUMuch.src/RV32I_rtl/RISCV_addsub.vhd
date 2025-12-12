@@ -23,10 +23,10 @@ use work.defs_pack.all;
 --Adder Subber with flexible bit inputs/outputs
 entity addsub is
     generic ( Datasize : integer := BusDataSize);
-    port (o_mode : in bit;
+    port (o_mode : in bit;          --0 is adding, 1 is substracting
           a, b : in bit_vector(DataSize-1 downto 0);         
           d_out : out bit_vector(DataSize-1 downto 0)
-                             );                   
+         );                   
 end addsub;
 
 

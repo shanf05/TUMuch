@@ -24,7 +24,7 @@ entity TB is
 end TB;
 
 architecture Behavioral of TB is
-    file BinFile        : Text open read_mode is "../../../../TUMuch.rsc/RV32I_rtl/test/bin/bin_input_ADD_ADDI_SUB.txt";    -- USE THIS TO CHOOSE YOUR TEST
+    file BinFile        : Text open read_mode is "../../../../TUMuch.rsc/RV32I_rtl/test/bin/bin_input_BLT.txt";    -- USE THIS TO CHOOSE YOUR TEST
                                                                                                                             -- TO SEE WHAT THE TEST DOES, looak at /test/asm/asm_input_xyz.txt
                                                                                                                             -- IF YOU ARE USING THE input_LOAD.txt UNCOMMENT THE MEMORY OVERWRITE BELOW
     file DataDumpFile   : Text open write_mode is "../../../../TUMuch.rsc/RV32I_rtl/data_dump.txt";
