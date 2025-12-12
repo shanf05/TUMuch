@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="TLE_system_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="TLE_system" />
+            <top_module name="ctrl_fsm_pack" />
+            <top_module name="defs_pack" />
+            <top_module name="helper_func" />
+            <top_module name="inst_encoding_pack" />
+            <top_module name="inst_layout_pack" />
+            <top_module name="instr_dec_pack" />
+            <top_module name="mem_pack" />
+            <top_module name="mnemonic_pack" />
+            <top_module name="trace_pack" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="180600001fs"></ZoomEndTime>
+      <Cursor1Time time="2500000000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="254"></NameColumnWidth>
+      <ValueColumnWidth column_width="239"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="70" />
+   <wvobject fp_name="/TLE_system/clk_sig" type="logic">
+      <obj_property name="ElementShortName">clk_sig</obj_property>
+      <obj_property name="ObjectShortName">clk_sig</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/rst_sig" type="logic">
+      <obj_property name="ElementShortName">rst_sig</obj_property>
+      <obj_property name="ObjectShortName">rst_sig</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/controller/instr_sig" type="array">
+      <obj_property name="ElementShortName">instr_sig[31:0]</obj_property>
+      <obj_property name="ObjectShortName">instr_sig[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/controller/instr_en_sig" type="logic">
+      <obj_property name="ElementShortName">instr_en_sig</obj_property>
+      <obj_property name="ObjectShortName">instr_en_sig</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(1)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="label">X1</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(2)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="label">X2</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(3)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="label">X3</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(4)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="label">X4</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(5)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="label">X5</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(6)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="label">X6</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(7)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="label">X7</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(8)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="label">X8</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(9)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="label">X9</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(10)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="label">X10</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(11)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="label">X11</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(12)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="label">X12</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(13)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="label">X13</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(14)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="label">X14</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(15)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="label">X15</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(16)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="label">X16</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(17)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="label">X17</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(18)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="label">X18</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(19)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="label">X19</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(20)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="label">X20</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(21)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="label">X21</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(22)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="label">X22</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(23)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="label">X23</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(24)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="label">X24</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(25)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="label">X25</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(26)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="label">X26</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(27)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="label">X27</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(28)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="label">X28</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(29)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="label">X29</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(30)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="label">X30</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/\regs(31)\/reg_nat/reg/Q" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">Q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Q[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="label">X31</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/controller/sel_in" type="array">
+      <obj_property name="ElementShortName">sel_in[4:0]</obj_property>
+      <obj_property name="ObjectShortName">sel_in[4:0]</obj_property>
+      <obj_property name="CustomSignalColor">#A52A2A</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/controller/sel_out_a" type="array">
+      <obj_property name="ElementShortName">sel_out_a[4:0]</obj_property>
+      <obj_property name="ObjectShortName">sel_out_a[4:0]</obj_property>
+      <obj_property name="CustomSignalColor">#A52A2A</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/controller/sel_out_b" type="array">
+      <obj_property name="ElementShortName">sel_out_b[4:0]</obj_property>
+      <obj_property name="ObjectShortName">sel_out_b[4:0]</obj_property>
+      <obj_property name="CustomSignalColor">#A52A2A</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/controller/operation" type="array">
+      <obj_property name="ElementShortName">operation[3:0]</obj_property>
+      <obj_property name="ObjectShortName">operation[3:0]</obj_property>
+      <obj_property name="CustomSignalColor">#800080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/controller/const_1" type="array">
+      <obj_property name="ElementShortName">const_1[31:0]</obj_property>
+      <obj_property name="ObjectShortName">const_1[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#800080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/controller/const_2" type="array">
+      <obj_property name="ElementShortName">const_2[31:0]</obj_property>
+      <obj_property name="ObjectShortName">const_2[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#800080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/controller/const_reg" type="array">
+      <obj_property name="ElementShortName">const_reg[31:0]</obj_property>
+      <obj_property name="ObjectShortName">const_reg[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#800080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/controller/addr_out" type="array">
+      <obj_property name="ElementShortName">addr_out[15:0]</obj_property>
+      <obj_property name="ObjectShortName">addr_out[15:0]</obj_property>
+      <obj_property name="CustomSignalColor">#800080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/controller/imm_sig" type="array">
+      <obj_property name="ElementShortName">imm_sig[31:0]</obj_property>
+      <obj_property name="ObjectShortName">imm_sig[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#800080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/controller/w_en" type="logic">
+      <obj_property name="ElementShortName">w_en</obj_property>
+      <obj_property name="ObjectShortName">w_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/controller/acc_size" type="array">
+      <obj_property name="ElementShortName">acc_size[1:0]</obj_property>
+      <obj_property name="ObjectShortName">acc_size[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/controller/active" type="logic">
+      <obj_property name="ElementShortName">active</obj_property>
+      <obj_property name="ObjectShortName">active</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/controller/pc_sig" type="array">
+      <obj_property name="ElementShortName">pc_sig[15:0]</obj_property>
+      <obj_property name="ObjectShortName">pc_sig[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/controller/sel_mux_5_sig" type="array">
+      <obj_property name="ElementShortName">sel_mux_5_sig[1:0]</obj_property>
+      <obj_property name="ObjectShortName">sel_mux_5_sig[1:0]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/controller/sel_mux_6_sig" type="logic">
+      <obj_property name="ElementShortName">sel_mux_6_sig</obj_property>
+      <obj_property name="ObjectShortName">sel_mux_6_sig</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/controller/sel_mux_7_sig" type="logic">
+      <obj_property name="ElementShortName">sel_mux_7_sig</obj_property>
+      <obj_property name="ObjectShortName">sel_mux_7_sig</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/controller/pc_en_sig" type="logic">
+      <obj_property name="ElementShortName">pc_en_sig</obj_property>
+      <obj_property name="ObjectShortName">pc_en_sig</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/controller/inc_en_sig" type="logic">
+      <obj_property name="ElementShortName">inc_en_sig</obj_property>
+      <obj_property name="ObjectShortName">inc_en_sig</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/controller/cmd_store_sig" type="logic">
+      <obj_property name="ElementShortName">cmd_store_sig</obj_property>
+      <obj_property name="ObjectShortName">cmd_store_sig</obj_property>
+      <obj_property name="CustomSignalColor">#00FF7F</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/controller/cmd_calc_sig" type="logic">
+      <obj_property name="ElementShortName">cmd_calc_sig</obj_property>
+      <obj_property name="ObjectShortName">cmd_calc_sig</obj_property>
+      <obj_property name="CustomSignalColor">#FF0000</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/controller/cmd_const_sig" type="logic">
+      <obj_property name="ElementShortName">cmd_const_sig</obj_property>
+      <obj_property name="ObjectShortName">cmd_const_sig</obj_property>
+      <obj_property name="CustomSignalColor">#FF0000</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/controller/cmd_load_sig" type="logic">
+      <obj_property name="ElementShortName">cmd_load_sig</obj_property>
+      <obj_property name="ObjectShortName">cmd_load_sig</obj_property>
+      <obj_property name="CustomSignalColor">#FF0000</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/controller/cmd_reg_sig" type="logic">
+      <obj_property name="ElementShortName">cmd_reg_sig</obj_property>
+      <obj_property name="ObjectShortName">cmd_reg_sig</obj_property>
+      <obj_property name="CustomSignalColor">#FF0000</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/controller/cmd_auipc_sig" type="logic">
+      <obj_property name="ElementShortName">cmd_auipc_sig</obj_property>
+      <obj_property name="ObjectShortName">cmd_auipc_sig</obj_property>
+      <obj_property name="CustomSignalColor">#FF0000</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/controller/cmd_jmp_sig" type="logic">
+      <obj_property name="ElementShortName">cmd_jmp_sig</obj_property>
+      <obj_property name="ObjectShortName">cmd_jmp_sig</obj_property>
+      <obj_property name="CustomSignalColor">#FF0000</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/controller/cmd_stop_sig" type="logic">
+      <obj_property name="ElementShortName">cmd_stop_sig</obj_property>
+      <obj_property name="ObjectShortName">cmd_stop_sig</obj_property>
+      <obj_property name="CustomSignalColor">#FF0000</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/w_data" type="array">
+      <obj_property name="ElementShortName">w_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">w_data[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FFA500</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/controller/inc_sig" type="array">
+      <obj_property name="ElementShortName">inc_sig[15:0]</obj_property>
+      <obj_property name="ObjectShortName">inc_sig[15:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FFA500</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/controller/inc_out_sig" type="array">
+      <obj_property name="ElementShortName">inc_out_sig[15:0]</obj_property>
+      <obj_property name="ObjectShortName">inc_out_sig[15:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FFA500</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/data_out" type="array">
+      <obj_property name="ElementShortName">data_out[31:0]</obj_property>
+      <obj_property name="ObjectShortName">data_out[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FFA500</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/w_addr" type="array">
+      <obj_property name="ElementShortName">w_addr[4:0]</obj_property>
+      <obj_property name="ObjectShortName">w_addr[4:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FFA500</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/rf/r_data_1" type="array">
+      <obj_property name="ElementShortName">r_data_1[31:0]</obj_property>
+      <obj_property name="ObjectShortName">r_data_1[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FFA500</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/controller/summand_2_sig" type="array">
+      <obj_property name="ElementShortName">summand_2_sig[15:0]</obj_property>
+      <obj_property name="ObjectShortName">summand_2_sig[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/datapath/bra_cond" type="logic">
+      <obj_property name="ElementShortName">bra_cond</obj_property>
+      <obj_property name="ObjectShortName">bra_cond</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TLE_system/system/active" type="logic">
+      <obj_property name="ElementShortName">active</obj_property>
+      <obj_property name="ObjectShortName">active</obj_property>
+   </wvobject>
+</wave_config>
