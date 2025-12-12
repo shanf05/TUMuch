@@ -30,16 +30,7 @@ entity ctrl_fsm is
 end ctrl_fsm;
 
 architecture mealy of ctrl_fsm is
-    --signal mapping from ctrl:
-    --signal cmd_stop     : bit := ctrl(0);  -- stop all execution -> needs reset
-    --signal cmd_jmp      : bit := ctrl(1);  -- jump instructions
-    --signal cmd_auipc    : bit := ctrl(2);  -- only used for AUPIC (pc needs to go to data_in)
-    --signal cmd_reg      : bit := ctrl(3);  -- only used for LUI
-    --signal cmd_load     : bit := ctrl(4);  -- every load instruction
-    --signal cmd_const    : bit := ctrl(5);  -- every instruction with immediate, that has to go to alu
-    --signal cmd_calc     : bit := ctrl(6);  -- every instruction that goes into alu
-    --signal cmd_store    : bit := ctrl(7);  -- store instructions
-        
+    --see README.md for the mapping from instructions -> cmd
     --states:
     signal state, next_state : StateType := s_if;     
 begin    
@@ -170,11 +161,10 @@ begin
             next_state <= s_if;                                                 -- always return to instr fetch
             sel_mux_4 <= sel_mux_4_rs_1;                                        -- set first cmp reg to rs1
             sel_mux_1 <= sel_mux_1_rs_2;                                        -- set second cmp reg to rs2
-            
+            -- update inc if condition is not fulfilled:
             sel_mux_5 <= sel_mux_5_imm_4;                                       -- use +4 as first summand
             sel_mux_6 <= sel_mux_6_pc;                                          -- use pc as second summand
-            inc_en    <= not bra_cond;                                          -- if condition is false, update inc with pc + 4 (else use jump address calculated in pfex)                         
-            
+            inc_en    <= not bra_cond;                                          -- if condition is false, update inc with pc + 4 (else use jump address calculated in pfex)            
         when s_stop =>
             next_state <= s_stop;                                               -- fallback to itsself
             active <= '0';                                                      -- not active anymore -> needs reset
