@@ -82,8 +82,8 @@ begin
                 next_state <= s_stop;                                           -- only checkable when fetching instruction
             elsif cmd_load = '1' then                                           
                 next_state <= s_mem;                                            -- load instructions need one more cycle to write registers
-                reg_en    <= '1';
-                sel_mux_2  <= sel_mux_2_const_reg;                
+                reg_en    <= '1';                                               -- enable writing the register
+                sel_mux_2  <= sel_mux_2_const_reg;                              -- save loaded data from instruction decoder in the register
                 sel_mux_5  <= sel_mux_5_addr_in;                                -- use reg(rs1) as first summand
                 sel_mux_6  <= sel_mux_6_imm;                                    -- use the immediate as second summand
                 sel_mux_7  <= sel_mux_7_inc_out;                                -- use the addition as memory address -> data has to be written to regs in the next cylce                                                                                
@@ -163,8 +163,7 @@ begin
         when s_mem =>    
             next_state <= s_if;                                                 -- finished, return to instruction fetching
             if cmd_load = '1' then 
-                sel_mux_2 <= sel_mux_2_const_reg;                               -- use constant input from id as register write data
-                reg_en    <= '0';                                               -- enable writing the register
+                reg_en    <= '0';                                               -- disable writing the register
             end if;                
             -- update inc:
             inc_en     <= '1';           
