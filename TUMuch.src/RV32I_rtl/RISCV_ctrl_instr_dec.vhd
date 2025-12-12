@@ -43,13 +43,16 @@ begin
         variable func3   : bit_vector(2 downto 0) := (others=>'0');
         variable func7   : bit_vector(6 downto 0) := (others=>'0');
     begin
-    -- default assignment of ctrl signals
+    -- default assignment of ctrl signals to prevent latches
     op_code := instr(6 downto 0);
     cmd_store <='0'; cmd_calc <='0'; cmd_const <='0'; cmd_load <='0';
     cmd_reg <= '0'; cmd_auipc <='0'; cmd_jmp <='0'; cmd_stop <= '0';
     op <= (others => '0');
-    
-    
+    const_reg <= data_in;
+    acc_size <= acc_size_word;
+    const_1 <= (others => '0'); const_2 <= (others => '0');
+    sel_in <= (others => '0'); sel_out_a <= (others => '0'); sel_out_b <= (others => '0');
+    imm <= (others => '0');
     case op_code is
         -- R-Type Instructions
         when OP_OP =>
