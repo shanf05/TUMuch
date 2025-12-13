@@ -24,12 +24,12 @@ entity TB is
 end TB;
 
 architecture Behavioral of TB is
-    file BinFile        : Text open read_mode is "../../../../TUMuch.rsc/RV32I_rtl/test/bin/bin_input_BLT.txt";    -- USE THIS TO CHOOSE YOUR TEST
-                                                                                                                            -- TO SEE WHAT THE TEST DOES, looak at /test/asm/asm_input_xyz.txt
-                                                                                                                            -- IF YOU ARE USING THE input_LOAD.txt UNCOMMENT THE MEMORY OVERWRITE BELOW
+    file BinFile        : Text open read_mode is "../../../../TUMuch.rsc/RV32I_rtl/test/bin/bin_input_BLT.txt";     -- USE THIS TO CHOOSE YOUR TEST
+                                                                                                                    -- TO SEE WHAT THE TEST DOES, looak at /test/asm/asm_input_xyz.txt
+                                                                                                                    -- IF YOU ARE USING LOAD/STORE TESTS UNCOMMENT THE MEMORY OVERWRITE BELOW AND ADJUST THE CONSTANTS
     file DataDumpFile   : Text open write_mode is "../../../../TUMuch.rsc/RV32I_rtl/data_dump.txt";
     
-    -- Data to overwrite in specific adresses (useful for STORE tests) --
+    -- Data to overwrite in specific adresses (useful for LOAD/STORE tests) --
     type addr_array is array (natural range <>) of bit_vector(AddrSize-1 downto 0);
     type data_array is array (natural range <>) of BusDataType;
     
