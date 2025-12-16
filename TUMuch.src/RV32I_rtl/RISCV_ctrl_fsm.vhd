@@ -140,9 +140,7 @@ begin
                 sel_mux_1 <= sel_mux_1_const_1;                                 -- use const_1 = 4 as second operand
                 sel_mux_4 <= sel_mux_4_const_2;                                 -- use pc as first operadn
                 sel_mux_2 <= sel_mux_2_alu_res;                                 -- use alu result (pc + 4) as write data for regs
-                reg_en    <= '1';                                               -- enable registers to be written                 
-            elsif cmd_stop = '1' then 
-                next_state <= s_stop;                
+                reg_en    <= '1';                                               -- enable registers to be written              
             else 
                 next_state <= s_if;                                             -- always restart with instr fetch when faulty input;
                 --update inc:
@@ -177,4 +175,5 @@ begin
             --assert false; 
         end case;
     end process;
+
 end mealy;
