@@ -1,6 +1,3 @@
-# TUMuch
-Entwurf digitaler Schaltungen mit VHDL und SystemC
-
 # Gruppenmitglieder
 Severin Hanf,
 Max Biricz,
@@ -32,4 +29,3 @@ Josip Pepić
 
 ![structure](https://github.com/user-attachments/assets/552d26e2-ef37-41f1-a980-cc91ed0603c4)
 <img width="437" height="470" alt="image" src="https://github.com/user-attachments/assets/dd2175ae-4ba3-4ab4-84bc-01a625347d7e" />
-
