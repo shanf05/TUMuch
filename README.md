@@ -1,14 +1,14 @@
 # TUMuch
 Simple implementation of 32 bit processor with RV32I Instruction Set. 
 
-## Gruppenmitglieder
+## Group Members
 Severin Hanf,
 Max Biricz,
 Jeongjoo Lim,
 Josip Pepić
 
-## Functional Model:
-### Memory Initialisation with Assembly Code:
+## Functional Model
+### Memory Initialisation with Assembly Code
 
 - Mnemonics must ALWAYS be at least 5 characters long including whitespace. (Invalid: `ADD`, Valid: `ADD  `)
 
@@ -36,7 +36,7 @@ Josip Pepić
 - binary Inputs in bin_input.txt (fill each line with 32 Bits without following whitespaces)
 - comment `mem := init_memory_asm(AsmFile);`
 
-## RTL Model (Controller Based): 
+## RTL Model (Controller Based)
 - Top Down Partitioning of Contoller und Datapath
 - Memory initialisation with bits
 - Rough architecture diagram:
